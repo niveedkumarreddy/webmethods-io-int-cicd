@@ -9,6 +9,7 @@ variables:
 - group: github_group
 - name: repoPath
   value: $(gitOwner)/$(repoName)
+- name: assetID
 
 pool:
   vmImage: ubuntu-latest
@@ -30,7 +31,15 @@ steps:
   persistCredentials: "true"
   clean: "true"
   path: self
-  
+
+- script: echo "##vso[task.setvariable variable=assetID;]NA"
+  condition: eq(variables['synchProject'], 'true') 
+
+- script: echo "##vso[task.setvariable variable=assetType;]NA"
+  condition: eq(variables['synchProject'], 'true') 
+
+- script: echo "##vso[task.setvariable variable=assetName;]NA"
+  condition: eq(variables['synchProject'], 'true') 
 
 - bash: |
     pwd
@@ -54,7 +63,10 @@ steps:
     #echo $(source_type)
     repoName=$(perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$(repoName)")
     #echo $(repoName)
-    #echo ${assetID}
+    echo "Temp vars"
+    echo $(assetID)
+    echo $(assetType)
+    echo $(assetName)
     
 
 
@@ -65,10 +77,7 @@ steps:
     cd $(System.DefaultWorkingDirectory)/../
     cd $(repoName)
     chmod +x ../self/pipelines/scripts/*.sh    
-      if [ $(synchProject) == true ]; then
-        assetID="NA"
-        assetType="NA"
-      fi
+
 
 
     ###### Exporting
