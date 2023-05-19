@@ -9,7 +9,7 @@ variables:
 - group: github_group
 - name: repoPath
   value: $(gitOwner)/$(repoName)
-- name: assetID
+
 
 pool:
   vmImage: ubuntu-latest
