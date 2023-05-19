@@ -65,7 +65,7 @@ steps:
     cd $(System.DefaultWorkingDirectory)/../
     cd $(repoName)
     chmod +x ../self/pipelines/scripts/*.sh    
-      if [ "$(synchProject)" == "true" ]; then
+      if [ $(synchProject) == true ]; then
         assetID="NA"
         assetType="NA"
       fi
