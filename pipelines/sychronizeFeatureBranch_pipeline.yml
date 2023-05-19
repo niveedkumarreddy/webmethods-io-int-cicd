@@ -66,10 +66,7 @@ steps:
     cd $(repoName)
     chmod +x ../self/pipelines/scripts/*.sh    
   
-  if [ "$(synchProject)" == "true" ]; then
-    assetID="NA"
-    assetType="NA"
-  fi
+
 
     ###### Exporting
     echo "Exporting asset ..."
