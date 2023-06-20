@@ -277,6 +277,8 @@ function projectParameters(){
 }
 
 
+echod $(pwd)
+
 if [ ${synchProject} == true ]; then
   echod "Listing files"
   for filename in ./assets/*/*.zip; do 
