@@ -283,6 +283,12 @@ if [ ${synchProject} == true ]; then
   echod "Listing files"
   FILES="./assets/*/*.zip"
   for filename in $FILES; do 
+      if [ -f "$filename" ]
+      then
+        echo "Processing $filename file..."
+      else
+        echo "Warning: Some problem with \"$filename\""
+      fi
       base_name=${filename##*/}
       parent_name="$(basename "$(dirname "$filename")")"
       base_name=${base_name%.*}
