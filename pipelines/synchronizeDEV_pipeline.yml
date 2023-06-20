@@ -65,12 +65,14 @@ steps:
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: 'Get Environment Tenant Details'
 - script: |
-    : '
+    
     echo $(source_environment_hostname)
     echo $(source_environment_port)
     echo $(admin_user)
     echo $(source_type)
-    '
+    echo $(assetID)
+    echo $(assetType)
+    
     repoName=$(perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$(repoName)")
     echo $(repoName)
     echo $(assetID)
