@@ -281,7 +281,7 @@ echod $(pwd)
 
 if [ ${synchProject} == true ]; then
   echod "Listing files"
-  FILES="./assets/*/*.zip"
+  FILES="assets/*/*.zip"
   for filename in $FILES; do 
       if [ -f "$filename" ]
       then
