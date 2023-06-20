@@ -281,7 +281,8 @@ echod $(pwd)
 
 if [ ${synchProject} == true ]; then
   echod "Listing files"
-  for filename in ./assets/*/*.zip; do 
+  FILES="./assets/*/*.zip"
+  for filename in $FILES; do 
       base_name=${filename##*/}
       parent_name="$(basename "$(dirname "$filename")")"
       base_name=${base_name%.*}
