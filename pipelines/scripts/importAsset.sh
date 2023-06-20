@@ -279,8 +279,7 @@ function projectParameters(){
 
 if [ ${synchProject} == true ]; then
   echod "Listing files"
-  assetPath=./assets/*/
-  for filename in ${assetPath}*.zip; do 
+  for filename in ./assets/*/*.zip; do 
       base_name=${filename##*/}
       parent_name="$(basename "$(dirname "$filename")")"
       base_name=${base_name%.*}
