@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 #############################################################################
@@ -275,9 +274,6 @@ function projectParameters(){
   
 
 }
-
-
-echod $(pwd)
 
 
 if [ ${synchProject} == true ]; then
