@@ -278,12 +278,13 @@ function projectParameters(){
 
 
 echod $(pwd)
-ls -ltr
+
 
 if [ ${synchProject} == true ]; then
   echod "Listing files"
-  FILES="assets/*/*.zip"
-  for filename in 'ls $FILES'; do 
+  FILES="./assets/*/*.zip"
+  ls -ltr $FILES
+  for filename in $FILES; do 
       if [ -f "$filename" ]
       then
         echo "Processing $filename file..."
