@@ -125,4 +125,4 @@ steps:
   inputs:
     SourceFolder: '$(System.DefaultWorkingDirectory)../$(repoName)'
     Contents: './*' 
-  displayName: 'Remove the Export after successfull Commit'
+  displayName: 'Remove the Export after successful Commit'
