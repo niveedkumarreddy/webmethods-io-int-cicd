@@ -87,6 +87,8 @@ steps:
     echo "Committing asset ..."
     chmod +x ../self/pipelines/scripts/github/*.sh    
     ../self/pipelines/scripts/github/commitFeatureBranch.sh $(devUser) $(Build.BuildNumber) $(featureBranchName) ${HOME_DIR} debugebug
+    $fileExists = Test-Path -Path "./resources/test/environments/play.json"
+    Write-Output "##vso[task.setvariable variable=FileExists]$fileExists"
   displayName: 'Commit the code to feature branch'
 
 - task: PublishBuildArtifacts@1
