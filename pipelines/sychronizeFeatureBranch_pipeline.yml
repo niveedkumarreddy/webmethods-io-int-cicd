@@ -89,6 +89,7 @@ steps:
     ../self/pipelines/scripts/github/commitFeatureBranch.sh $(devUser) $(Build.BuildNumber) $(featureBranchName) ${HOME_DIR} debugebug
     
     FILE="./resources/test/environments/play.json"
+    fileExists=false
     if test -f "$FILE"; then
       echo "$FILE exists."
       fileExists=true
