@@ -92,7 +92,7 @@ steps:
 
 - script: |
     cd ../$(repoName)
-    FILE="./resources/test/environments/play.json"
+    FILE="./resources/test/environments/$(source_type).json"
     fileExists=false
     if test -f "$FILE"; then
       echo "$FILE exists."
