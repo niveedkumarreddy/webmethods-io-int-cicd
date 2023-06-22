@@ -98,6 +98,18 @@ steps:
     echo "##vso[task.setvariable variable=FileExists]$fileExists"
   displayName: 'Commit the code to feature branch'
 
+- script: |
+    cd ../$(repoName)
+    FILE="./resources/test/environments/play.json"
+    fileExists=false
+    if test -f "$FILE"; then
+      echo "$FILE exists."
+      fileExists=true
+    fi
+    echo "##vso[task.setvariable variable=FileExists]$fileExists"
+  displayName: 'Evaluate if Test Assets Exists'
+
+
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(System.DefaultWorkingDirectory)/../$(repoName)'
