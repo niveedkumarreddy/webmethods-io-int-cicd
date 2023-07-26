@@ -98,7 +98,7 @@ function importAsset() {
       echod ${PWD}
   FILE=./${assetID}.zip
   formKey="recipe=@"${FILE}
-  overwriteKey="overwrite="true
+  overwriteKey="overwrite=true"
   echod ${formKey}
   if [ -f "$FILE" ]; then
   ####### Check if asset with this name exist
