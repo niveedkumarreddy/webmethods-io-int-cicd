@@ -98,6 +98,7 @@ function importAsset() {
       echod ${PWD}
   FILE=./${assetID}.zip
   formKey="recipe=@"${FILE}
+  overwriteKey="overwrite="true
   echod ${formKey}
   if [ -f "$FILE" ]; then
   ####### Check if asset with this name exist
@@ -106,7 +107,7 @@ function importAsset() {
       importedName=$(curl --location --request POST ${FLOW_URL} \
                   --header 'Content-Type: multipart/form-data' \
                   --header 'Accept: application/json' \
-                  --form ${formKey} -u ${admin_user}:${admin_password})    
+                  --form ${formKey} --form ${overwriteKey} -u ${admin_user}:${admin_password})    
 
       name=$(echo "$importedName" | jq '.output.name // empty')
       if [ -z "$name" ];   then
