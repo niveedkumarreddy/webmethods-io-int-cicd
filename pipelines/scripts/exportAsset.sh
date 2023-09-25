@@ -67,6 +67,7 @@ function echod(){
   
   if [ "$debug" == "debug" ]; then
     echo $1
+    set -x
   fi
 
 }
