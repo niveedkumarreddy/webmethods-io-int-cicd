@@ -215,7 +215,7 @@ fi
 
 # For Single assetType Flowservice Export Reference Data
 if [[ $assetType = flowservice* ]]; then
-  exprtReferenceData${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
+  exprtReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
 
 fi
 
@@ -274,7 +274,7 @@ if [ ${synchProject} == true ]; then
 
   # Exporting Project Referencedata
 
-exprtReferenceData${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
+exprtReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
 
 
   # Exporting Project Parameters
