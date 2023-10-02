@@ -223,6 +223,7 @@ function exportAsset(){
   cd ${HOME_DIR}/${repoName}
 
 }  
+
 if [ ${synchProject} == true ]; then
   echod "Listing All Assets"
   echod $assetType
@@ -274,7 +275,7 @@ if [ ${synchProject} == true ]; then
 
   # Exporting Project Referencedata
 
-exprtReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
+  exprtReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
 
 
   # Exporting Project Parameters
