@@ -111,10 +111,12 @@ function importAsset() {
         echod "Workflow Import:" ${FLOW_URL}
         echod $(ls -ltr)
     else
+      if [[ $assetType = flowservice* ]]; then
         FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flow-import
         cd ${HOME_DIR}/${repoName}/assets/flowservices
         echod "Flowservice Import:" ${FLOW_URL}
         echod $(ls -ltr)
+      fi
     fi    
         echod ${FLOW_URL}
         echod ${PWD}
@@ -123,7 +125,7 @@ function importAsset() {
     overwriteKey="overwrite=true"
     echod ${formKey}
     if [ -f "$FILE" ]; then
-    ####### Check if asset with this name exist
+     ####### Check if asset with this name exist
 
         echo "$FILE exists. Importing ..."
         importedName=$(curl --location --request POST ${FLOW_URL} \
@@ -390,6 +392,6 @@ if [ ${synchProject} == true ]; then
   #projectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${source_type}
 
 else
-  importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${inlcudeAllReferenceData}
+  importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
 fi 
 set +x
