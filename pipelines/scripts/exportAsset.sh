@@ -75,13 +75,13 @@ function echod(){
 echod $@
 
 function exprtReferenceData (){
-LOCAL_DEV_URL=$1
-admin_user=$2
-admin_password=$3
-repoName=$4
-assetID=$5
-assetType=$6
-HOME_DIR=$7
+  LOCAL_DEV_URL=$1
+  admin_user=$2
+  admin_password=$3
+  repoName=$4
+  assetID=$5
+  assetType=$6
+  HOME_DIR=$7
 
 PROJECT_ID_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}
 
