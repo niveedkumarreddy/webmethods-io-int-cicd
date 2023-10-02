@@ -262,7 +262,7 @@ function exportAsset(){
     # For Single assetType Flowservice Export Reference Data
     if [ ${synchProject} != true ]; then
       if [[ $assetType = flowservice* ]]; then
-        if [ ${inlcudeAllReferenceData} == true ]]; then
+        if [ ${inlcudeAllReferenceData} == true ]; then
           exportReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR}
         fi
       fi
