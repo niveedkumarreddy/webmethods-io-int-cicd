@@ -82,6 +82,7 @@ function exprtReferenceData (){
   assetID=$5
   assetType=$6
   HOME_DIR=$7
+  cd ${HOME_DIR}/${repoName}
 
   PROJECT_ID_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}
 
@@ -216,7 +217,6 @@ function exportAsset(){
   # For Single assetType Flowservice Export Reference Data
   if [[ $assetType = flowservice* ]]; then
     exprtReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
-
   fi
 
 
