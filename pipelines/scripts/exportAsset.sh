@@ -14,6 +14,7 @@ assetType=$6
 HOME_DIR=$7
 synchProject=$8
 source_type=$9
+inlcudeAllReferenceData=${10}
 debug=${@: -1}
 
     if [ -z "$LOCAL_DEV_URL" ]; then
@@ -261,7 +262,9 @@ function exportAsset(){
     # For Single assetType Flowservice Export Reference Data
     if [ ${synchProject} != true ]; then
       if [[ $assetType = flowservice* ]]; then
-        exportReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR}
+        if [ ${inlcudeAllReferenceData} == true ]]; then
+          exportReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR}
+        fi
       fi
     fi
   
@@ -286,7 +289,7 @@ if [ ${synchProject} == true ]; then
     assetID=$item
     assetType=workflow
     echod $assetID
-    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject}
+    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
   done
   # Exporting Flows
   for item in $(jq  -c -r '.output.flows[]' <<< "$projectListJson"); do
@@ -294,7 +297,7 @@ if [ ${synchProject} == true ]; then
     assetID=$item
     assetType=flowservice
     echod $assetID
-    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject}
+    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
   done
 
   #Expoting Accounts
@@ -351,5 +354,5 @@ if [ ${synchProject} == true ]; then
   cd ${HOME_DIR}/${repoName}
   '
 else
-  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject}
+  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
 fi  
