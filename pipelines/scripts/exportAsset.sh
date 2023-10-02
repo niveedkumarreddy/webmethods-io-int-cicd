@@ -168,39 +168,6 @@ function exportReferenceData (){
               echod "Inside Ref Data Loop:" "$item"
               rdName=${item}
               exportSingleReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${rdName} ${assetType} ${HOME_DIR} ${projectID}
-              ### Export Single Single Ref Data
-                # REF_DATA_URL=${LOCAL_DEV_URL}/integration/rest/external/v1/ut-flow/referencedata/${projectID}/${rdName}
-                # rdJson=$(curl --location --request GET ${REF_DATA_URL}  \
-                # --header 'Content-Type: application/json' \
-                # --header 'Accept: application/json' \
-                # -u ${admin_user}:${admin_password})
-                # rdExport=$(echo "$rdJson" | jq '.integration.serviceData.referenceData // empty')
-                # if [ -z "$rdExport" ];   then
-                #   echo "Empty reference data defined for the name:" ${rdName}
-                # else
-                #   columnDelimiter=$(echo "$rdJson" | jq -c -r '.integration.serviceData.referenceData.columnDelimiter')
-                #   rdExport=$(echo "$rdJson" | jq -c -r '.integration.serviceData.referenceData.dataRecords')
-                #   if [[ "$columnDelimiter" == "," ]]; then
-                #     echod "COMMA"
-                #     datajson=$(echo "$rdExport" | jq -c -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv')
-                #   else
-                #     echod "Not a COMMA:" ${columnDelimiter}
-                #     datajson=$(echo "$rdExport" | jq -c -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' | sed "s/\",\"/\"${columnDelimiter}\"/g")
-                #   fi
-
-                #   echod "${datajson}"
-                #   mkdir -p ${rdName}
-                #   cd ${rdName}
-                  
-                #   metadataJson=$(echo "$rdJson" | jq -c -r '.integration.serviceData.referenceData')
-                #   metadataJson=$(echo "$metadataJson"| jq 'del(.columnNames, .dataRecords, .revisionData)')
-                #   echo "$metadataJson" > metadata.json
-                #   echo "$datajson" > ${source_type}.csv
-                #   cp ./${source_type}.csv dev.csv 
-                #   cp ./${source_type}.csv qa.csv 
-                #   cp ./${source_type}.csv prod.csv
-                #   cd -
-                # fi
             done
           echo "Reference Data export Succeeded"
         fi
