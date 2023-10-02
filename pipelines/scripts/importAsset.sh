@@ -15,6 +15,7 @@ assetType=$6
 HOME_DIR=$7
 synchProject=$8
 source_type=$9
+inlcudeAllReferenceData=${10}
 debug=${@: -1}
 
 
@@ -79,45 +80,75 @@ function importAsset() {
   assetType=$6
   HOME_DIR=$7
   synchProject=$8
+  inlcudeAllReferenceData=$9
 
   echod $(pwd)
   echod $(ls -ltr)
   echo "AssetType:" $assetType
-  if [[ $assetType = workflow* ]]; then
-      FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/workflow-import
-      cd ${HOME_DIR}/${repoName}/assets/workflows
-      echod "Workflow Import:" ${FLOW_URL}
-      echod $(ls -ltr)
+  if [[ $assetType = referenceData* ]]; then
+    #Importing Reference Data
+    DIR="./assets/projectConfigs/referenceData/"
+    if [ -d "$DIR" ]; then
+        echo "Project referenceData needs to be synched"
+        PROJECT_ID_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}
+        projectJson=$(curl  --location --request GET ${PROJECT_ID_URL} \
+            --header 'Content-Type: application/json' \
+            --header 'Accept: application/json' \
+            -u ${admin_user}:${admin_password})
+        projectID=$(echo "$projectJson" | jq -r -c '.output.uid // empty')
+        if [ -z "$projectID" ];   then
+            echo "Incorrect Project/Repo name"
+            exit 1
+        fi
+        echod "ProjectID:" ${projectID}
+        cd ./assets/projectConfigs/referenceData/
+        importSingleRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
+    fi
   else
-      FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flow-import
-      cd ${HOME_DIR}/${repoName}/assets/flowservices
-      echod "Flowservice Import:" ${FLOW_URL}
-      echod $(ls -ltr)
-  fi    
-      echod ${FLOW_URL}
-      echod ${PWD}
-  FILE=./${assetID}.zip
-  formKey="recipe=@"${FILE}
-  overwriteKey="overwrite=true"
-  echod ${formKey}
-  if [ -f "$FILE" ]; then
-  ####### Check if asset with this name exist
+    if [[ $assetType = workflow* ]]; then
+        FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/workflow-import
+        cd ${HOME_DIR}/${repoName}/assets/workflows
+        echod "Workflow Import:" ${FLOW_URL}
+        echod $(ls -ltr)
+    else
+        FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flow-import
+        cd ${HOME_DIR}/${repoName}/assets/flowservices
+        echod "Flowservice Import:" ${FLOW_URL}
+        echod $(ls -ltr)
+    fi    
+        echod ${FLOW_URL}
+        echod ${PWD}
+    FILE=./${assetID}.zip
+    formKey="recipe=@"${FILE}
+    overwriteKey="overwrite=true"
+    echod ${formKey}
+    if [ -f "$FILE" ]; then
+    ####### Check if asset with this name exist
 
-      echo "$FILE exists. Importing ..."
-      importedName=$(curl --location --request POST ${FLOW_URL} \
-                  --header 'Content-Type: multipart/form-data' \
-                  --header 'Accept: application/json' \
-                  --form ${formKey} --form ${overwriteKey} -u ${admin_user}:${admin_password})    
+        echo "$FILE exists. Importing ..."
+        importedName=$(curl --location --request POST ${FLOW_URL} \
+                    --header 'Content-Type: multipart/form-data' \
+                    --header 'Accept: application/json' \
+                    --form ${formKey} --form ${overwriteKey} -u ${admin_user}:${admin_password})    
 
-      name=$(echo "$importedName" | jq '.output.name // empty')
-      if [ -z "$name" ];   then
-          echo "Import failed:" ${importedName}
-      else
-          echo "Import Succeeded:" ${importedName}
-      
+        name=$(echo "$importedName" | jq '.output.name // empty')
+        if [ -z "$name" ];   then
+            echo "Import failed:" ${importedName}
+        else
+            echo "Import Succeeded:" ${importedName}
+        
+        fi
+    else
+      echo "$FILE does not exists, Nothing to import"
+    fi
+
+    if [ ${synchProject} != true ]; then
+      if [[ $assetType = flowservice* ]]; then
+        if [ ${inlcudeAllReferenceData} == true ]; then
+          importRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type}
       fi
-  else
-    echo "$FILE does not exists, Nothing to import"
+      fi
+    fi
   fi
  cd ${HOME_DIR}/${repoName}
 }
@@ -133,6 +164,7 @@ function importSingleRefData(){
   HOME_DIR=$7
   synchProject=$8
   source_type=$9
+  projectID=${10}
   d=$assetID
 
   cd ${HOME_DIR}/${repoName}
@@ -140,17 +172,7 @@ function importSingleRefData(){
   DIR="./assets/projectConfigs/referenceData/"
   if [ -d "$DIR" ]; then
     echo "Project referenceData needs to be synched"
-    PROJECT_ID_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}
-    projectJson=$(curl  --location --request GET ${PROJECT_ID_URL} \
-        --header 'Content-Type: application/json' \
-        --header 'Accept: application/json' \
-        -u ${admin_user}:${admin_password})
-    projectID=$(echo "$projectJson" | jq -r -c '.output.uid // empty')
-    if [ -z "$projectID" ];   then
-        echo "Incorrect Project/Repo name"
-        exit 1
-    fi
-      echod "ProjectID:" ${projectID}
+    echod "ProjectID:" ${projectID}
     cd ./assets/projectConfigs/referenceData/
     if [ -d "$d" ]; then
       refDataName="$d"
@@ -208,7 +230,7 @@ function importRefData(){
   synchProject=$8
   source_type=$9
 
- # Importing Reference Data
+  #Importing Reference Data
   DIR="./assets/projectConfigs/referenceData/"
   if [ -d "$DIR" ]; then
       echo "Project referenceData needs to be synched"
@@ -225,7 +247,7 @@ function importRefData(){
        echod "ProjectID:" ${projectID}
       cd ./assets/projectConfigs/referenceData/
       for d in * ; do
-        importSingleRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${d} ${assetType} ${HOME_DIR} ${synchProject} ${source_type}
+        importSingleRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${d} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
         # if [ -d "$d" ]; then
         #   refDataName="$d"
         #   echod "$d"
@@ -361,13 +383,13 @@ if [ ${synchProject} == true ]; then
       base_name=${base_name%.*}
       echod $base_name${filename%.*}
       echod $parent_name
-      importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject}
+      importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
   done
   
   importRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type}
   #projectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${source_type}
 
 else
-  importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
+  importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${inlcudeAllReferenceData}
 fi 
 set +x

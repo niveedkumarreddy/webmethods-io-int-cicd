@@ -184,6 +184,7 @@ function exportAsset(){
   assetType=$6
   HOME_DIR=$7
   synchProject=$8
+  inlcudeAllReferenceData=$9
 
   echod ${assetType}
     # Single assetType
