@@ -83,7 +83,9 @@ function exportSingleReferenceData () {
   assetID=$5
   assetType=$6
   HOME_DIR=$7
+  projectID=$8
   rdName=$assetID
+  
 
   cd ${HOME_DIR}/${repoName}
   mkdir -p ./assets/projectConfigs/referenceData
@@ -165,7 +167,7 @@ function exportReferenceData (){
             for item in $(jq -r '.integration.serviceData.referenceData[] | .name' <<< "$rdListJson"); do
               echod "Inside Ref Data Loop:" "$item"
               rdName=${item}
-              exportSingleReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${rdName} ${assetType} ${HOME_DIR}
+              exportSingleReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${rdName} ${assetType} ${HOME_DIR} ${projectID}
               ### Export Single Single Ref Data
                 # REF_DATA_URL=${LOCAL_DEV_URL}/integration/rest/external/v1/ut-flow/referencedata/${projectID}/${rdName}
                 # rdJson=$(curl --location --request GET ${REF_DATA_URL}  \
@@ -219,7 +221,23 @@ function exportAsset(){
   echod ${assetType}
     # Single assetType
     if [[ $assetType = referenceData* ]]; then
-        exportSingleReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR}
+      PROJECT_ID_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}
+
+      projectJson=$(curl  --location --request GET ${PROJECT_ID_URL} \
+          --header 'Content-Type: application/json' \
+          --header 'Accept: application/json' \
+          -u ${admin_user}:${admin_password})
+
+
+      projectID=$(echo "$projectJson" | jq -r -c '.output.uid // empty')
+
+      if [ -z "$projectID" ];   then
+          echo "Incorrect Project/Repo name"
+          exit 1
+      fi
+
+      echod "ProjectID:" ${projectID}
+      exportSingleReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${projectID}
     else
       if [[ $assetType = workflow* ]]; then
           echod $assetType
