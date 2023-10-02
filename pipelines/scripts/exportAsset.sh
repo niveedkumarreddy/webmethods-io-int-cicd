@@ -85,6 +85,8 @@ function exportSingleReferenceData () {
   rdName=$assetID
 
   cd ${HOME_DIR}/${repoName}
+  mkdir -p ./assets/projectConfigs/referenceData
+  cd ./assets/projectConfigs/referenceData
   REF_DATA_URL=${LOCAL_DEV_URL}/integration/rest/external/v1/ut-flow/referencedata/${projectID}/${rdName}
   rdJson=$(curl --location --request GET ${REF_DATA_URL}  \
   --header 'Content-Type: application/json' \
@@ -117,7 +119,7 @@ function exportSingleReferenceData () {
     cp ./${source_type}.csv prod.csv
     cd -
   fi
-
+  cd ${HOME_DIR}/${repoName}
 }
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 4
 function exportReferenceData (){ 
@@ -159,8 +161,6 @@ function exportReferenceData (){
   if [ -z "$rdListExport" ];   then
             echo "No reference data defined for the project" 
         else
-            mkdir -p ./assets/projectConfigs/referenceData
-            cd ./assets/projectConfigs/referenceData
             for item in $(jq -r '.integration.serviceData.referenceData[] | .name' <<< "$rdListJson"); do
               echod "Inside Ref Data Loop:" "$item"
               rdName=${item}
