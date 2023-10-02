@@ -215,58 +215,53 @@ function exportAsset(){
   HOME_DIR=$7
 
   echod ${assetType}
-
-  # Single assetType
-
-  if [[ $assetType = workflow* ]]; then
-      echod $assetType
-      FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/workflows/${assetID}/export
-      cd ${HOME_DIR}/${repoName}
-      mkdir -p ./assets/workflows
-      cd ./assets/workflows
-      echod "Workflow Export:" ${FLOW_URL}
-      echod $(ls -ltr)
-  else
-    if [[ $assetType = flowservice* ]]; then
-      FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flows/${assetID}/export
-      cd ${HOME_DIR}/${repoName}
-      mkdir -p ./assets/flowservices
-      cd ./assets/flowservices
-      echo "Flowservice Export:" ${FLOW_URL}
-      echod $(ls -ltr)
+    # Single assetType
+    if [[ $assetType = workflow* ]]; then
+        echod $assetType
+        FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/workflows/${assetID}/export
+        cd ${HOME_DIR}/${repoName}
+        mkdir -p ./assets/workflows
+        cd ./assets/workflows
+        echod "Workflow Export:" ${FLOW_URL}
+        echod $(ls -ltr)
+    else
+      if [[ $assetType = flowservice* ]]; then
+        FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flows/${assetID}/export
+        cd ${HOME_DIR}/${repoName}
+        mkdir -p ./assets/flowservices
+        cd ./assets/flowservices
+        echo "Flowservice Export:" ${FLOW_URL}
+        echod $(ls -ltr)
+      fi
     fi
-  fi
+    linkJson=$(curl  --location --request POST ${FLOW_URL} \
+    --header 'Content-Type: application/json' \
+    --header 'Accept: application/json' \
+    -u ${admin_user}:${admin_password})
 
+    downloadURL=$(echo "$linkJson" | jq -r '.output.download_link')
     
-      linkJson=$(curl  --location --request POST ${FLOW_URL} \
-      --header 'Content-Type: application/json' \
-      --header 'Accept: application/json' \
-      -u ${admin_user}:${admin_password})
+    regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
+    
+    if [[ $downloadURL =~ $regex ]]; then 
+      echod "Valid Download link retreived:"${downloadURL}
+    else
+        echo "Download link retreival Failed:" ${linkJson}
+        exit 1
+    fi
+    downloadJson=$(curl --location --request GET "${downloadURL}" --output ${assetID}.zip)
 
-      downloadURL=$(echo "$linkJson" | jq -r '.output.download_link')
-      
-      regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
-      
-      if [[ $downloadURL =~ $regex ]]; then 
-        echod "Valid Download link retreived:"${downloadURL}
-      else
-          echo "Download link retreival Failed:" ${linkJson}
-          exit 1
-      fi
-      downloadJson=$(curl --location --request GET "${downloadURL}" --output ${assetID}.zip)
-
-      FILE=./${assetID}.zip
-      if [ -f "$FILE" ]; then
-          echo "Download succeeded:" ls -ltr ./${assetID}.zip
-      else
-          echo "Download failed:"${downloadJson}
-      fi
-
-  # For Single assetType Flowservice Export Reference Data
-  if [[ $assetType = flowservice* ]]; then
-    exprtReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
-  fi
-
+    FILE=./${assetID}.zip
+    if [ -f "$FILE" ]; then
+        echo "Download succeeded:" ls -ltr ./${assetID}.zip
+    else
+        echo "Download failed:"${downloadJson}
+    fi
+    # For Single assetType Flowservice Export Reference Data
+    if [[ $assetType = flowservice* ]]; then
+      exprtReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR}
+    fi
+  
 
   cd ${HOME_DIR}/${repoName}
 
@@ -353,5 +348,5 @@ if [ ${synchProject} == true ]; then
   cd ${HOME_DIR}/${repoName}
   '
 else
-  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
+  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject}
 fi  
