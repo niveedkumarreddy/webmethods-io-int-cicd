@@ -67,7 +67,7 @@ debug=${@: -1}
 function echod(){
   if [ "$debug" == "debug" ]; then
     #echo $1
-    #set -x
+    set -x
   fi
 
 }
