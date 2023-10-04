@@ -67,12 +67,10 @@ debug=${@: -1}
 function echod(){
   if [ "$debug" == "debug" ]; then
     echo $1
-    #set -x
+    set -x
   fi
 }
-
-
-
+echo "0000"
 function exportSingleReferenceData () {
   LOCAL_DEV_URL=$1
   admin_user=$2
@@ -258,7 +256,7 @@ function exportAsset(){
   cd ${HOME_DIR}/${repoName}
 
 }  
-
+echo "11111"
 if [ ${synchProject} == true ]; then
   echod "Listing All Assets"
   echod $assetType
