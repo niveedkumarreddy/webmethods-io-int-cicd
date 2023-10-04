@@ -73,7 +73,7 @@ function echod(){
 
 }
 
-echod $@
+
 
 function exportSingleReferenceData () {
   LOCAL_DEV_URL=$1
@@ -186,7 +186,7 @@ function exportAsset(){
   synchProject=$8
   inlcudeAllReferenceData=$9
 
-  echod ${assetType}
+ 
     # Single assetType
     if [[ $assetType = referenceData* ]]; then
       PROJECT_ID_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}
