@@ -116,11 +116,12 @@ function exportSingleReferenceData () {
     cp ./${source_type}.csv dev.csv 
     cp ./${source_type}.csv qa.csv 
     cp ./${source_type}.csv prod.csv
-    cd -
+
   fi
   cd ${HOME_DIR}/${repoName}
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                4
+echo "1111"
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              4
 function exportReferenceData (){ 
   LOCAL_DEV_URL=$1
   admin_user=$2
@@ -159,17 +160,17 @@ function exportReferenceData (){
 
   if [ -z "$rdListExport" ];   then
             echo "No reference data defined for the project" 
-        else
-            for item in $(jq -r '.integration.serviceData.referenceData[] | .name' <<< "$rdListJson"); do
-              echod "Inside Ref Data Loop:" "$item"
-              rdName=${item}
-              exportSingleReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${rdName} ${assetType} ${HOME_DIR} ${projectID}
-            done
-          echo "Reference Data export Succeeded"
-        fi
+  else
+      for item in $(jq -r '.integration.serviceData.referenceData[] | .name' <<< "$rdListJson"); do
+        echod "Inside Ref Data Loop:" "$item"
+        rdName=${item}
+        exportSingleReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${rdName} ${assetType} ${HOME_DIR} ${projectID}
+      done
+    echo "Reference Data export Succeeded"
+  fi
   cd ${HOME_DIR}/${repoName}
 } 
-
+echo "33333"
 function exportAsset(){
 
   LOCAL_DEV_URL=$1
@@ -256,7 +257,7 @@ function exportAsset(){
   cd ${HOME_DIR}/${repoName}
 
 }  
-echo "11111"
+
 if [ ${synchProject} == true ]; then
   echod "Listing All Assets"
   echod $assetType
