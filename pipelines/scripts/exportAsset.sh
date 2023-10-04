@@ -70,7 +70,7 @@ function echod(){
     set -x
   fi
 }
-echo "0000"
+
 function exportSingleReferenceData () {
   LOCAL_DEV_URL=$1
   admin_user=$2
@@ -116,7 +116,7 @@ function exportSingleReferenceData () {
     cp ./${source_type}.csv dev.csv 
     cp ./${source_type}.csv qa.csv 
     cp ./${source_type}.csv prod.csv
-
+    cd -
   fi
   cd ${HOME_DIR}/${repoName}
 }
@@ -147,6 +147,7 @@ function exportReferenceData (){
       exit 1
   fi
 
+  echo "1111a"
   echod "ProjectID:" ${projectID}
 
   PROJECT_REF_DATA_LIST_URL=${LOCAL_DEV_URL}/integration/rest/external/v1/ut-flow/referencedata/${projectID}
@@ -168,9 +169,10 @@ function exportReferenceData (){
       done
     echo "Reference Data export Succeeded"
   fi
+  echo "1111b"
   cd ${HOME_DIR}/${repoName}
 } 
-echo "33333"
+echo "2222"
 function exportAsset(){
 
   LOCAL_DEV_URL=$1
