@@ -120,7 +120,7 @@ function exportSingleReferenceData () {
   fi
   cd ${HOME_DIR}/${repoName}
 }
-echo "1111"
+
 
 function exportReferenceData (){ 
   LOCAL_DEV_URL=$1
@@ -147,7 +147,7 @@ function exportReferenceData (){
       exit 1
   fi
 
-  echo "1111a"
+
   echod "ProjectID:" ${projectID}
 
   PROJECT_REF_DATA_LIST_URL=${LOCAL_DEV_URL}/integration/rest/external/v1/ut-flow/referencedata/${projectID}
@@ -169,10 +169,10 @@ function exportReferenceData (){
       done
     echo "Reference Data export Succeeded"
   fi
-  echo "1111b"
+
   cd ${HOME_DIR}/${repoName}
 } 
-echo "2222"
+
 function exportAsset(){
 
   LOCAL_DEV_URL=$1
