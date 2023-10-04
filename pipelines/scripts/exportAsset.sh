@@ -121,7 +121,7 @@ function exportSingleReferenceData () {
   cd ${HOME_DIR}/${repoName}
 }
 echo "1111"
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              4
+
 function exportReferenceData (){ 
   LOCAL_DEV_URL=$1
   admin_user=$2
