@@ -1,8 +1,8 @@
 #!/bin/bash
 #############################################################################
-#                                                                           #
-# exportAsset.sh : Export asset from a project                    #
-#                                                                           #
+##                                                                           #
+##exportAsset.sh : Export asset from a project                              #
+##                                                                          #
 #############################################################################
 
 LOCAL_DEV_URL=$1
