@@ -58,7 +58,7 @@ debug=${@: -1}
     fi
     
     if [ "$debug" == "debug" ]; then
-      echo "......Running in Debug mode ......"
+      echo "******* Running in Debug mode ******"
     fi
 
 
