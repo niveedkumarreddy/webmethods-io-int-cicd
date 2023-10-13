@@ -113,9 +113,9 @@ function exportSingleReferenceData () {
     metadataJson=$(echo "$metadataJson"| jq 'del(.columnNames, .dataRecords, .revisionData)')
     echo "$metadataJson" > metadata.json
     echo "$datajson" > ${source_type}.csv
-    cp ./${source_type}.csv dev.csv 
-    cp ./${source_type}.csv qa.csv 
-    cp ./${source_type}.csv prod.csv
+    cp -n ./${source_type}.csv dev.csv 
+    cp -n ./${source_type}.csv qa.csv 
+    cp -n ./${source_type}.csv prod.csv
     cd -
   fi
   cd ${HOME_DIR}/${repoName}
