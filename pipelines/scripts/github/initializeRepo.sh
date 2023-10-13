@@ -132,13 +132,13 @@ repoid=$(curl -u ${repo_user}:${PAT} https://api.github.com/repos/${repo_user}/$
 
 
           #Enable Actions
-           curl -u ${repo_user}:${PAT} -X PUT \
+           curl -u ${repo_user}:${PAT} -L -X PUT \
               -H "Accept: application/vnd.github+json" \
              -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/orgs/${repo_user}/actions/permissions/repositories/${repoid}
 
           #Enable workflow
-           curl -u ${repo_user}:${PAT} -X PUT \
+           curl -u ${repo_user}:${PAT} -L -X PUT \
               -H "Accept: application/vnd.github+json" \
              -H "X-GitHub-Api-Version: 2022-11-28" \
              https://api.github.com/repos/${repo_user}/${repoName}/actions/workflows/dev.yml/enable
