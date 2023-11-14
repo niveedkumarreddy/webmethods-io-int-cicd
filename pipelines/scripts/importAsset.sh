@@ -193,7 +193,7 @@ function importSingleRefData(){
         --header 'Content-Type: application/json' \
         --header 'Accept: application/json' \
         -u ${admin_user}:${admin_password})
-        rdExport=$(echo "$rdJson" | jq '.integration.serviceData.referenceData // empty')
+        rdExport=$(echo "$rdJson" | jq '.output // empty')
         if [ -z "$rdExport" ];   then
           echo "Refrence Data does not exists, Creating ....:" ${refDataName}
           POST_REF_DATA_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/referencedata

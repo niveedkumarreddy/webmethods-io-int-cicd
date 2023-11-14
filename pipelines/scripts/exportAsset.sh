@@ -91,12 +91,12 @@ function exportSingleReferenceData () {
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
   -u ${admin_user}:${admin_password})
-  rdExport=$(echo "$rdJson" | jq '.integration.serviceData.referenceData // empty')
+  rdExport=$(echo "$rdJson" | jq '.output // empty')
   if [ -z "$rdExport" ];   then
     echo "Empty reference data defined for the name:" ${rdName}
   else
-    columnDelimiter=$(echo "$rdJson" | jq -c -r '.integration.serviceData.referenceData.columnDelimiter')
-    rdExport=$(echo "$rdJson" | jq -c -r '.integration.serviceData.referenceData.dataRecords')
+    columnDelimiter=$(echo "$rdJson" | jq -c -r '.output.columnDelimiter')
+    rdExport=$(echo "$rdJson" | jq -c -r '.output.dataRecords')
     if [[ "$columnDelimiter" == "," ]]; then
       echod "COMMA"
       datajson=$(echo "$rdExport" | jq -c -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv')
@@ -109,7 +109,7 @@ function exportSingleReferenceData () {
     mkdir -p ${rdName}
     cd ${rdName}
     
-    metadataJson=$(echo "$rdJson" | jq -c -r '.integration.serviceData.referenceData')
+    metadataJson=$(echo "$rdJson" | jq -c -r '.output')
     metadataJson=$(echo "$metadataJson"| jq 'del(.columnNames, .dataRecords, .revisionData)')
     echo "$metadataJson" > metadata.json
     echo "$datajson" > ${source_type}.csv
@@ -156,13 +156,13 @@ function exportReferenceData (){
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
   -u ${admin_user}:${admin_password})
-
-  rdListExport=$(echo "$rdListJson" | jq -r -c '.integration.serviceData.referenceData[].name // empty')
+  
+  rdListExport=$(echo "$rdListJson" | jq -r -c '.output[].name // empty')
 
   if [ -z "$rdListExport" ];   then
             echo "No reference data defined for the project" 
   else
-      for item in $(jq -r '.integration.serviceData.referenceData[] | .name' <<< "$rdListJson"); do
+      for item in $(jq -r '.output[] | .name' <<< "$rdListJson"); do
         echod "Inside Ref Data Loop:" "$item"
         rdName=${item}
         exportSingleReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${rdName} ${assetType} ${HOME_DIR} ${projectID}
