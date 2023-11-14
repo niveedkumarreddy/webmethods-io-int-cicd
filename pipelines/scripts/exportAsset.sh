@@ -86,7 +86,7 @@ function exportSingleReferenceData () {
   cd ${HOME_DIR}/${repoName}
   mkdir -p ./assets/projectConfigs/referenceData
   cd ./assets/projectConfigs/referenceData
-  REF_DATA_URL=${LOCAL_DEV_URL}/integration/rest/external/v1/ut-flow/referencedata/${projectID}/${rdName}
+  REF_DATA_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/referencedata/${rdName}
   rdJson=$(curl --location --request GET ${REF_DATA_URL}  \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
@@ -150,7 +150,7 @@ function exportReferenceData (){
 
   echod "ProjectID:" ${projectID}
 
-  PROJECT_REF_DATA_LIST_URL=${LOCAL_DEV_URL}/integration/rest/external/v1/ut-flow/referencedata/${projectID}
+  PROJECT_REF_DATA_LIST_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/referencedata
 
   rdListJson=$(curl --location --request GET ${PROJECT_REF_DATA_LIST_URL}  \
   --header 'Content-Type: application/json' \
