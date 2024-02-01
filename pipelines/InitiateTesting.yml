@@ -47,6 +47,11 @@ steps:
       cd $(repoName)
     fi
     echo "##vso[task.setvariable variable=source_type]${source}"
+    cd ../self
+    pwd
+    ls -ltr
+    echo "##vso[task.setvariable variable=admin_user]`yq -e ".tenant.admin_username" configs/${source}.yml`"
+    
     echo $(System.DefaultWorkingDirectory)
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: 'Get Environment Tenant Details'
@@ -55,6 +60,7 @@ steps:
     cd ../$(repoName)
     pwd
     echo $(source_type)
+    echo $(admin_user)
     echo "newman run ./resources/test/wmio_test.json -e ./resources/test/environments/$(source_type).json --env-var "project=$(repoName)" --env-var "user=$(admin_user)" --env-var "password=$(admin_password)" --reporters cli,junit --reporter-junit-export $(System.DefaultWorkingDirectory)/$(source_type)/results/junitReport.xml
     ls -ltr $(System.DefaultWorkingDirectory)/$(source_type)/results/"    
 
