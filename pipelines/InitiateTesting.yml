@@ -13,6 +13,7 @@ trigger:
 
 variables:
 - group: github_group
+- group: webMethodsIO_group
 - name: repoPath
   value: $(gitOwner)/$(repoName)
 
@@ -54,10 +55,10 @@ steps:
     cd ../$(repoName)
     pwd
     echo $(source_type)
-    echo "newman run ./resources/test/wmio_test.json -e ./resources/test/environments/$(source_type).json --env-var "project=$(repoName)" --reporters cli,junit --reporter-junit-export $(System.DefaultWorkingDirectory)/$(source_type)/results/junitReport.xml
+    echo "newman run ./resources/test/wmio_test.json -e ./resources/test/environments/$(source_type).json --env-var "project=$(repoName)" --env-var "user=$(admin_user)" --env-var "password=$(admin_password)" --reporters cli,junit --reporter-junit-export $(System.DefaultWorkingDirectory)/$(source_type)/results/junitReport.xml
     ls -ltr $(System.DefaultWorkingDirectory)/$(source_type)/results/"    
 
-    newman run ./resources/test/wmio_test.json -e ./resources/test/environments/$(source_type).json --env-var "project=$(repoName)" --reporters cli,junit --reporter-junit-export $(System.DefaultWorkingDirectory)/$(source_type)/results/junitReport.xml
+    newman run ./resources/test/wmio_test.json -e ./resources/test/environments/$(source_type).json --env-var "project=$(repoName)" --env-var "user=$(admin_user)" --env-var "password=$(admin_password)" --reporters cli,junit --reporter-junit-export $(System.DefaultWorkingDirectory)/$(source_type)/results/junitReport.xml
     ls -ltr $(System.DefaultWorkingDirectory)/$(source_type)/results/
   displayName: 'Run newman'
 - task: PublishTestResults@2
