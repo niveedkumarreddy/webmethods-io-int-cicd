@@ -60,6 +60,7 @@ function echod(){
   
   if [ "$debug" == "debug" ]; then
     echo $1
+    set -x
   fi
 
 }
@@ -68,7 +69,9 @@ function echod(){
 
 PROJECT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/push
 echo "Publishing project ... "
-json='{ "name": "'${repoName}'", "description": "Dummy Synch", "destination_tenant_detail": { "username": "'${destUser}'","password": "'${admin_password}'", "url": "'${destEnv}'"},"flows": ["'${assetID}'"]}'
+json='{ "name": "'${repoName}'", "description": "Dummy Synch", "destination_tenant_detail": { "username": "'${destUser}'","password": "'${admin_password}'", "url": "https://'${destEnv}':'${destPort}'"},"flows": ["'${assetID}'"]}'
+
+echod ${json}
 
 publishResponse=$(curl --location --request POST ${PROJECT_URL} \
 --header 'Content-Type: application/json' \
@@ -95,6 +98,6 @@ echo ${deployResponse}
 deployCreated=$(echo "$deployResponse" | jq  '.output.message // empty')
 
 echo ${deployCreated}
-
+set +x
 
 
