@@ -63,7 +63,6 @@ function echod(){
 
 PROJECT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/push
 echo "Publishing project ... "
-//json='{ "name": "'${repoName}'", "description": "Created by Automated CI for feature branch"}'
 json='{ "name": "'${repoName}'", "description": "Dummy Synch", "destination_tenant_detail": { "username": "'${destUser}'","password": "'${admin_password}'", "url": "'${destEnv}'"},"flows": ["'${assetID}'"]}'
 
 publishResponse=$(curl --location --request POST ${PROJECT_URL} \
