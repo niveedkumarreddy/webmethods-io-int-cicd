@@ -13,6 +13,7 @@ repoName=$4
 destEnv=$5
 destPort=$6
 destUser=$7
+assetID=$8
 debug=${@: -1}
 
     if [ -z "$LOCAL_DEV_URL" ]; then
@@ -46,6 +47,10 @@ debug=${@: -1}
       echo "Missing template parameter destEnv"
       exit 1
     fi
+    if [ -z "$assetID" ]; then
+      echo "Missing template parameter destEnv"
+      exit 1
+    fi
  if [ "$debug" == "debug" ]; then
     echo "......Running in Debug mode ......"
   fi
@@ -70,17 +75,22 @@ publishResponse=$(curl --location --request POST ${PROJECT_URL} \
 --header 'Accept: application/json' \
 --data-raw "$json" -u ${admin_user}:${admin_password})
 
+echo ${publishResponse}
+
 versioncreated=$(echo "$publishResponse" | jq  '.output.version // empty')
 
 LOCAL_DEV_URL=https://${destEnv}:${destPort}
 PROJECT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/deploy
+
 json='{ "version": "'${versioncreated}'"}'
 
 echo "Deploying project ... "
 deployResponse=$(curl --location --request POST ${PROJECT_URL} \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
---data-raw "$json" -u ${admin_user}:${admin_password})
+--data-raw "$json" -u ${destUser}:${admin_password})
+
+echo ${deployResponse}
 
 deployCreated=$(echo "$deployResponse" | jq  '.output.message // empty')
 
