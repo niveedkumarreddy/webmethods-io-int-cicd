@@ -71,16 +71,22 @@ PROJECT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/push
 echo "Publishing project ... "
 json='{ "name": "'${repoName}'", "description": "Dummy Synch", "destination_tenant_detail": { "username": "'${destUser}'","password": "'${admin_password}'", "url": "https://'${destEnv}':'${destPort}'"},"flows": ["'${assetID}'"]}'
 
-echod ${json}
 
 publishResponse=$(curl --location --request POST ${PROJECT_URL} \
 --header 'Content-Type: application/json' \
 --header 'Accept: application/json' \
 --data-raw "$json" -u ${admin_user}:${admin_password})
 
-echo ${publishResponse}
+
 
 versioncreated=$(echo "$publishResponse" | jq  '.output.version // empty')
+
+if [ -z "$versioncreated" ];   then
+    echo "Publish failed:" ${publishResponse}
+    exit 1
+else
+    echo "Publish Succeeded:" ${publishResponse}
+fi
 
 LOCAL_DEV_URL=https://${destEnv}:${destPort}
 PROJECT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/deploy
@@ -93,11 +99,17 @@ deployResponse=$(curl --location --request POST ${PROJECT_URL} \
 --header 'Accept: application/json' \
 --data-raw "$json" -u ${destUser}:${admin_password})
 
-echo ${deployResponse}
+
 
 deployCreated=$(echo "$deployResponse" | jq  '.output.message // empty')
 
-echo ${deployCreated}
+
+if [ -z "$versioncreated" ];   then
+    echo "Deploy failed:" ${deployResponse}
+    exit 1
+else
+    echo "Deploy Succeeded:" ${deployResponse}
+fi
 set +x
 
 
