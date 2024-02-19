@@ -34,8 +34,8 @@ debug=${@: -1}
       echo "Missing template parameter repoName"
       exit 1
     fi
-    if [ -z "$asstType" ]; then
-      echo "Missing template parameter asstType"
+    if [ -z "$assetType" ]; then
+      echo "Missing template parameter assetType"
       exit 1
     fi    
     if [ -z "$deleteProject" ]; then
