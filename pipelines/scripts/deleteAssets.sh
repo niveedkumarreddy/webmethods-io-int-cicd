@@ -67,7 +67,7 @@ function deleteAsset(){
   admin_password=$3
   repoName=$4
   assetID=$5
-  asstType=$6
+  assetType=$6
   
 
  
@@ -78,7 +78,7 @@ function deleteAsset(){
   else
     if [[ $assetType = flowservice* ]]; then
       DELETE_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flows/${assetID}
-      echo "Flowservice Delete:" ${DELETE_URL}
+      echod "Flowservice Delete:" ${DELETE_URL}
     fi
   fi
 
@@ -87,15 +87,15 @@ function deleteAsset(){
   deleteJson=$(curl  --location --request DELETE ${DELETE_URL} \
       --header 'Content-Type: application/json' \
       --header 'Accept: application/json' \
-      -u ${admin_user}:${admin_password})
-
-  echo ${deleteJson}
+      -u ${admin_user}:${admin_password} | jq -r '.output.message // empty')
+  
+  echod ${deleteJson}
 
 }
 
 
 if [ ${deleteProject} == true ]; then
-  echod "Listing All Assets"
+  echo "Listing All Assets"
 
   PROJECT_LIST_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/assets
   echo "Listing assets in project ... "
@@ -105,7 +105,7 @@ if [ ${deleteProject} == true ]; then
   --header 'Accept: application/json' \
   -u ${admin_user}:${admin_password})
 
-  echo ${projectListJson}
+  echod ${projectListJson}
 
 
  # Deleting Workflows
@@ -123,7 +123,7 @@ if [ ${deleteProject} == true ]; then
   --header 'Accept: application/json' \
   -u ${admin_user}:${admin_password})
 
-  echo ${projectListJson}
+  echod ${projectListJson}
 
   # Deleting Flows
   for item in $(jq  -c -r '.output.flows[]' <<< "$projectListJson"); do
