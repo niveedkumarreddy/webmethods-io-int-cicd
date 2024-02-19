@@ -11,7 +11,7 @@ admin_user=$2
 admin_password=$3
 repoName=$4
 assetID=$5
-asstType=$6
+assetType=$6
 deleteProject=$7
 debug=${@: -1}
 
