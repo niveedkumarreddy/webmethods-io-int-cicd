@@ -105,30 +105,41 @@ function importAsset() {
         importSingleRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
     fi
   else
-    if [[ $assetType = workflow* ]]; then
-        FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/workflow-import
-        cd ${HOME_DIR}/${repoName}/assets/workflows
-        echod "Workflow Import:" ${FLOW_URL}
+    if [[ $assetType = rest_api* ]]; then
+        IMPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/project-import
+        cd ${HOME_DIR}/${repoName}/assets/rest_api
+        echod "REST API Import:" ${IMPORT_URL}
         echod $(ls -ltr)
     else
-      if [[ $assetType = flowservice* ]]; then
-        FLOW_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flow-import
-        cd ${HOME_DIR}/${repoName}/assets/flowservices
-        echod "Flowservice Import:" ${FLOW_URL}
-        echod $(ls -ltr)
+      if [[ $assetType = workflow* ]]; then
+          IMPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/workflow-import
+          cd ${HOME_DIR}/${repoName}/assets/workflows
+          echod "Workflow Import:" ${IMPORT_URL}
+          echod $(ls -ltr)
+      else
+        if [[ $assetType = flowservice* ]]; then
+          IMPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flow-import
+          cd ${HOME_DIR}/${repoName}/assets/flowservices
+          echod "Flowservice Import:" ${IMPORT_URL}
+          echod $(ls -ltr)
+        fi
       fi
-    fi    
-        echod ${FLOW_URL}
+     fi     
+        echod ${IMPORT_URL}
         echod ${PWD}
     FILE=./${assetID}.zip
-    formKey="recipe=@"${FILE}
+    if [[ $assetType = rest_api* ]]; then
+      formKey="project=@"${FILE}
+    else
+      formKey="recipe=@"${FILE}
+    fi
     overwriteKey="overwrite=true"
     echod ${formKey}
     if [ -f "$FILE" ]; then
      ####### Check if asset with this name exist
 
         echo "$FILE exists. Importing ..."
-        importedName=$(curl --location --request POST ${FLOW_URL} \
+        importedName=$(curl --location --request POST ${IMPORT_URL} \
                     --header 'Content-Type: multipart/form-data' \
                     --header 'Accept: application/json' \
                     --form ${formKey} --form ${overwriteKey} -u ${admin_user}:${admin_password})    
