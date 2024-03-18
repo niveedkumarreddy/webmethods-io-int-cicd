@@ -166,7 +166,7 @@ function importAsset() {
  cd ${HOME_DIR}/${repoName}
 }
 
-function function importSingleProjectParameters(){
+function importSingleProjectParameters(){
   LOCAL_DEV_URL=$1
   admin_user=$2
   admin_password=$3
