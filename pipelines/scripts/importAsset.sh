@@ -166,6 +166,80 @@ function importAsset() {
  cd ${HOME_DIR}/${repoName}
 }
 
+function function importSingleProjectParameters(){
+  LOCAL_DEV_URL=$1
+  admin_user=$2
+  admin_password=$3
+  repoName=$4
+  assetID=$5
+  assetType=$6
+  HOME_DIR=$7
+  synchProject=$8
+  source_type=$9
+  projectID=${10}
+  d=$assetID
+
+  cd ${HOME_DIR}/${repoName}
+  #Importing Reference Data
+  DIR="./assets/projectConfigs/referenceData/"
+  if [ -d "$DIR" ]; then
+    echo "Project referenceData needs to be synched"
+    echod "ProjectID:" ${projectID}
+    cd ./assets/projectConfigs/referenceData/
+    if [ -d "$d" ]; then
+      parameterUID="$d"
+      echod "$d"
+      cd "$d"
+      PROJECT_PARAM_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params/${parameterUID}
+      echod ${PROJECT_PARAM_GET_URL}
+      ppListJson=$(curl --location --request GET ${PROJECT_PARAM_GET_URL}  \
+      --header 'Content-Type: application/json' \
+      --header 'Accept: application/json' \
+      -u ${admin_user}:${admin_password})
+      ppExport=$(echo "$ppListJson" | jq '.output.uid // empty')
+      echod ${ppExport}
+      if [ -z "$ppExport" ];   then
+        echo "Project parameters does not exists, creating ..:"
+        PROJECT_PARAM_CREATE_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params
+        echod ${PROJECT_PARAM_CREATE_URL}
+        parameterJSON="$(cat *_${source_type}.json)"
+        echod "${parameterJSON}"
+        echod "curl --location --request POST ${PROJECT_PARAM_CREATE_URL}  \
+        --header 'Content-Type: application/json' \
+        --header 'Accept: application/json' \
+        --data-raw "$parameterJSON" -u ${admin_user}:${admin_password})"
+        
+        ppCreateJson=$(curl --location --request POST ${PROJECT_PARAM_CREATE_URL}  \
+        --header 'Content-Type: application/json' \
+        --header 'Accept: application/json' \
+        --data-raw "$parameterJSON" -u ${admin_user}:${admin_password})
+        ppCreatedJson=$(echo "$ppCreateJson" | jq '.output.uid // empty')
+        if [ -z "$ppCreatedJson" ];   then
+            echo "Project Paraters Creation failed:" ${ppCreateJson}
+        else
+            echo "Project Paraters Creation Succeeded, UID:" ${ppCreatedJson}
+        fi
+      else
+        echo "Project parameters does exists, updating ..:"
+        PROJECT_PARAM_UPDATE_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params/${parameterUID}
+        echod ${PROJECT_PARAM_UPDATE_URL}
+        parameterJSON=`jq '.' ./*_${source_type}.json`
+        echod ${parameterJSON}
+        ppUpdateJson=$(curl --location --request POST ${PROJECT_PARAM_UPDATE_URL}  \
+        --header 'Content-Type: application/json' \
+        --header 'Accept: application/json' \
+        -d ${parameterJSON} -u ${admin_user}:${admin_password})
+        ppUpdatedJson=$(echo "$ppUpdateJson" | jq '.output.uid // empty')
+        if [ -z "$ppUpdatedJson" ];   then
+            echo "Project Paraters Creation failed:" ${ppUpdateJson}
+        else
+            echo "Project Paraters Creation Succeeded, UID:" ${ppUpdatedJson}
+        fi       
+      fi
+  else 
+      echo "No Project Parameters to import."
+  fi 
+}
 
 function importSingleRefData(){
   LOCAL_DEV_URL=$1
@@ -291,7 +365,10 @@ function projectParameters(){
   if [ -d "$DIR" ]; then
       echo "Project Parameters needs to be synched"
       cd ./assets/projectConfigs/parameters/
-      for filename in ./*.json; do
+      for d in * ; do
+        importSingleProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${d} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}-
+      done
+        :' for filename in ./*/*.json; do
           parameterUID=${filename##*/}
           parameterUID=${parameterUID%.*}
           echod ${parameterUID}
@@ -342,7 +419,7 @@ function projectParameters(){
                   echo "Project Paraters Creation Succeeded, UID:" ${ppUpdatedJson}
               fi       
           fi
-      done
+      done '
   else 
       echo "No Project Parameters to import."
   fi
