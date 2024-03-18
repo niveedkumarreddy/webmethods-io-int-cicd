@@ -202,17 +202,17 @@ function importSingleProjectParameters(){
         echo "Project parameters does not exists, creating ..:"
         PROJECT_PARAM_CREATE_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params
         echod ${PROJECT_PARAM_CREATE_URL}
-        parameterJSON="$(cat *_${source_type}.json)"
+        parameterJSON=$(cat *_${source_type}.json)
         echod "${parameterJSON}"
         echod "curl --location --request POST ${PROJECT_PARAM_CREATE_URL}  \
         --header 'Content-Type: application/json' \
         --header 'Accept: application/json' \
-        --data-raw @./*_${source_type}.json -u ${admin_user}:${admin_password})"
+        --data-raw "$parameterJSON" -u ${admin_user}:${admin_password})"
         
         ppCreateJson=$(curl --location --request POST ${PROJECT_PARAM_CREATE_URL}  \
         --header 'Content-Type: application/json' \
         --header 'Accept: application/json' \
-        --data-raw @./*_${source_type}.json -u ${admin_user}:${admin_password})
+        --data-raw "$parameterJSON" -u ${admin_user}:${admin_password})
         ppCreatedJson=$(echo "$ppCreateJson" | jq '.output.uid // empty')
         if [ -z "$ppCreatedJson" ];   then
             echo "Project Paraters Creation failed:" ${ppCreateJson}
