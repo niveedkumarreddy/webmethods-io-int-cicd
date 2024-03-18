@@ -342,7 +342,7 @@ if [ ${synchProject} == true ]; then
 
 
   # Exporting Project Parameters
-  : ' PP Export
+  #PP Export
   PROJECT_PARAM_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params
 
   ppListJson=$(curl --location --request GET ${PROJECT_PARAM_GET_URL}  \
@@ -360,13 +360,20 @@ if [ ${synchProject} == true ]; then
             for item in $(jq  -c -r '.output[]' <<< "$ppListJson"); do
               echod "Inside Parameters Loop"
               parameterUID=$(jq -r '.uid' <<< "$item")
+              mkdir -p ./${parameterUID}
+              cd ././${parameterUID}
               data=$(jq -r '.param' <<< "$item")
               echo ${data} > ./${parameterUID}.json
+              echo ${data} > ./${parameterUID}_${source_type}.json
+              cp -n ./${parameterUID}_${source_type}.json ${parameterUID}_dev.json 
+              cp -n ./${parameterUID}_${source_type}.json ${parameterUID}_qa.json 
+              cp -n ./${parameterUID}_${source_type}.json ${parameterUID}_prod.json
+              cd ..
             done
           echo "Project Parameters export Succeeded"
         fi
   cd ${HOME_DIR}/${repoName}
-  '
+  
 else
   exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
 fi  
