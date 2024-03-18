@@ -288,7 +288,7 @@ if [ ${synchProject} == true ]; then
     --header 'Accept: application/json' \
     -u ${admin_user}:${admin_password})
   
-  # Exporing APIs
+  # Exporting APIs
   for item in $(jq  -c -r '.output.rest_api[]' <<< "$projectListJson"); do
     echod "Inside REST_API Loop"
     assetID=$item
@@ -297,7 +297,7 @@ if [ ${synchProject} == true ]; then
     exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
   done
 
-  # Exporing Workflows
+  # Exporting Workflows
   for item in $(jq  -c -r '.output.workflows[]' <<< "$projectListJson"); do
     echod "Inside Workflow Loop"
     assetID=$item
@@ -361,13 +361,13 @@ if [ ${synchProject} == true ]; then
               echod "Inside Parameters Loop"
               parameterUID=$(jq -r '.uid' <<< "$item")
               mkdir -p ./${parameterUID}
-              cd ././${parameterUID}
+              cd ./${parameterUID}
               data=$(jq -r '.param' <<< "$item")
-              echo ${data} > ./${parameterUID}.json
-              echo ${data} > ./${parameterUID}_${source_type}.json
-              cp -n ./${parameterUID}_${source_type}.json ${parameterUID}_dev.json 
-              cp -n ./${parameterUID}_${source_type}.json ${parameterUID}_qa.json 
-              cp -n ./${parameterUID}_${source_type}.json ${parameterUID}_prod.json
+              key=$(jq -r '.param.key' <<< "$item")
+              echo ${data} > ./${key}_${source_type}.json
+              cp -n ./${key}_${source_type}.json ${key}_dev.json 
+              cp -n ./${key}_${source_type}.json ${key}_qa.json 
+              cp -n ./${key}_${source_type}.json ${key}_prod.json
               cd ..
             done
           echo "Project Parameters export Succeeded"
