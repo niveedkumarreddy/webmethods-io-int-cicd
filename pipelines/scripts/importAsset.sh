@@ -201,8 +201,8 @@ function importSingleProjectParameters(){
       if [ -z "$ppExport" ];   then
         echo "Project parameters does not exists, creating ..:"
         PROJECT_PARAM_CREATE_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params
-        echod "URL: "${PROJECT_PARAM_CREATE_URL}
-        parameterJSON=$(jq -c ./*_${source_type}.json)
+        echod ${PROJECT_PARAM_CREATE_URL}
+        parameterJSON=`jq -c '.' ./*_${source_type}.json`
 
         echod "Param JSON: "${parameterJSON}
         echod "curl --location --request POST ${PROJECT_PARAM_CREATE_URL}  \
@@ -224,17 +224,17 @@ function importSingleProjectParameters(){
         echo "Project parameters does exists, updating ..:"
         PROJECT_PARAM_UPDATE_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params/${parameterUID}
         echod ${PROJECT_PARAM_UPDATE_URL}
-        parameterJSON=`jq '.' ./*_${source_type}.json`
-        echod ${parameterJSON}
+        parameterJSON=`jq -c '.' ./*_${source_type}.json`
+        echod "Param: "${parameterJSON}
         ppUpdateJson=$(curl --location --request POST ${PROJECT_PARAM_UPDATE_URL}  \
         --header 'Content-Type: application/json' \
         --header 'Accept: application/json' \
         -d ${parameterJSON} -u ${admin_user}:${admin_password})
         ppUpdatedJson=$(echo "$ppUpdateJson" | jq '.output.uid // empty')
         if [ -z "$ppUpdatedJson" ];   then
-            echo "Project Paraters Creation failed:" ${ppUpdateJson}
+            echo "Project Paraters Update failed:" ${ppUpdateJson}
         else
-            echo "Project Paraters Creation Succeeded, UID:" ${ppUpdatedJson}
+            echo "Project Paraters Update Succeeded, UID:" ${ppUpdatedJson}
         fi       
       fi
     else
