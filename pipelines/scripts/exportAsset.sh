@@ -320,6 +320,55 @@ function exportProjectParameters(){
                 cd ./${parameterUID}
                 data=$(jq -r '.param' <<< "$item")
                 key=$(jq -r '.param.key' <<< "$item")
+                echo "{"uid":"${parameterUID}"}" > ./metadata.json
+                echo ${data} > ./${key}_${source_type}.json
+                cp -n ./${key}_${source_type}.json ${key}_dev.json 
+                cp -n ./${key}_${source_type}.json ${key}_qa.json 
+                cp -n ./${key}_${source_type}.json ${key}_prod.json
+                cd ..
+              done
+            echo "Project Parameters export Succeeded"
+          fi
+    cd ${HOME_DIR}/${repoName}
+}  
+
+function exportProjectParameters(){
+
+    LOCAL_DEV_URL=$1
+    admin_user=$2
+    admin_password=$3
+    repoName=$4
+    assetID=$5
+    assetType=$6
+    HOME_DIR=$7
+    synchProject=$8
+    inlcudeAllReferenceData=$9
+
+    if [ ${synchProject} == true ]; then
+      PROJECT_PARAM_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params
+    else
+      PROJECT_PARAM_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params/${assetID}
+    fi
+
+    ppListJson=$(curl --location --request GET ${PROJECT_PARAM_GET_URL}  \
+    --header 'Content-Type: application/json' \
+    --header 'Accept: application/json' \
+    -u ${admin_user}:${admin_password})
+
+    ppListExport=$(echo "$ppListJson" | jq '. // empty')
+
+    if [ -z "$ppListExport" ];   then
+              echo "No Project Parameters retreived:" ${ppListJson}
+          else
+              mkdir -p ./assets/projectConfigs/parameters
+              cd ./assets/projectConfigs/parameters
+              for item in $(jq  -c -r '.output[]' <<< "$ppListJson"); do
+                echod "Inside Parameters Loop"
+                parameterUID=$(jq -r '.uid' <<< "$item")
+                mkdir -p ./${parameterUID}
+                cd ./${parameterUID}
+                data=$(jq -r '.param' <<< "$item")
+                key=$(jq -r '.param.key' <<< "$item")
                 echo ${data} > ./${key}_${source_type}.json
                 cp -n ./${key}_${source_type}.json ${key}_dev.json 
                 cp -n ./${key}_${source_type}.json ${key}_qa.json 
