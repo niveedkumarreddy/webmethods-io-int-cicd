@@ -226,7 +226,7 @@ function importSingleProjectParameters(){
         echod ${PROJECT_PARAM_UPDATE_URL}
         parameterJSON=`jq -c '.' ./*_${source_type}.json`
         echod "Param: "${parameterJSON}
-        ppUpdateJson=$(curl --location --request POST ${PROJECT_PARAM_UPDATE_URL}  \
+        ppUpdateJson=$(curl --location --request PUT ${PROJECT_PARAM_UPDATE_URL}  \
         --header 'Content-Type: application/json' \
         --header 'Accept: application/json' \
         -d ${parameterJSON} -u ${admin_user}:${admin_password})
