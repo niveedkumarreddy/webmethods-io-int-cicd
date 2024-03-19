@@ -321,6 +321,7 @@ function exportProjectParameters(){
                 data=$(jq -r '.param' <<< "$item")
                 key=$(jq -r '.param.key' <<< "$item")
                 echo "{"uid":"${parameterUID}"}" > ./metadata.json
+
                 echo ${data} > ./${key}_${source_type}.json
                 cp -n ./${key}_${source_type}.json ${key}_dev.json 
                 cp -n ./${key}_${source_type}.json ${key}_qa.json 
@@ -369,6 +370,7 @@ function exportProjectParameters(){
                 cd ./${parameterUID}
                 data=$(jq -r '.param' <<< "$item")
                 key=$(jq -r '.param.key' <<< "$item")
+                echo "{"uid":"${parameterUID}"}" > ./metadata.json  
                 echo ${data} > ./${key}_${source_type}.json
                 cp -n ./${key}_${source_type}.json ${key}_dev.json 
                 cp -n ./${key}_${source_type}.json ${key}_qa.json 
@@ -444,7 +446,6 @@ if [ ${synchProject} == true ]; then
   # Exporting Project Parameters
   #PP Export
   assetType=project_parameters
-  #exportProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${HOME_DIR} ${synchProject} true
   exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
   
 else
