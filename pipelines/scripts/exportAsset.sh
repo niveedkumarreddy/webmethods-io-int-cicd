@@ -219,6 +219,7 @@ function exportAsset(){
         if [[ $assetType = project_parameter* ]]; then
           echod $assetType
           exportProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+          return
         else
           if [[ $assetType = workflow* ]]; then
             echod $assetType
@@ -251,7 +252,6 @@ function exportAsset(){
         --header 'Accept: application/json' \
         -u ${admin_user}:${admin_password})
       fi
-
       downloadURL=$(echo "$linkJson" | jq -r '.output.download_link')
       
       regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
