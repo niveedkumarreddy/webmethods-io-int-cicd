@@ -202,7 +202,8 @@ function importSingleProjectParameters(){
         echo "Project parameters does not exists, creating ..:"
         PROJECT_PARAM_CREATE_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params
         echod ${PROJECT_PARAM_CREATE_URL}
-        parameterJSON=$(cat *_${source_type}.json)
+        parameterJSON=$(cat *_${source_type}.json | tr -s '\n' '')
+
         echod "${parameterJSON}"
         echod "curl --location --request POST ${PROJECT_PARAM_CREATE_URL}  \
         --header 'Content-Type: application/json' \
