@@ -313,21 +313,35 @@ function exportProjectParameters(){
           else
               mkdir -p ./assets/projectConfigs/parameters
               cd ./assets/projectConfigs/parameters
-              for item in $(jq  -c -r '.output[]' <<< "$ppListJson"); do
-                echod "Inside Parameters Loop"
-                parameterUID=$(jq -r '.uid' <<< "$item")
-                mkdir -p ./${parameterUID}
-                cd ./${parameterUID}
-                data=$(jq -r '.param' <<< "$item")
-                key=$(jq -r '.param.key' <<< "$item")
-                metadataJson='{ "uid":"'${parameterUID}'" }'
-                echo ${metadataJson} > ./metadata.json
-                echo ${data} > ./${key}_${source_type}.json
-                cp -n ./${key}_${source_type}.json ${key}_dev.json 
-                cp -n ./${key}_${source_type}.json ${key}_qa.json 
-                cp -n ./${key}_${source_type}.json ${key}_prod.json
-                cd ..
-              done
+              if [ ${synchProject} == true ]; then
+                parameterUID=$(jq -r '.output.uid' <<< "$item")
+                  mkdir -p ./${parameterUID}
+                  cd ./${parameterUID}
+                  data=$(jq -r '.output.param' <<< "$item")
+                  key=$(jq -r '.output.param.key' <<< "$item")
+                  metadataJson='{ "uid":"'${parameterUID}'" }'
+                  echo ${metadataJson} > ./metadata.json
+                  echo ${data} > ./${key}_${source_type}.json
+                  cp -n ./${key}_${source_type}.json ${key}_dev.json 
+                  cp -n ./${key}_${source_type}.json ${key}_qa.json 
+                  cp -n ./${key}_${source_type}.json ${key}_prod.json
+              else 
+                for item in $(jq  -c -r '.output[]' <<< "$ppListJson"); do
+                  echod "Inside Parameters Loop"
+                  parameterUID=$(jq -r '.uid' <<< "$item")
+                  mkdir -p ./${parameterUID}
+                  cd ./${parameterUID}
+                  data=$(jq -r '.param' <<< "$item")
+                  key=$(jq -r '.param.key' <<< "$item")
+                  metadataJson='{ "uid":"'${parameterUID}'" }'
+                  echo ${metadataJson} > ./metadata.json
+                  echo ${data} > ./${key}_${source_type}.json
+                  cp -n ./${key}_${source_type}.json ${key}_dev.json 
+                  cp -n ./${key}_${source_type}.json ${key}_qa.json 
+                  cp -n ./${key}_${source_type}.json ${key}_prod.json
+                  cd ..
+                done
+              fi
             echo "Project Parameters export Succeeded"
           fi
     cd ${HOME_DIR}/${repoName}
