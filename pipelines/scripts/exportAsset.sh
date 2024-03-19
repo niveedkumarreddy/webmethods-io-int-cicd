@@ -313,7 +313,7 @@ function exportProjectParameters(){
           else
               mkdir -p ./assets/projectConfigs/parameters
               cd ./assets/projectConfigs/parameters
-              if [ ${synchProject} == true ]; then
+              if [ ${synchProject} != true ]; then
                 parameterUID=$(jq -r '.output.uid' <<< "$item")
                   mkdir -p ./${parameterUID}
                   cd ./${parameterUID}
