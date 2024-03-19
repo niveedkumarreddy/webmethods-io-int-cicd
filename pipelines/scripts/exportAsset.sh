@@ -314,11 +314,11 @@ function exportProjectParameters(){
               mkdir -p ./assets/projectConfigs/parameters
               cd ./assets/projectConfigs/parameters
               if [ ${synchProject} != true ]; then
-                parameterUID=$(jq -r '.output.uid' <<< "$item")
+                parameterUID=$(jq -r '.output.uid' <<< "$ppListJson")
                   mkdir -p ./${parameterUID}
                   cd ./${parameterUID}
-                  data=$(jq -r '.output.param' <<< "$item")
-                  key=$(jq -r '.output.param.key' <<< "$item")
+                  data=$(jq -r '.output.param' <<< "$ppListJson")
+                  key=$(jq -r '.output.param.key' <<< "$ppListJson")
                   metadataJson='{ "uid":"'${parameterUID}'" }'
                   echo ${metadataJson} > ./metadata.json
                   echo ${data} > ./${key}_${source_type}.json
