@@ -216,7 +216,7 @@ function exportAsset(){
           echod "Rest_API Export:" ${EXPORT_URL} "with JSON: "${rest_api_json}
           echod $(ls -ltr)
       else
-        if [[ $assetType = project_parameters* ]]; then
+        if [[ $assetType = project_parameter* ]]; then
           echod $assetType
           exportProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
         else
@@ -397,7 +397,7 @@ if [ ${synchProject} == true ]; then
   exportReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
   # Exporting Project Parameters
   #PP Export
-  assetType=project_parameters
+  assetType=project_parameter
   exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
   
 else
