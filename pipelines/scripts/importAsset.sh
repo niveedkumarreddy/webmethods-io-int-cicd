@@ -196,6 +196,8 @@ function importSingleProjectParameters(){
       parameterUID="$d"
       echod "$d"
       cd "$d"
+      pwd
+      ls -ltr
       parameterUID=`jq -r '.uid' ./metadata.json | tr -d '\n\t'`
       echod "Picked from Metadata: "$parameterUID
 
