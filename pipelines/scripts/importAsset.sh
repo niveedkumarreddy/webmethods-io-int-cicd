@@ -194,7 +194,7 @@ function importSingleProjectParameters(){
     cd ./assets/projectConfigs/parameters/
     if [ -d "$d" ]; then
       parameterUID="$d"
-      parameterUID=`jq -r '.uid | gsub("[\\n\\t]"; "")' ./${assetID}/metadata.json`
+      parameterUID=`jq -r '.uid | gsub("[\\n\\t]"; "")' ./$assetID/metadata.json`
       echod "Picked from Metadata: "$parameterUID
       echod "$d"
       cd "$d"
