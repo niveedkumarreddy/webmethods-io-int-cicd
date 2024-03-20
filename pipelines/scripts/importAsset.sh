@@ -194,10 +194,11 @@ function importSingleProjectParameters(){
     cd ./assets/projectConfigs/parameters/
     if [ -d "$d" ]; then
       parameterUID="$d"
-      parameterUID=`jq -r '.uid | gsub("[\\n\\t]"; "")' ./$assetID/metadata.json`
-      echod "Picked from Metadata: "$parameterUID
       echod "$d"
       cd "$d"
+      parameterUID=`jq -r '.uid' ./metadata.json | tr -d '\n\t'`
+      echod "Picked from Metadata: "$parameterUID
+
       PROJECT_PARAM_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params/${parameterUID}
       echod ${PROJECT_PARAM_GET_URL}
       ppListJson=$(curl --location --request GET ${PROJECT_PARAM_GET_URL}  \
