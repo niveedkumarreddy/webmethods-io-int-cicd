@@ -119,7 +119,7 @@ function importAsset() {
       else
         if [[ $assetType = project_parameter* ]]; then
           echod "Project Parameter Import:" ${assetID}
-          importSingleProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${d} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
+          importSingleProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
           return
         else
           if [[ $assetType = flowservice* ]]; then
