@@ -193,11 +193,12 @@ function importSingleProjectParameters(){
     echod "ProjectID:" ${projectID}
     cd ./assets/projectConfigs/parameters/
     if [ -d "$d" ]; then
-      parameterUID="$d"
       echod "$d"
       cd "$d"
-      pwd
-      ls -ltr
+    if [ ! -f ./metadata.json ]; then
+        echo "Metadata not found!"
+        exit 1
+    fi
       parameterUID=`jq -r '.uid' ./metadata.json | tr -d '\n\t'`
       echod "Picked from Metadata: "$parameterUID
 
