@@ -117,11 +117,17 @@ function importAsset() {
           echod "Workflow Import:" ${IMPORT_URL}
           echod $(ls -ltr)
       else
-        if [[ $assetType = flowservice* ]]; then
-          IMPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flow-import
-          cd ${HOME_DIR}/${repoName}/assets/flowservices
-          echod "Flowservice Import:" ${IMPORT_URL}
-          echod $(ls -ltr)
+        if [[ $assetType = project_parameter* ]]; then
+          echod "Project Parameter Import:" ${assetID}
+          importSingleProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${d} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
+          return
+        else
+          if [[ $assetType = flowservice* ]]; then
+            IMPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flow-import
+            cd ${HOME_DIR}/${repoName}/assets/flowservices
+            echod "Flowservice Import:" ${IMPORT_URL}
+            echod $(ls -ltr)
+          fi
         fi
       fi
      fi     
@@ -188,6 +194,8 @@ function importSingleProjectParameters(){
     cd ./assets/projectConfigs/parameters/
     if [ -d "$d" ]; then
       parameterUID="$d"
+      parameterUID=`jq -c '.uid' ./${assetID}/metadata.json`
+      echod "Picked from Metadata: "$parameterUID
       echod "$d"
       cd "$d"
       PROJECT_PARAM_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/params/${parameterUID}
@@ -370,7 +378,7 @@ function projectParameters(){
       echo "Project Parameters needs to be synched"
       cd ./assets/projectConfigs/parameters/
       for d in * ; do
-        importSingleProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${d} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}-
+        importSingleProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${d} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
       done
   else 
       echo "No Project Parameters to import."
