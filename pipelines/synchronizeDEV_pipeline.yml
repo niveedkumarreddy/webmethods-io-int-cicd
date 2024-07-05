@@ -79,7 +79,7 @@ steps:
     LOCAL_DEV_URL=https://$(source_environment_hostname):$(source_environment_port)
     
     pwd
-    HOME_DIR=$(System.DefaultWorkingDirectory)/../
+    HOME_DIR=$(System.DefaultWorkingDirectory)/..
     cd $(System.DefaultWorkingDirectory)/../
     ls -ltr
     cd $(repoName)
