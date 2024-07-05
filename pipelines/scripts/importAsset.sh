@@ -357,7 +357,7 @@ function importRefData(){
        echod "ProjectID:" ${projectID}
       cd ./assets/projectConfigs/referenceData/
       for d in * ; do
-        importSingleRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${d} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}-
+        importSingleRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${d} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
         done
   fi
  cd ${HOME_DIR}/${repoName}
