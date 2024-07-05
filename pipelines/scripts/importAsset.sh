@@ -407,25 +407,32 @@ if [ ${synchProject} == true ]; then
         importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
     done
   else
-    echod "No rest apis"
+    echod "No rest apis to import"
   fi
-  for filename in ./assets/workflows/*.zip; do 
-      base_name=${filename##*/}
-      parent_name="$(basename "$(dirname "$filename")")"
-      base_name=${base_name%.*}
-      echod $base_name${filename%.*}
-      echod $parent_name
-      importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
-  done
-  for filename in ./assets/flowservices/*.zip; do 
-      base_name=${filename##*/}
-      parent_name="$(basename "$(dirname "$filename")")"
-      base_name=${base_name%.*}
-      echod $base_name${filename%.*}
-      echod $parent_name
-      importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
-  done
-  
+  if [ -e ./assets/workflows/*.zip ]; then
+    for filename in ./assets/workflows/*.zip; do 
+        base_name=${filename##*/}
+        parent_name="$(basename "$(dirname "$filename")")"
+        base_name=${base_name%.*}
+        echod $base_name${filename%.*}
+        echod $parent_name
+        importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+    done
+  else
+    echod "No workflows to import"
+  fi
+  if [ -e ./assets/flowservices/*.zip ]; then
+    for filename in ./assets/flowservices/*.zip; do 
+        base_name=${filename##*/}
+        parent_name="$(basename "$(dirname "$filename")")"
+        base_name=${base_name%.*}
+        echod $base_name${filename%.*}
+        echod $parent_name
+        importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+    done
+  else
+    echod "No flowservices to import"
+  fi
   importRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type}
   projectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${source_type}
 
