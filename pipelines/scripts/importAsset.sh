@@ -153,7 +153,8 @@ function importAsset() {
 
         if [[ $assetType = rest_api* ]]; then
           name=$(echo "$importedName" | jq '.output.message // empty')
-          if [ "$name" == "IMPORT_SUCCESS" ];   then
+          success="IMPORT_SUCCESS"
+          if [ "$name" == "$success" ];   then
             echo "Import Succeeded:" ${importedName}
           else
             echo "Import Failed:" ${importedName}
