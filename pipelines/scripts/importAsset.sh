@@ -337,6 +337,7 @@ function importRefData(){
   source_type=$9
   
   cd ${HOME_DIR}/${repoName}
+  ls -ltr
 
   #Importing Reference Data
   DIR="./assets/projectConfigs/referenceData/"
