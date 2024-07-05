@@ -397,14 +397,18 @@ cd ${HOME_DIR}/${repoName}
 
 if [ ${synchProject} == true ]; then
   echod "Listing files"
-  for filename in ./assets/rest_api/*.zip; do 
-      base_name=${filename##*/}
-      parent_name="$(basename "$(dirname "$filename")")"
-      base_name=${base_name%.*}
-      echod $base_name${filename%.*}
-      echod $parent_name
-      importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
-  done
+  if [ -e ./assets/rest_api/*.zip ]; then
+    for filename in ./assets/rest_api/*.zip; do 
+        base_name=${filename##*/}
+        parent_name="$(basename "$(dirname "$filename")")"
+        base_name=${base_name%.*}
+        echod $base_name${filename%.*}
+        echod $parent_name
+        importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+    done
+  else
+    echod "No rest apis"
+  fi
   for filename in ./assets/workflows/*.zip; do 
       base_name=${filename##*/}
       parent_name="$(basename "$(dirname "$filename")")"
