@@ -151,12 +151,20 @@ function importAsset() {
                     --header 'Accept: application/json' \
                     --form ${formKey} --form ${overwriteKey} -u ${admin_user}:${admin_password})    
 
-        name=$(echo "$importedName" | jq '.output.name // empty')
-        if [ -z "$name" ];   then
-            echo "Import failed:" ${importedName}
-        else
+        if [[ $assetType = rest_api* ]]; then
+          name=$(echo "$importedName" | jq '.output.message // empty')
+          if [ "$name" == "IMPORT_SUCCESS" ];   then
             echo "Import Succeeded:" ${importedName}
-        
+          else
+            echo "Import Failed:" ${importedName}
+          fi
+        else
+          name=$(echo "$importedName" | jq '.output.name // empty')
+          if [ -z "$name" ];   then
+            echo "Import failed:" ${importedName}
+          else
+            echo "Import Succeeded:" ${importedName}
+          fi
         fi
     else
       echo "$FILE does not exists, Nothing to import"
