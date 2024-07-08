@@ -56,7 +56,7 @@ else
     exit 1
 fi   
 
-echo envs
+echo $envs
 
 set +x
 
