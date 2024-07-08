@@ -200,8 +200,6 @@ function configPerEnv(){
             cp ./$sourceFile ./$key_$v.json
         fi
       fi
-     cp ./$
-
   done
 
 }
