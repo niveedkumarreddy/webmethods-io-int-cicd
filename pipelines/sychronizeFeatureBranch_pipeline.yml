@@ -72,7 +72,7 @@ steps:
     cd $(repoName)
     chmod +x ../self/pipelines/scripts/*.sh    
 
-    config_dir=${HOME_DIR}/self/configs/env
+    config_dir=${HOME_DIR}self/configs/env
    
 
     ###### Fetching Environments
