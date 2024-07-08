@@ -406,7 +406,9 @@ cd ${HOME_DIR}/${repoName}
 
 if [ ${synchProject} == true ]; then
   echod "Listing files"
-  if [ -e ./assets/rest_api/*.zip ]; then
+  shopt -s nullglob dotglob
+  api_files=(./assets/rest_api/*.zip)
+  if [ ${#api_files[@]} -gt 0 ]; then
     for filename in ./assets/rest_api/*.zip; do 
         base_name=${filename##*/}
         parent_name="$(basename "$(dirname "$filename")")"
@@ -418,7 +420,10 @@ if [ ${synchProject} == true ]; then
   else
     echod "No rest apis to import"
   fi
-  if [ -e ./assets/workflows/*.zip ]; then
+
+  shopt -s nullglob dotglob
+  wf_files=(./assets/workflows/*.zip)
+  if [ ${#wf_files[@]} -gt 0 ]; then
     for filename in ./assets/workflows/*.zip; do 
         base_name=${filename##*/}
         parent_name="$(basename "$(dirname "$filename")")"
@@ -430,7 +435,9 @@ if [ ${synchProject} == true ]; then
   else
     echod "No workflows to import"
   fi
-  if [ -e ./assets/flowservices/*.zip ]; then
+  shopt -s nullglob dotglob
+  fs_files=(./assets/flowservices/*.zip)
+  if [ ${#fs_files[@]} -gt 0 ]; then
     for filename in ./assets/flowservices/*.zip; do 
         base_name=${filename##*/}
         parent_name="$(basename "$(dirname "$filename")")"

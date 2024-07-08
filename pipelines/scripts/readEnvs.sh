@@ -8,10 +8,16 @@
 
 
 CONFIG_DIR=$1
+source_type=$2
 debug=${@: -1}
 
     if [ -z "$CONFIG_DIR" ]; then
       echo "Missing template parameter CONFIG_DIR"
+      exit 1
+    fi
+
+    if [ -z "$source_type" ]; then
+      echo "Missing template parameter source_type"
       exit 1
     fi
 
@@ -40,9 +46,12 @@ if [ ${#env_files[@]} -gt 0 ]; then
         base_name=${base_name%.*}
         echod $base_name${env%.*}
         echod $parent_name
-        envArr[i]=$(cat $env | yq -e '.tenant.type')
-        echod $envArr[i]
-        let i++    
+        current_type=$(cat $env | yq -e '.tenant.type')
+        if [ ${current_type} != ${source_type} ]; then
+          envArr[i]=$(cat $env | yq -e '.tenant.type')
+          echod $envArr[i]
+          let i++
+        fi    
     done
     envs=$(IFS=$','; echo "${envArr[*]}")
     
