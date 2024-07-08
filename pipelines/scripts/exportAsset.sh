@@ -122,9 +122,6 @@ function exportSingleReferenceData () {
     echo "$metadataJson" > metadata.json
     echo "$datajson" > ${source_type}.csv
     configPerEnv . ${envTypes} "referenceData" ${source_type}.csv
-    #cp -n ./${source_type}.csv dev.csv 
-    #cp -n ./${source_type}.csv qa.csv 
-    #cp -n ./${source_type}.csv prod.csv
     cd -
   fi
   cd ${HOME_DIR}/${repoName}
@@ -196,7 +193,7 @@ function configPerEnv(){
      if [ ${configType} == "referenceData" ]; then
         cp ./$sourceFile ./$v.csv
      else
-        if [ ${configType} == "projectParameters" ]; then
+        if [ ${configType} == "project_parameter" ]; then
             cp ./$sourceFile ./$key_$v.json
         fi
       fi
@@ -353,7 +350,7 @@ function exportProjectParameters(){
                   metadataJson='{ "uid":"'${parameterUID}'" }'
                   echo ${metadataJson} > ./metadata.json
                   echo ${data} > ./${key}_${source_type}.json
-                  configPerEnv . ${envTypes} "projectParameters" ${key}_${source_type}.json ${key}
+                  configPerEnv . ${envTypes} "project_parameter" ${key}_${source_type}.json ${key}
                   #cp -n ./${key}_${source_type}.json ${key}_dev.json 
                   #cp -n ./${key}_${source_type}.json ${key}_qa.json 
                   #cp -n ./${key}_${source_type}.json ${key}_prod.json
@@ -369,7 +366,7 @@ function exportProjectParameters(){
                   metadataJson='{ "uid":"'${parameterUID}'" }'
                   echo ${metadataJson} > ./metadata.json
                   echo ${data} > ./${key}_${source_type}.json
-                  configPerEnv . ${envTypes} "projectParameters" ${key}_${source_type}.json ${key}
+                  configPerEnv . ${envTypes} "project_parameter" ${key}_${source_type}.json ${key}
                   #cp -n ./${key}_${source_type}.json ${key}_dev.json 
                   #cp -n ./${key}_${source_type}.json ${key}_qa.json 
                   #cp -n ./${key}_${source_type}.json ${key}_prod.json
