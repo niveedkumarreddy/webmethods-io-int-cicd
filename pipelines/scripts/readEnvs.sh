@@ -43,10 +43,10 @@ if [ -e $HOME_DIR/$CONFIG_DIR/*.yml ]; then
         base_name=${base_name%.*}
         echod $base_name${env%.*}
         echod $parent_name
-        envArr[i]= $(cat env | yq -e '.tenant.type // empty')
+        envArr[i]=$(cat env | yq -e '.tenant.type // empty')
         let i++    
     done
-    envs=$ ( IFS=$','; echo "${envArr[*]}" )
+    envs=$(IFS=$','; echo "${envArr[*]}")
     
     echod $envs
 else
