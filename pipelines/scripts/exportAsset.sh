@@ -15,6 +15,7 @@ HOME_DIR=$7
 synchProject=$8
 source_type=$9
 inlcudeAllReferenceData=${10}
+envTypes=${11}
 debug=${@: -1}
 
     if [ -z "$LOCAL_DEV_URL" ]; then
@@ -56,7 +57,14 @@ debug=${@: -1}
       echo "Missing template parameter source_type"
       exit 1
     fi
-    
+    if [ -z "$inlcudeAllReferenceData" ]; then
+      echo "Missing template parameter inlcudeAllReferenceData"
+      exit 1
+    fi
+    if [ -z "$envTypes" ]; then
+      echo "Missing template parameter envTypes"
+      exit 1
+    fi   
     if [ "$debug" == "debug" ]; then
       echo "******* Running in Debug mode ******"
     fi
@@ -113,9 +121,10 @@ function exportSingleReferenceData () {
     metadataJson=$(echo "$metadataJson"| jq 'del(.columnNames, .dataRecords, .revisionData)')
     echo "$metadataJson" > metadata.json
     echo "$datajson" > ${source_type}.csv
-    cp -n ./${source_type}.csv dev.csv 
-    cp -n ./${source_type}.csv qa.csv 
-    cp -n ./${source_type}.csv prod.csv
+    configPerEnv . ${envTypes} "referenceData" ${source_type}.csv
+    #cp -n ./${source_type}.csv dev.csv 
+    #cp -n ./${source_type}.csv qa.csv 
+    #cp -n ./${source_type}.csv prod.csv
     cd -
   fi
   cd ${HOME_DIR}/${repoName}
@@ -172,6 +181,30 @@ function exportReferenceData (){
 
   cd ${HOME_DIR}/${repoName}
 } 
+
+function configPerEnv(){
+  localtion=$1
+  envTypes=$2
+  configType=$3
+  sourceFile=$4
+  key=$5
+
+  IFS=, read -ra values <<< "$envTypes"
+  for v in "${values[@]}"
+  do
+     # things with "$v"
+     if [ ${configType} == "referenceData" ]; then
+        cp ./$sourceFile ./$v.csv
+     else
+        if [ ${configType} == "projectParameters" ]; then
+            cp ./$sourceFile ./$key_$v.json
+        fi
+      fi
+     cp ./$
+
+  done
+
+}
 
 function exportAsset(){
 
@@ -322,9 +355,11 @@ function exportProjectParameters(){
                   metadataJson='{ "uid":"'${parameterUID}'" }'
                   echo ${metadataJson} > ./metadata.json
                   echo ${data} > ./${key}_${source_type}.json
-                  cp -n ./${key}_${source_type}.json ${key}_dev.json 
-                  cp -n ./${key}_${source_type}.json ${key}_qa.json 
-                  cp -n ./${key}_${source_type}.json ${key}_prod.json
+                  configPerEnv . ${envTypes} "projectParameters" ${key}_${source_type}.json ${key}
+                  #cp -n ./${key}_${source_type}.json ${key}_dev.json 
+                  #cp -n ./${key}_${source_type}.json ${key}_qa.json 
+                  #cp -n ./${key}_${source_type}.json ${key}_prod.json
+                  cd ..
               else 
                 for item in $(jq  -c -r '.output[]' <<< "$ppListJson"); do
                   echod "Inside Parameters Loop"
@@ -336,9 +371,10 @@ function exportProjectParameters(){
                   metadataJson='{ "uid":"'${parameterUID}'" }'
                   echo ${metadataJson} > ./metadata.json
                   echo ${data} > ./${key}_${source_type}.json
-                  cp -n ./${key}_${source_type}.json ${key}_dev.json 
-                  cp -n ./${key}_${source_type}.json ${key}_qa.json 
-                  cp -n ./${key}_${source_type}.json ${key}_prod.json
+                  configPerEnv . ${envTypes} "projectParameters" ${key}_${source_type}.json ${key}
+                  #cp -n ./${key}_${source_type}.json ${key}_dev.json 
+                  #cp -n ./${key}_${source_type}.json ${key}_qa.json 
+                  #cp -n ./${key}_${source_type}.json ${key}_prod.json
                   cd ..
                 done
               fi
