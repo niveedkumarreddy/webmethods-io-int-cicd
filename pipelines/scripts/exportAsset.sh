@@ -194,7 +194,7 @@ function configPerEnv(){
         cp ./$sourceFile ./$v.csv
      else
         if [ ${configType} == "project_parameter" ]; then
-            cp ./$sourceFile ./$key_$v.json
+            cp ./$sourceFile ./${key}_${v}.json
         fi
       fi
   done
