@@ -72,6 +72,9 @@ steps:
     cd $(repoName)
     chmod +x ../self/pipelines/scripts/*.sh    
 
+    ###### Exporting
+    echo "Fetching Environment Types  ..."
+    ../self/pipelines/scripts/readEnv.sh.sh ${HOME_DIR}/self configs/env debug
 
 
     ###### Exporting
