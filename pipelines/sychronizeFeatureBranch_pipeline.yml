@@ -74,7 +74,7 @@ steps:
 
     ###### Exporting
     echo "Fetching Environment Types  ..."
-    ../self/pipelines/scripts/readEnv.sh ${HOME_DIR}/self configs/env debug
+    ../self/pipelines/scripts/readEnvs.sh ${HOME_DIR}/self configs/env debug
 
 
     ###### Exporting
