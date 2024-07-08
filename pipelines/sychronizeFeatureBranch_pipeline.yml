@@ -77,7 +77,7 @@ steps:
 
     ###### Fetching Environments
     echo "Fetching Environment Types  ..."
-    envTypes=$(../self/pipelines/scripts/readEnvs.sh ${config_dir} $(source_type) debug)
+    envTypes=$(../self/pipelines/scripts/readEnvs.sh ${config_dir} $(source_type))
     echo "****Envs****: "$envTypes
 
 
@@ -93,7 +93,7 @@ steps:
 
     echo "Committing asset ..."
     chmod +x ../self/pipelines/scripts/github/*.sh    
-    ../self/pipelines/scripts/github/commitFeatureBranch.sh $(devUser) $(Build.BuildNumber) $(featureBranchName) ${HOME_DIR} debugebug
+    ../self/pipelines/scripts/github/commitFeatureBranch.sh $(devUser) $(Build.BuildNumber) $(featureBranchName) ${HOME_DIR} debug
 
   displayName: 'Commit the code to feature branch'
 
