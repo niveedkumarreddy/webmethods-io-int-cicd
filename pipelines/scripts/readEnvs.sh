@@ -41,11 +41,6 @@ env_files=($CONFIG_DIR/*.yml)
 if [ ${#env_files[@]} -gt 0 ]; then
     for env in $CONFIG_DIR/*.yml; do 
         echod $env
-        base_name=${env##*/}
-        parent_name="$(basename "$(dirname "$env")")"
-        base_name=${base_name%.*}
-        echod $base_name${env%.*}
-        echod $parent_name
         current_type=$(cat $env | yq -e '.tenant.type')
         if [ ${current_type} != ${source_type} ]; then
           envArr[i]=$(cat $env | yq -e '.tenant.type')
