@@ -40,7 +40,8 @@ if [ ${#env_files[@]} -gt 0 ]; then
         base_name=${base_name%.*}
         echod $base_name${env%.*}
         echod $parent_name
-        envArr[i]=$(cat env | yq -e '.tenant.type // empty')
+        envArr[i]=$(cat $env | yq -e '.tenant.type // empty')
+        echod $envArr[i]
         let i++    
     done
     envs=$(IFS=$','; echo "${envArr[*]}")
