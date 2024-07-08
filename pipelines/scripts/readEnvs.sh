@@ -30,7 +30,9 @@ function echod(){
 declare -a envArr
 i=0
 envs=''
-if [ -e $CONFIG_DIR/*.yml ]; then
+shopt -s nullglob dotglob
+env_files=($CONFIG_DIR/*.yml)
+if [ ${#env_files[@]} -gt 0 ]; then
     for env in $CONFIG_DIR/*.yml; do 
         echod $env
         base_name=${env##*/}
