@@ -135,8 +135,8 @@ We will assume that the organization is following the below GIT Workflows.
 <br> 
 
 # Downloads / Assets / References
-1. Repository for automation, scripts & sample assets. Github: https://github.softwareag.com/PS/webmethods_io_int_cicd
-2. Presentation: https://github.softwareag.com/PS/webmethods_io_int_cicd/blob/main/presentation/webMethodsIO_Integration_CICD.pptx 
+1. Repository for automation, scripts & sample assets. Github: https://github.ibm.com/webMethods-Accelerators/webmethods_io_int_cicd
+2. Presentation: https://github.ibm.com/webMethods-Accelerators/webmethods_io_int_cicd/blob/main/presentation/webMethodsIO_Integration_CICD.pptx 
 3. Demo recording: 
 4. API Documentation: https://docs.webmethods.io/integration/apis/webmethods_api_ref/#reference-data-apis
 5. CLI Repository: https://github.com/SoftwareAG/webmethods-io-integration-apicli
@@ -181,5 +181,23 @@ Your input drives our innovation. If you find a bug, please create an issue in t
 More to discover
 * [DevOps for webMethods.io Integration](https://tech.forums.softwareag.com/t/devops-for-webmethods-io-integration/275949)
 * [webMethods DevOps](https://tech.forums.softwareag.com/t/recording-webmethods-virtual-meetup-may-19th-2023-webmethods-devops/278975)  
-______________________
-These tools are provided as-is and without warranty or support. They do not constitute part of the Software AG product suite. Users are free to use, fork and modify them, subject to the license agreement. While Software AG welcomes contributions, we cannot guarantee to include every contribution in the master project.
+
+# Contribution
+
+## How to Contribute
+This is an open-source project and requires community contributions to remain useful. Anyone can contribute to the project in the following ways:
+1. Fork this repository.
+2. Make your enhancements/ changes.
+3. Create a Pull Request.
+4. Finally, development team will evaluate the Pull Request and merge it to the source code.
+
+## Raising Issues / Bugs
+
+In case of Bugs, please create an issue with following details
+1. Version
+2. Detailed description (with images if needed)
+3. Error stacktace (log snippets)
+
+# Disclaimer
+## IBM Public Repository Disclosure
+All content in these repositories including code has been provided by IBM under the associated open source software license and IBM is under no obligation to provide enhancements, updates, or support. IBM developers produced this code as an open source project (not as an IBM product), and IBM makes no assertions as to the level of quality nor security, and will not be maintaining this code going forward.
