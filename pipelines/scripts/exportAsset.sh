@@ -14,7 +14,7 @@ assetType=$6
 HOME_DIR=$7
 synchProject=$8
 source_type=$9
-inlcudeAllReferenceData=${10}
+includeAllReferenceData=${10}
 envTypes=${11}
 debug=${@: -1}
 
@@ -57,8 +57,8 @@ debug=${@: -1}
       echo "Missing template parameter source_type"
       exit 1
     fi
-    if [ -z "$inlcudeAllReferenceData" ]; then
-      echo "Missing template parameter inlcudeAllReferenceData"
+    if [ -z "$includeAllReferenceData" ]; then
+      echo "Missing template parameter includeAllReferenceData"
       exit 1
     fi
     if [ -z "$envTypes" ]; then
@@ -211,7 +211,7 @@ function exportAsset(){
   assetType=$6
   HOME_DIR=$7
   synchProject=$8
-  inlcudeAllReferenceData=$9
+  includeAllReferenceData=$9
 
  
     # Single assetType
@@ -246,7 +246,7 @@ function exportAsset(){
       else
         if [[ $assetType = project_parameter* ]]; then
           echod $assetType
-          exportProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+          exportProjectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
           return
         else
           if [[ $assetType = workflow* ]]; then
@@ -301,7 +301,7 @@ function exportAsset(){
       # For Single assetType Flowservice Export Reference Data
       if [ ${synchProject} != true ]; then
         if [[ $assetType = flowservice* ]]; then
-          if [ ${inlcudeAllReferenceData} == true ]; then
+          if [ ${includeAllReferenceData} == true ]; then
             exportReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR}
           fi
         fi
@@ -321,7 +321,7 @@ function exportProjectParameters(){
     assetType=$6
     HOME_DIR=$7
     synchProject=$8
-    inlcudeAllReferenceData=$9
+    includeAllReferenceData=$9
     cd ${HOME_DIR}/${repoName}
 
     if [ ${synchProject} == true ]; then
@@ -396,7 +396,7 @@ if [ ${synchProject} == true ]; then
     assetID=$item
     assetType=rest_api
     echod $assetID
-    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   done
 
   # Exporting Workflows
@@ -405,7 +405,7 @@ if [ ${synchProject} == true ]; then
     assetID=$item
     assetType=workflow
     echod $assetID
-    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   done
   # Exporting Flows
   for item in $(jq  -c -r '.output.flows[]' <<< "$projectListJson"); do
@@ -413,7 +413,7 @@ if [ ${synchProject} == true ]; then
     assetID=$item
     assetType=flowservice
     echod $assetID
-    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   done
 
   #Expoting Accounts
@@ -444,8 +444,8 @@ if [ ${synchProject} == true ]; then
   # Exporting Project Parameters
   #PP Export
   assetType=project_parameter
-  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   
 else
-  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${inlcudeAllReferenceData}
+  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
 fi  
