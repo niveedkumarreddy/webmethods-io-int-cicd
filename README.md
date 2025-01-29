@@ -135,8 +135,8 @@ We will assume that the organization is following the below GIT Workflows.
 <br> 
 
 # Downloads / Assets / References
-1. Repository for automation, scripts & sample assets. Github: https://github.ibm.com/webMethods-Accelerators/webmethods_io_int_cicd
-2. Presentation: https://github.ibm.com/webMethods-Accelerators/webmethods_io_int_cicd/blob/main/presentation/webMethodsIO_Integration_CICD.pptx 
+1. Repository for automation, scripts & sample assets. Github: https://github.com/IBM/webmethods-io-int-cicd
+2. Presentation: https://github.com/IBM/webmethods-io-int-cicd/blob/main/presentation/webMethodsIO_Integration_CICD.pptx 
 3. Demo recording: 
 4. API Documentation: https://docs.webmethods.io/integration/apis/webmethods_api_ref/#reference-data-apis
 5. CLI Repository: https://github.com/SoftwareAG/webmethods-io-integration-apicli
