@@ -167,19 +167,17 @@ We will assume that the organization is following the below GIT Workflows.
 # Useful links   
 
 📘 Explore the Knowledge Base    
-Dive into a wealth of webMethods tutorials and articles in our [Tech Community Knowledge Base](https://tech.forums.softwareag.com/tags/c/knowledge-base/6/webmethods).  
+Dive into a wealth of webMethods tutorials and articles in our [Tech Community Knowledge Base](https://community.ibm.com/community/user/integration/communities/community-home/all-news?communitykey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&LibraryFolderKey=&DefaultView=&8e5b3238-cf51-4036-aa29-601a6cd3e1b3=eyJ2aWV3dHlwZSI6ImNhcmQifQ%3D%3D).  
 
 💡 Get Expert Answers    
-Stuck or just curious? Ask the webMethods experts directly on our [Forum](https://tech.forums.softwareag.com/tags/c/forum/1/webMethods).  
+Stuck or just curious? Ask the webMethods experts directly on our [Forum](https://community.ibm.com/community/user/integration/communities/community-home?communitykey=82b75916-ed06-4a13-8eb6-0190da9f1bfa).  
 
 🚀 Try webMethods    
-See webMethods in action with a [Free Trial](https://techcommunity.softwareag.com/en_en/downloads.html).   
+See webMethods in action with a [Free Trial IPaaS](https://www.ibm.com/products/webmethods-integration).[Free Trial On Premise](https://community.ibm.com/community/user/integration/viewdocument/guide-to-downloading-and-installing?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments).  
 
-✍️ Share Your Feedback    
-Your input drives our innovation. If you find a bug, please create an issue in the repository. If you’d like to share your ideas or feedback, please post them [here](https://tech.forums.softwareag.com/c/feedback/2).   
 
 More to discover
-* [DevOps for webMethods.io Integration](https://tech.forums.softwareag.com/t/devops-for-webmethods-io-integration/275949)
+* [DevOps for webMethods.io Integration](https://community.ibm.com/community/user/integration/viewdocument/devops-for-webmethodsio-integratio?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments)
 * [webMethods DevOps](https://tech.forums.softwareag.com/t/recording-webmethods-virtual-meetup-may-19th-2023-webmethods-devops/278975)  
 
 # Contribution
