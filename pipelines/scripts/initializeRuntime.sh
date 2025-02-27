@@ -59,17 +59,18 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
 
 
   echo "Registering Runtime"
-  registerRuntimeJson=$(curl  --location --request POST ${RUNTIME_REGISTER_URL} \
+  registerRuntimeJson=$(curl -i -o - --location --request POST ${RUNTIME_REGISTER_URL} \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
-  --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w "%{stderr}{\"status\": \"%{http_code}\", \"body\":\"%{stdout}\"}" ) 
+  --data-raw "$runtime_json" -u ${admin_user}:${admin_password} )
 
-  echo $registerRuntimeJson
-  #outputArray=(${registerRuntimeJson//;/ })
-  http_response=$(echo "$registerRuntimeJson" | jq -r '.status')
-  registerRuntimeJson=$(echo "$registerRuntimeJson" | jq -r '.body')
-  echo "ResponseCode "$http_response
-  echo "Output "$registerRuntimeJson
+ echo $registerRuntimeJson
+http_status=$(echo "$registerRuntimeJson" | grep HTTP |  awk '{print $2}')
+echo $http_status 
+registerRuntimeJson==$(echo "$registerRuntimeJson" | grep body)
+echo $registerRuntimeJson
+
+
 
 
 
