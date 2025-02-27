@@ -62,11 +62,19 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   registerRuntimeJson=$(curl  --location --request POST ${RUNTIME_REGISTER_URL} \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
-  --data-raw "$runtime_json" -u ${admin_user}:${admin_password})
+  --data-raw "$runtime_json" -u ${admin_user}:${admin_password}) -w "\n%{response_code}
+
+  echo $registerRuntimeJson
 
   name=$(echo "$registerRuntimeJson" | jq -r '.name')
   agentID=$(echo "$registerRuntimeJson" | jq -r '.agentID')
 
+
   echo "Registered "$name" with agentID "$agentID 
+
+
+
+
+
 
 
