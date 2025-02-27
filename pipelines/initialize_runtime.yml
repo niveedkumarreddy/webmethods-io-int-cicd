@@ -62,6 +62,6 @@ steps:
         chmod +x ./self/pipelines/scripts/github/*.sh
         ./self/pipelines/scripts/initializeRuntime.sh ${LOCAL_DEV_URL} $(admin_user) $(admin_password) $(aliasName) $(visibility) $(description) debug
 
-  displayName: 'Create a repo and required branches'
+  displayName: 'Register Runtime'
 
   
