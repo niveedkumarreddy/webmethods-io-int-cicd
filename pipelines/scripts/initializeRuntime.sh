@@ -80,11 +80,8 @@ echo "Body:"$registerRuntimeJson
   --header 'Accept: application/json' \
   --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w ";- %{http_code}")
   
-  echo $registerRuntimeJson
-  http_response=echo $registerRuntimeJson | awk -F' ;- ' '{print $1}'
-  registerRuntimeJson=echo $registerRuntimeJson | awk -F' ;- ' '{print $2}'
-  echo "ResponseCode :"$http_response
-  echo "Output :"$registerRuntimeJson
+  echo $registerRuntimeJson | awk '{split($0,a,";-"); print a[3],a[2],a[1]}'
+  
 
 
 
