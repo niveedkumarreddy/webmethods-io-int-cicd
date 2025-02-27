@@ -67,6 +67,6 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   name=$(echo "$registerRuntimeJson" | jq -r '.name')
   agentID=$(echo "$registerRuntimeJson" | jq -r '.agentID')
 
-  echod Registered ${name} with AgentID ${agentID} 
-  
+  echod "Registered" ${name} "with agentID" ${agentID} 
+
 
