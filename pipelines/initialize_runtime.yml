@@ -55,11 +55,13 @@ steps:
   displayName: 'Get Environment Tenant Details'
 - script: |
       cd ../
-
+      LOCAL_DEV_URL=https://$(source_environment_hostname):$(source_environment_port)
+      echo ${LOCAL_DEV_URL}
+      
       ########GitHub 
         HOME_DIR=$(System.DefaultWorkingDirectory)/../
 
-        chmod +x ./self/pipelines/scripts/*.sh
+        chmod +x ./self/pipelines/scripts/github/*.sh
         ./self/pipelines/scripts/initializeRuntime.sh ${LOCAL_DEV_URL} $(admin_user) $(admin_password) $(aliasName) $(visibility) $(description) debug
 
   displayName: 'Register Runtime'
