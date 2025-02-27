@@ -81,8 +81,8 @@ echo "Body:"$registerRuntimeJson
   --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w ";- %{http_code}")
   
   echo $registerRuntimeJson
-  http_response=echo $registerRuntimeJson | cut -d ";-" -f 2
-  registerRuntimeJson=echo $registerRuntimeJson | cut -d ";-" -f 1
+  http_response=echo $registerRuntimeJson | awk -F' ;- ' '{print $1}'
+  registerRuntimeJson=echo $registerRuntimeJson | awk -F' ;- ' '{print $2}'
   echo "ResponseCode :"$http_response
   echo "Output :"$registerRuntimeJson
 
