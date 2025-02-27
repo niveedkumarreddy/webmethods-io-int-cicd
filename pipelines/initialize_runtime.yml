@@ -48,32 +48,9 @@ steps:
     echo "##vso[task.setvariable variable=source_type]`yq -e ".tenant.type" configs/env/$(environment).yml`"
     echo "##vso[task.setvariable variable=repo_user]`yq -e ".repo.user" configs/repo.yml`"
     
-    echo "##vso[task.setvariable variable=dev_environment_hostname]`yq -e ".tenant.hostname" configs/env/dev.yml`"
-    echo "##vso[task.setvariable variable=dev_environment_port]`yq -e ".tenant.port" configs/env/dev.yml`"
-    echo "##vso[task.setvariable variable=dev_admin_user]`yq -e ".tenant.admin_username" configs/env/dev.yml`"
-
-    echo "##vso[task.setvariable variable=qa_environment_hostname]`yq -e ".tenant.hostname" configs/env/qa.yml`"
-    echo "##vso[task.setvariable variable=qa_environment_port]`yq -e ".tenant.port" configs/env/qa.yml`"
-    echo "##vso[task.setvariable variable=qa_admin_user]`yq -e ".tenant.admin_username" configs/env/qa.yml`"
-
-    echo "##vso[task.setvariable variable=prod_environment_hostname]`yq -e ".tenant.hostname" configs/env/prod.yml`"
-    echo "##vso[task.setvariable variable=prod_environment_port]`yq -e ".tenant.port" configs/env/prod.yml`"
-    echo "##vso[task.setvariable variable=prod_admin_user]`yq -e ".tenant.admin_username" configs/env/prod.yml`"
-
-    echo "##vso[build.updatebuildnumber]$(Build.BuildNumber)-$(repoName)"
-    echo $(System.DefaultWorkingDirectory)
+        echo $(System.DefaultWorkingDirectory)
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: 'Get Environment Tenant Details'
-# setup python environment
-- script: |
-    
-    python3.10 -m pip3 install --upgrade pip
-    pip3 install pynacl
-    chmod +x ./pipelines/scripts/github/encryptGithubSecret.py
-
-  displayName: 'Setup Python3 Environment'
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
-  condition: succeeded()
 - script: |
       cd ../
 
