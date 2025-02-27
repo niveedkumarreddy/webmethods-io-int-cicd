@@ -66,10 +66,10 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
 
   echo $registerRuntimeJson
   #outputArray=(${registerRuntimeJson//;/ })
-  http_response=${registerRuntimeJson[1]}
-  registerRuntimeJson=${registerRuntimeJson[0]}
+  http_response=name=$(echo "$registerRuntimeJson" | jq -r '.status')
+  registerRuntimeJson=$(echo "$registerRuntimeJson" | jq -r '.body')
   echo "ResponseCode "$http_response
-  echo $registerRuntimeJson
+  echo "Output "$registerRuntimeJson
 
 
 
