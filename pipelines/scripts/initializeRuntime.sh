@@ -85,7 +85,7 @@ RUNTIME_PAIR_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/${aliasNam
   pairRuntimeJson=$(curl --location --request POST ${RUNTIME_PAIR_URL} \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
-  -w ";-)%{http_code}")
+  -u ${admin_user}:${admin_password} -w ";-)%{http_code}")
 
     status=$(echo $pairRuntimeJson | awk '{split($0,a,";-)"); print a[2]}')
     body=$(echo $pairRuntimeJson | awk '{split($0,a,";-)"); print a[1]}')
