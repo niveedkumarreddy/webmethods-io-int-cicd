@@ -66,7 +66,8 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   --header 'Accept: application/json' \
   --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w ";-) %{http_code}")
 
-  response_array=($(echo $registerRuntimeJson |sed -e "s/;-)/ /g"))
+
+  split($registerRuntimeJson, response_array, ";-)" )
   Status=${response_array[1]}
   Body=${response_array[0]}
   echo "Status:"$Status  
