@@ -58,30 +58,17 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
  runtime_json='{ "name": "'${aliasName}'", "description": "'${description}'", "visibility": "'${visibility}'" }'
 
 
+
+
   echo "Registering Runtime"
-  registerRuntimeJson=$(curl -i -o - --silent -X --location --request POST ${RUNTIME_REGISTER_URL} \
-  --header 'Content-Type: application/json' \
-  --header 'Accept: application/json' \
-  --data-raw "$runtime_json" -u ${admin_user}:${admin_password} )
-
-
-echo ":"$registerRuntimeJson
-
-http_status=$(echo "$registerRuntimeJson" | grep HTTP |  awk '{print $2}')
-echo "Status:"$http_status 
-registerRuntimeJson==$(echo "$registerRuntimeJson" | grep body)
-echo "Body:"$registerRuntimeJson
-
-
-
-  echo "Registering Runtime Again"
   registerRuntimeJson=$(curl --location --request POST ${RUNTIME_REGISTER_URL} \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
-  --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w ";- %{http_code}")
+  --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w ";-) %{http_code}")
   
-  echo $registerRuntimeJson | awk '{split($0,a,";-"); print a[3],a[2],a[1]}'
-  
+  echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[2],a[1]}'
+  echo "Status:"$a[2]  
+  echo "Body:"$a[1]  
 
 
 
