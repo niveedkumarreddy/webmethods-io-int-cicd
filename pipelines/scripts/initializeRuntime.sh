@@ -64,18 +64,18 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   --header 'Accept: application/json' \
   --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w ";-)%{http_code}")
   
-  Status=$(echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[2]}')
-  Body=$(echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[1]}')
-  echo "Status:"$Status  
-  echo "Body:"$Body  
+  status=$(echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[2]}')
+  body=$(echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[1]}')
+  echo "Status:"$status  
+  echo "Body:"$body  
 
-if [ ${Status} -ge 200 ] && [ ${Status} -lt 300 ]; then
-    name=$(echo "$Body" | jq -r '.name')
-    agentID=$(echo "$Body" | jq -r '.agentID')
+if [ ${status} -ge 200 ] && [ ${status} -lt 300 ]; then
+    name=$(echo "$body" | jq -r '.name')
+    agentID=$(echo "$body" | jq -r '.agentID')
     echo "Registered "$name" with agentID "$agentID 
 else
-    message=$(echo "$Body" | jq -r '.integration.message.description')
-    echo "Failed with Status Code: "$Status "and message: "$message
+    message=$(echo "$body" | jq -r '.integration.message.description')
+    echo "Failed with Status Code: "$status "and message: "$message
     exit 1
 fi
 
@@ -93,7 +93,7 @@ RUNTIME_PAIR_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/${aliasNam
     echo "Body:"$body  
 
 if [ ${status} -ge 200 ] && [ ${Statustatuss} -lt 300 ]; then
-    name=$(echo "$body" | jq -r '.agentName')
+    agentName=$(echo "$body" | jq -r '.agentName')
     agentID=$(echo "$body" | jq -r '.agentId')
     echo $body > ./${aliasName}_Paired.json
     echo "Paired "$agentName" with agentID "$agentID 
