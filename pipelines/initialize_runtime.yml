@@ -69,7 +69,7 @@ steps:
         echo $file
         if test -f "$file"; then
           echo "$file exists."
-          cat $file >> paired_json
+          paired_json=$(cat $file)
           echo $paired_json
         else
           echo "File Not found!"
