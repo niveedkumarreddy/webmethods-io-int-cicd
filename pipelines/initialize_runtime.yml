@@ -65,9 +65,8 @@ steps:
         ./self/pipelines/scripts/initializeRuntime.sh ${LOCAL_DEV_URL} $(admin_user) $(admin_password) $(aliasName) $(visibility) $(description) debug
         pwd
         ls -ltr
-        file="./$(aliasName)__Paired.json"
+        file="./$(aliasName)_Paired.json"
         echo $file
-        set -x
         if test -f "$file"; then
           echo "$file exists."
           cat $file >> paired_json
