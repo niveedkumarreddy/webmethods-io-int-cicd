@@ -63,6 +63,13 @@ steps:
 
         chmod +x ./self/pipelines/scripts/*.sh
         ./self/pipelines/scripts/initializeRuntime.sh ${LOCAL_DEV_URL} $(admin_user) $(admin_password) $(aliasName) $(visibility) $(description) debug
+        if [ -f ./$(aliasName)__Paired.json ]; then
+           echo "File found!"
+           cat ./$(aliasName)__Paired.json >> paired_json
+           echo $paired_json
+        else
+            echo "File Not found!"
+        fi
 
   displayName: 'Register Runtime'
 
