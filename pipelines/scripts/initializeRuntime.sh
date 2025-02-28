@@ -71,7 +71,7 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   echo "Status:"$Status  
   echo "Body:"${a[2]}  
 
-| echo $registerRuntimeJson | while IFS=":-)" read first last varx
+
 
 
   name=$(echo "$registerRuntimeJson" | jq -r '.name')
