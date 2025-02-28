@@ -67,9 +67,11 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w ";-) %{http_code}")
   
   echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[2],a[1]}'
-  echo "Status:"$a[2]  
-  echo "Body:"$a[1]  
+  Status=${a[1]}
+  echo "Status:"$Status  
+  echo "Body:"${a[2]}  
 
+| echo $registerRuntimeJson | while IFS=":-)" read first last varx
 
 
   name=$(echo "$registerRuntimeJson" | jq -r '.name')
