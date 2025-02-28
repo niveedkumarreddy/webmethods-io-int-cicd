@@ -95,7 +95,10 @@ RUNTIME_PAIR_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/${aliasNam
 if [ ${status} -ge 200 ] && [ ${status} -lt 300 ]; then
     agentName=$(echo "$body" | jq -r '.agentName')
     agentID=$(echo "$body" | jq -r '.agentId')
+
     echo $body > ./${aliasName}_Paired.json
+    pwd
+    ls -ltr
     echo "Paired "$agentName" with agentID "$agentID 
 else
     message=$(echo "$body" | jq -r '.integration.message.description')
