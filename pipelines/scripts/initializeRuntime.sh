@@ -72,7 +72,7 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   Body=${response_array[0]}
   echo "Status:"$Status  
   echo "Body:"$Body  
-
+ 
 
 
 
