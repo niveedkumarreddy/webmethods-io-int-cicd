@@ -67,7 +67,7 @@ steps:
         ls -ltr
         file="./$(aliasName)__Paired.json"
         echo $file
-
+        set -x
         if test -f "$file"; then
           echo "$file exists."
           cat $file >> paired_json
