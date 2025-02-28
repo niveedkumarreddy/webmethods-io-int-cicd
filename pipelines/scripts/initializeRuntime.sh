@@ -62,12 +62,12 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   registerRuntimeJson=$(curl --location --request POST ${RUNTIME_REGISTER_URL} \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
-  --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w ";-) %{http_code}")
+  --data-raw "$runtime_json" -u ${admin_user}:${admin_password} -w ";-)%{http_code}")
   
   Status=$(echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[2]}')
   Body=$(echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[1]}')
-  echod "Status:"$Status  
-  echod "Body:"$Body  
+  echo "Status:"$Status  
+  echo "Body:"$Body  
 
 if [ ${Status} -ge 200 ] && [ ${Status} -lt 300 ]; then
     name=$(echo "$Body" | jq -r '.name')
@@ -85,12 +85,12 @@ RUNTIME_PAIR_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/${aliasNam
   pairRuntimeJson=$(curl --location --request POST ${RUNTIME_PAIR_URL} \
   --header 'Content-Type: application/json' \
   --header 'Accept: application/json' \
-  -w ";-) %{http_code}")
+  -w ";-)%{http_code}")
 
     status=$(echo $pairRuntimeJson | awk '{split($0,a,";-)"); print a[2]}')
     body=$(echo $pairRuntimeJson | awk '{split($0,a,";-)"); print a[1]}')
-    echod "Status:"$status  
-    echod "Body:"$body  
+    echo "Status:"$status  
+    echo "Body:"$body  
 
 if [ ${status} -ge 200 ] && [ ${Statustatuss} -lt 300 ]; then
     name=$(echo "$body" | jq -r '.agentName')
