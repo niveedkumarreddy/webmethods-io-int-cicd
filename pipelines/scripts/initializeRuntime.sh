@@ -68,8 +68,8 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   
 
   
-  Status=echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[2]}'
-  Body=echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[1]}'
+  Status=$(echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[2]}')
+  Body=$(echo $registerRuntimeJson | awk '{split($0,a,";-)"); print a[1]}')
   echo "Status:"$Status  
   echo "Body:"$Body  
 
