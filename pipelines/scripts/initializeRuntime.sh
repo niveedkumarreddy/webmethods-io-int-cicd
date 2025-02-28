@@ -73,14 +73,17 @@ RUNTIME_REGISTER_URL=${LOCAL_DEV_URL}/apis/v1/rest/control-plane/runtimes/
   echo "Status:"$Status  
   echo "Body:"$Body  
 
+if [ ${Status} -ge 200 ] && [ ${Status} -lt 300 ]; then
+    name=$(echo "$registerRuntimeJson" | jq -r '.name')
+    agentID=$(echo "$registerRuntimeJson" | jq -r '.agentID')
+    echo "Registered "$name" with agentID "$agentID 
+else
+    message=$(echo "$registerRuntimeJson" | jq -r '.integration.message.description')
+    echo "Failed with Status Code: "$Status "and message: "$message
+    exit 1
+fi
 
 
-
-  name=$(echo "$registerRuntimeJson" | jq -r '.name')
-  agentID=$(echo "$registerRuntimeJson" | jq -r '.agentID')
-
-
-  echo "Registered "$name" with agentID "$agentID 
 
 
 
