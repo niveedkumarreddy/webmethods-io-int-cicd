@@ -65,9 +65,11 @@ steps:
         ./self/pipelines/scripts/initializeRuntime.sh ${LOCAL_DEV_URL} $(admin_user) $(admin_password) $(aliasName) $(visibility) $(description) debug
         pwd
         ls -ltr
-        if [ -f ./$(aliasName)__Paired.json ]; then
+        file=./$(aliasName)__Paired.json
+        echo $file
+        if [ -e "$file" ]; then
            echo "File found!"
-           cat ./$(aliasName)__Paired.json >> paired_json
+           cat $file >> paired_json
            echo $paired_json
         else
             echo "File Not found!"
