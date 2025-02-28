@@ -68,13 +68,13 @@ steps:
         file=./$(aliasName)__Paired.json
         echo $file
 
-    if test -f "$file"; then
-      echo "$file exists."
-      cat $file >> paired_json
-      echo $paired_json
-    else
-      echo "File Not found!"
-    fi
+        if test -f "$file"; then
+          echo "$file exists."
+          cat $file >> paired_json
+          echo $paired_json
+        else
+          echo "File Not found!"
+        fi
 
   displayName: 'Register Runtime'
 
