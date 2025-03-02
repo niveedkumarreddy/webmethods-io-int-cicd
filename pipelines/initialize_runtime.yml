@@ -74,7 +74,11 @@ steps:
         else
           echo "File Not found!"
         fi
-
   displayName: 'Register Runtime'
-
+- pwsh: |
+     az extension add --name azure-devops
+     az pipelines variable-group variable list --group-id id --org "SrinivasanSabapathy" --project "webMethodsIO_Integration"
+     az pipelines variable-group variable update --group-id id --name apim-service-name --value $(str_tf_module_containername) --org "SrinivasanSabapathy" --project "webMethodsIO_Integration"
+  env:
+    AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
   
