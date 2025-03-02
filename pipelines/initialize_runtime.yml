@@ -78,7 +78,7 @@ steps:
      az extension add --name azure-devops
      az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/ project="webMethodsIO_Integration"
      $id = az pipelines variable-group create --name $(aliasName) --variables Tenant=A Alias=EdgeRuntime_$(aliasName)
-     echo $(myVariable)
+     echo $id
      az pipelines variable-group variable create --group-id $id --project "webMethodsIO_Integration" --name "Token" --secret true --value "Test"
   env:
     AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
