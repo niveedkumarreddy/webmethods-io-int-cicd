@@ -75,7 +75,7 @@ steps:
   displayName: 'Register Runtime'
 - pwsh: |
      az extension add --name azure-devops
-     az pipelines variable-group create --name $(aliasName) --variables Tenant=A Alias=EdgeRuntime_$(aliasName)
+     az pipelines variable-group create --name $(aliasName) --org "SrinivasanSabapathy" --project "webMethodsIO_Integration" --variables Tenant=A Alias=EdgeRuntime_$(aliasName)
      
   env:
     AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
