@@ -14,7 +14,9 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-- name: groupId
+- name: SAG_IS_CLOUD_REGISTER_URL
+  value: null
+- name: SAG_IS_CLOUD_REGISTER_TOKEN
   value: null
 - name: init
   value: true
@@ -71,6 +73,12 @@ steps:
           echo "$file exists."
           paired_json=$(cat $file)
           echo $paired_json
+          echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL;]$(jq .env.SAG_IS_CLOUD_REGISTER_URL $file)"
+          echo $SAG_IS_CLOUD_REGISTER_URL
+          echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_TOKEN;]$(jq .env.SAG_IS_CLOUD_REGISTER_TOKEN $file)"
+          echo $SAG_IS_CLOUD_REGISTER_TOKEN
+          echo "##vso[task.setvariable variable=SAG_IS_EDGE_CLOUD_ALIAS;]$(jq .env.SAG_IS_EDGE_CLOUD_ALIAS $file)"
+          echo $SAG_IS_EDGE_CLOUD_ALIAS
         else
           echo "File Not found!"
         fi
