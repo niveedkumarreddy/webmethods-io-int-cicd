@@ -73,6 +73,7 @@ steps:
           echo "$file exists."
           paired_json=$(cat $file)
           echo $paired_json
+          echo "SAG_IS_CLOUD_REGISTER_URL:" $(jq .env.SAG_IS_CLOUD_REGISTER_URL ./$(aliasName)_Paired.json)
           echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL;]$(jq .env.SAG_IS_CLOUD_REGISTER_URL $file)"
           echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL]`jq .env.SAG_IS_CLOUD_REGISTER_URL ./$(aliasName)_Paired.json`"
           echo $(SAG_IS_CLOUD_REGISTER_URL)
