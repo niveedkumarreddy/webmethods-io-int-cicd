@@ -87,10 +87,10 @@ steps:
 - pwsh: |
      az extension add --name azure-devops
      az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/ project="webMethodsIO_Integration"
-     $group_id = az pipelines variable-group create --name $(aliasName) --variables Tenant=A Alias=EdgeRuntime_$(aliasName)
+     $group_id = az pipelines variable-group create --name $(aliasName) --variables SAG_IS_CLOUD_REGISTER_URL=$SAG_IS_CLOUD_REGISTER_URL SAG_IS_EDGE_CLOUD_ALIAS=$SAG_IS_EDGE_CLOUD_ALIAS
      $group_id = $(az pipelines variable-group list -p $(System.TeamProject) --group-name $(aliasName) --query '[0].id' -o json)
      echo $group_id
-     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "Token" --secret true --value "Test"
+     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_TOKEN" --secret true --value $SAG_IS_CLOUD_REGISTER_TOKEN
   env:
     AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
   
