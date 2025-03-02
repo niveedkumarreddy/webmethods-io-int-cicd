@@ -78,22 +78,12 @@ steps:
           echo "File Not found!"
         fi
         echo "##vso[task.setvariable variable=FileExists]$fileExists"
-        echo $(FileExists)
-        echo $SAG_IS_CLOUD_REGISTER_URL
         echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL]$SAG_IS_CLOUD_REGISTER_URL"
-        echo "##vso[task.setvariable variable=SAG_IS_EDGE_CLOUD_ALIAS]$SAG_IS_EDGE_CLOUD_ALIAS"
+        echo "##vso[task.setvariable variable=SAG_IS_EDGE_CLOUD_ALIAS]EdgeRuntime_$(aliasName)"
         echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_TOKEN]$SAG_IS_CLOUD_REGISTER_TOKEN"
   displayName: 'Register Runtime'
   enabled: true
-- script: |
-    echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL;]$SAG_IS_CLOUD_REGISTER_URL"
-    echo "##vso[task.setvariable variable=SAG_IS_EDGE_CLOUD_ALIAS;]$SAG_IS_EDGE_CLOUD_ALIAS"
-    echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_TOKEN;]$SAG_IS_CLOUD_REGISTER_TOKEN"
-  displayName: 'Set Variables'
-  condition: eq(variables['FileExists'], True)
-  enabled: false
 - pwsh: |
-     echo $(SAG_IS_CLOUD_REGISTER_URL)
      az extension add --name azure-devops
      az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/ project="webMethodsIO_Integration"
      $group_id = az pipelines variable-group create --name $(aliasName) --variables SAG_IS_CLOUD_REGISTER_URL=$(SAG_IS_CLOUD_REGISTER_URL) SAG_IS_EDGE_CLOUD_ALIAS=$(SAG_IS_EDGE_CLOUD_ALIAS)
