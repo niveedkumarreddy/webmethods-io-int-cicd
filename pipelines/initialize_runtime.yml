@@ -78,15 +78,8 @@ steps:
           paired_json=$(cat $file)
           echo $paired_json
           SAG_IS_CLOUD_REGISTER_URL=$(jq .env.SAG_IS_CLOUD_REGISTER_URL ./$(aliasName)_Paired.json)
-          echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL;]$SAG_IS_CLOUD_REGISTER_URL"
-          echo $(SAG_IS_CLOUD_REGISTER_URL)
-          echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL;]$(jq .env.SAG_IS_CLOUD_REGISTER_URL $file)"
-          echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL]`jq .env.SAG_IS_CLOUD_REGISTER_URL ./$(aliasName)_Paired.json`"
-          echo $(SAG_IS_CLOUD_REGISTER_URL)
-          echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_TOKEN;]$(jq .env.SAG_IS_CLOUD_REGISTER_TOKEN $file)"
-          echo $(SAG_IS_CLOUD_REGISTER_TOKEN)
-          echo "##vso[task.setvariable variable=SAG_IS_EDGE_CLOUD_ALIAS;]$(jq .env.SAG_IS_EDGE_CLOUD_ALIAS $file)"
-          echo $(SAG_IS_EDGE_CLOUD_ALIAS)
+          SAG_IS_EDGE_CLOUD_ALIAS=$(jq .env.SAG_IS_EDGE_CLOUD_ALIAS ./$(aliasName)_Paired.json)
+          SAG_IS_CLOUD_REGISTER_TOKEN=$(jq .env.SAG_IS_CLOUD_REGISTER_TOKEN ./$(aliasName)_Paired.json)
         else
           echo "File Not found!"
         fi
@@ -99,12 +92,15 @@ steps:
   displayName: 'Set Variables'
   condition: eq(variables['FileExists'], True)
 - pwsh: |
+     echo $(SAG_IS_CLOUD_REGISTER_URL)
      az extension add --name azure-devops
      az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/ project="webMethodsIO_Integration"
      $group_id = az pipelines variable-group create --name $(aliasName) --variables SAG_IS_CLOUD_REGISTER_URL=$(SAG_IS_CLOUD_REGISTER_URL) SAG_IS_EDGE_CLOUD_ALIAS=$(SAG_IS_EDGE_CLOUD_ALIAS)
      $group_id = $(az pipelines variable-group list -p $(System.TeamProject) --group-name $(aliasName) --query '[0].id' -o json)
      echo $group_id
-     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_TOKEN" --secret true --value $(SAG_IS_CLOUD_REGISTER_TOKEN)
+     az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_URL" --secret false --value $(SAG_IS_CLOUD_REGISTER_URL)
+     az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_EDGE_CLOUD_ALIAS" --secret false --value $(SAG_IS_EDGE_CLOUD_ALIAS)
+     az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_TOKEN" --secret true --value $(SAG_IS_CLOUD_REGISTER_TOKEN)
   env:
     AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
   condition: eq(variables['FileExists'], True)
