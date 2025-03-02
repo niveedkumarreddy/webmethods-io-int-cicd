@@ -81,8 +81,8 @@ steps:
         echo $(FileExists)
         echo $SAG_IS_CLOUD_REGISTER_URL
         echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL]$SAG_IS_CLOUD_REGISTER_URL"
-        echo $(SAG_IS_CLOUD_REGISTER_URL)
-
+        echo "##vso[task.setvariable variable=SAG_IS_EDGE_CLOUD_ALIAS]$SAG_IS_EDGE_CLOUD_ALIAS"
+        echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_TOKEN]$SAG_IS_CLOUD_REGISTER_TOKEN"
   displayName: 'Register Runtime'
   enabled: true
 - script: |
@@ -91,6 +91,7 @@ steps:
     echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_TOKEN;]$SAG_IS_CLOUD_REGISTER_TOKEN"
   displayName: 'Set Variables'
   condition: eq(variables['FileExists'], True)
+  enabled: false
 - pwsh: |
      echo $(SAG_IS_CLOUD_REGISTER_URL)
      az extension add --name azure-devops
