@@ -77,7 +77,7 @@ steps:
 - pwsh: |
      az extension add --name azure-devops
      az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/
-     id = az pipelines variable-group create --name $(aliasName) --variables Tenant=A Alias=EdgeRuntime_$(aliasName)
+     id=$(az pipelines variable-group create --name $(aliasName) --variables Tenant=A Alias=EdgeRuntime_$(aliasName))
      az pipelines variable-group variable create --group-id $(id) --project "webMethodsIO_Integration" --name "Token" --secret true --value "Test"
   env:
     AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
