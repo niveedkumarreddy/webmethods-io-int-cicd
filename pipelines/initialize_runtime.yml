@@ -77,7 +77,7 @@ steps:
   displayName: 'Register Runtime'
 - pwsh: |
      az extension add --name azure-devops
-     az pipelines variable-group create --name $(aliasName) --group-id --id
+     az pipelines variable-group create --name $(aliasName) --group-id 111 --yes y
      
   env:
     AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
