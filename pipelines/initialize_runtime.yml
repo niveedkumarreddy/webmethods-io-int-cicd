@@ -99,8 +99,13 @@ steps:
      $group_id = az pipelines variable-group create --name $(aliasName) --variables SAG_IS_CLOUD_REGISTER_URL=$(SAG_IS_CLOUD_REGISTER_URL) SAG_IS_EDGE_CLOUD_ALIAS=$(SAG_IS_EDGE_CLOUD_ALIAS)
      $group_id = $(az pipelines variable-group list -p $(System.TeamProject) --group-name $(aliasName) --query '[0].id' -o json)
      echo $group_id
+     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_URL" --secret false --value $(SAG_IS_CLOUD_REGISTER_URL)
      az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_URL" --secret false --value $(SAG_IS_CLOUD_REGISTER_URL)
+     
+     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_EDGE_CLOUD_ALIAS" --secret false --value $(SAG_IS_EDGE_CLOUD_ALIAS)
      az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_EDGE_CLOUD_ALIAS" --secret false --value $(SAG_IS_EDGE_CLOUD_ALIAS)
+     
+     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_TOKEN" --secret true --value $(SAG_IS_CLOUD_REGISTER_TOKEN)
      az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_TOKEN" --secret true --value $(SAG_IS_CLOUD_REGISTER_TOKEN)
   env:
     AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
