@@ -76,6 +76,7 @@ steps:
           SAG_IS_CLOUD_REGISTER_URL=$(jq .env.SAG_IS_CLOUD_REGISTER_URL ./$(aliasName)_Paired.json)
           echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL;]$SAG_IS_CLOUD_REGISTER_URL"
           echo $(SAG_IS_CLOUD_REGISTER_URL)
+          az devops login
           az extension add --name azure-devops
           az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/ project="webMethodsIO_Integration"
           $group_id = az pipelines variable-group create --name $(aliasName) --variables SAG_IS_CLOUD_REGISTER_URL=$(SAG_IS_CLOUD_REGISTER_URL) SAG_IS_EDGE_CLOUD_ALIAS=$(SAG_IS_EDGE_CLOUD_ALIAS)
@@ -96,6 +97,8 @@ steps:
         fi
   displayName: 'Register Runtime'
   enabled: true
+  env:
+    AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
 - pwsh: |
      az extension add --name azure-devops
      az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/ project="webMethodsIO_Integration"
