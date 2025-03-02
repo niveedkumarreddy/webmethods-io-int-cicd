@@ -73,6 +73,7 @@ steps:
           echo "File Not found!"
         fi
   displayName: 'Register Runtime'
+  enabled: false
 - pwsh: |
      az extension add --name azure-devops
      az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/
