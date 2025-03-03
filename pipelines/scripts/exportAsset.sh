@@ -265,6 +265,15 @@ function exportAsset(){
               cd ./assets/flowservices
               echo "Flowservice Export:" ${EXPORT_URL}
               echod $(ls -ltr)
+            else
+              if [[ $assetType = dafservice* ]]; then
+                EXPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flows/${assetID}/export
+                cd ${HOME_DIR}/${repoName}
+                mkdir -p ./assets/dafservices
+                cd ./assets/dafservices
+                echo "DAFservice Export:" ${EXPORT_URL}
+                echod $(ls -ltr)
+              fi
             fi
           fi
         fi
@@ -352,9 +361,6 @@ function exportProjectParameters(){
                   echo ${metadataJson} > ./metadata.json
                   echo ${data} > ./${key}_${source_type}.json
                   configPerEnv . ${envTypes} "project_parameter" ${key}_${source_type}.json ${key}
-                  #cp -n ./${key}_${source_type}.json ${key}_dev.json 
-                  #cp -n ./${key}_${source_type}.json ${key}_qa.json 
-                  #cp -n ./${key}_${source_type}.json ${key}_prod.json
                   cd ..
               else 
                 for item in $(jq  -c -r '.output[]' <<< "$ppListJson"); do
@@ -415,6 +421,15 @@ if [ ${synchProject} == true ]; then
     echod $assetID
     exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   done
+   # Exporting DAF Flows
+  for item in $(jq  -c -r '.output.dafflows[]' <<< "$projectListJson"); do
+    echod "Inside FS Loop"
+    assetID=$item
+    assetType=dafservice
+    echod $assetID
+    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+  done
+
 
   #Expoting Accounts
   ACCOUNT_LIST_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/accounts

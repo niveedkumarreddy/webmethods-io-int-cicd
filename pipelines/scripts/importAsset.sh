@@ -128,6 +128,13 @@ function importAsset() {
             cd ${HOME_DIR}/${repoName}/assets/flowservices
             echod "Flowservice Import:" ${IMPORT_URL}
             echod $(ls -ltr)
+          else
+            if [[ $assetType = dafservice* ]]; then
+              IMPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/flow-import
+              cd ${HOME_DIR}/${repoName}/assets/dafservices
+              echod "DAFservice Import:" ${IMPORT_URL}
+              echod $(ls -ltr)
+            fi
           fi
         fi
       fi
@@ -404,6 +411,7 @@ function projectParameters(){
 
 cd ${HOME_DIR}/${repoName}
 
+# APIs import
 if [ ${synchProject} == true ]; then
   echod "Listing files"
   shopt -s nullglob dotglob
@@ -421,6 +429,7 @@ if [ ${synchProject} == true ]; then
     echod "No rest apis to import"
   fi
 
+  # Workflows import
   shopt -s nullglob dotglob
   wf_files=(./assets/workflows/*.zip)
   if [ ${#wf_files[@]} -gt 0 ]; then
@@ -435,6 +444,8 @@ if [ ${synchProject} == true ]; then
   else
     echod "No workflows to import"
   fi
+
+  # Flowservices Import
   shopt -s nullglob dotglob
   fs_files=(./assets/flowservices/*.zip)
   if [ ${#fs_files[@]} -gt 0 ]; then
@@ -448,6 +459,22 @@ if [ ${synchProject} == true ]; then
     done
   else
     echod "No flowservices to import"
+  fi
+
+  # DAFServices import
+  shopt -s nullglob dotglob
+  fs_files=(./assets/dafservices/*.zip)
+  if [ ${#fs_files[@]} -gt 0 ]; then
+    for filename in ./assets/dafservices/*.zip; do 
+        base_name=${filename##*/}
+        parent_name="$(basename "$(dirname "$filename")")"
+        base_name=${base_name%.*}
+        echod $base_name${filename%.*}
+        echod $parent_name
+        importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+    done
+  else
+    echod "No DAFservices to import"
   fi
   importRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type}
   projectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type}
