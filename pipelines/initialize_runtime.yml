@@ -71,6 +71,7 @@ steps:
         SAG_IS_CLOUD_REGISTER_URL=$(jq .env.SAG_IS_CLOUD_REGISTER_URL ./$(aliasName)_Paired.json)
         SAG_IS_EDGE_CLOUD_ALIAS=$(jq .env.SAG_IS_EDGE_CLOUD_ALIAS ./$(aliasName)_Paired.json)
         SAG_IS_CLOUD_REGISTER_TOKEN=$(jq .env.SAG_IS_CLOUD_REGISTER_TOKEN ./$(aliasName)_Paired.json)
+        dockerRunCommand=$(jq .dockerRunCommand ./$(aliasName)_Paired.json)
         echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL]$SAG_IS_CLOUD_REGISTER_URL"
         echo "##vso[task.setvariable variable=SAG_IS_EDGE_CLOUD_ALIAS]EdgeRuntime_$(aliasName)"
         echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_TOKEN]$SAG_IS_CLOUD_REGISTER_TOKEN"
