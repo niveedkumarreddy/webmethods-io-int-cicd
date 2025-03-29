@@ -89,7 +89,12 @@ steps:
     ls -ltr
   displayName: 'Excute ISCCR'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
-
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(System.DefaultWorkingDirectory)/../results'
+    artifactName: '$(repoName)_codeReview'
+  displayName: 'Publishing the code review'
+  
 - bash: |
     pwd
     cd ../self
