@@ -30,7 +30,11 @@ resources:
     endpoint: github
     name: $(gitOwner)/wmio-isccr
     ref: main
-
+  - repository: projectRepo
+    type: github
+    endpoint: github
+    name: $(repoPath)
+    ref: $(codeReviewBranch)
 
 steps:
 - checkout: self
@@ -43,6 +47,10 @@ steps:
   persistCredentials: "true"
   clean: "true"
   path: wmio-isccr
+- checkout: projectRepo
+  submodules: "true"
+  persistCredentials: "true"
+  clean: "true"
 
 - script: |
     echo "##vso[task.setvariable variable=environment;]play"
