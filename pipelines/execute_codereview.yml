@@ -80,6 +80,15 @@ steps:
     ls -ltr
   displayName: 'Prepare IO Project for Exported Assets'
 
+- script: |
+    podman run -v options:/mnt/code_review_options -v review:/mnt/code_review -v results:/mnt/code_review_results chini007/isccr pkg_ pkg_
+    find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
+    find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
+    find $(repoName)/assets/flowservices/* -type d -name 'pkg_*' -exec cp -r {} review \;
+    cd review
+    ls -ltr
+  displayName: 'Excute ISCCR'
+
 - bash: |
     pwd
     cd ../self
