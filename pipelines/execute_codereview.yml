@@ -54,6 +54,7 @@ steps:
 
 - script: |
     cd ../wmio-isccr
+    docker login -u $(usename) -p $(token) $(registry)
     docker build -t $(gitOwner)/isccr .
 
   displayName: 'ISCCR'
