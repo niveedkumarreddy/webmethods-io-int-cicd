@@ -82,6 +82,7 @@ steps:
   workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - script: |
+    cd ../
     pwd
     docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results chini007/isccr pkg_ pkg_
     cd review
