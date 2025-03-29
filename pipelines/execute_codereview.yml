@@ -79,12 +79,15 @@ steps:
     cd review
     ls -ltr
   displayName: 'Prepare IO Project for Exported Assets'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - script: |
+    pwd
     docker run -v options:/mnt/code_review_options -v review:/mnt/code_review -v results:/mnt/code_review_results chini007/isccr pkg_ pkg_
     cd review
     ls -ltr
   displayName: 'Excute ISCCR'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - bash: |
     pwd
