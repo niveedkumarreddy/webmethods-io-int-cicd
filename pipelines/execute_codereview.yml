@@ -51,6 +51,7 @@ steps:
   submodules: "true"
   persistCredentials: "true"
   clean: "true"
+  path: $(repoName)
 
 - script: |
     echo "##vso[task.setvariable variable=environment;]play"
