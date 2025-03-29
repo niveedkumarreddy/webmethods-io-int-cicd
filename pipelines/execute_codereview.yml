@@ -1,0 +1,106 @@
+##############################################################################################################
+#                                                                                                            #
+# execute_codereviewme.yml : Execute ISSCR of Flowservices                                                               #
+#                                                                                                            #
+# ####### Inputs ########                                                                                    #
+# branch: (Mandatory) on which branch code review has to be done                                                         #
+# repoName/projectName: (Mandatory) name of the project                                                                   #
+##############################################################################################################
+
+trigger: none
+
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- name: init
+  value: true
+- group: webMethodsIO_group
+- group: azure_group
+- group: github_group
+- name: repoPath
+  value: $(gitOwner)/$(repoName)
+
+
+
+steps:
+- checkout: self
+  submodules: "true"
+  persistCredentials: "true"
+  clean: "true"
+  path: self
+
+- script: |
+    echo "##vso[task.setvariable variable=environment;]play"
+    echo "##vso[task.setvariable variable=visibility;]Public"
+    echo "##vso[task.setvariable variable=description;]Automated"
+  displayName: 'Default Environment'
+
+
+
+- bash: |
+    pwd
+    cd ../self
+    pwd
+    ls -ltr
+    echo "##vso[task.setvariable variable=source_environment_hostname]`yq -e ".tenant.hostname" configs/env/$(environment).yml`"
+    echo "##vso[task.setvariable variable=source_environment_port]`yq -e ".tenant.port" configs/env/$(environment).yml`"
+    echo "##vso[task.setvariable variable=admin_user]`yq -e ".tenant.admin_username" configs/env/$(environment).yml`"
+    echo "##vso[task.setvariable variable=source_type]`yq -e ".tenant.type" configs/env/$(environment).yml`"
+    echo "##vso[task.setvariable variable=repo_user]`yq -e ".repo.user" configs/repo.yml`"
+    
+        echo $(System.DefaultWorkingDirectory)
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Get Environment Tenant Details'
+- script: |
+      cd ../
+      LOCAL_DEV_URL=https://$(source_environment_hostname):$(source_environment_port)
+      echo ${LOCAL_DEV_URL}
+      HOME_DIR=$(System.DefaultWorkingDirectory)/../
+      chmod +x ./self/pipelines/scripts/*.sh
+      ./self/pipelines/scripts/initializeRuntime.sh ${LOCAL_DEV_URL} $(admin_user) $(admin_password) $(aliasName) $(visibility) $(description) debug
+      file="./$(aliasName)_Paired.json"
+      echo $file
+      fileExists=false
+      if test -f "$file"; then
+        echo "$file exists."
+        fileExists=true
+        paired_json=$(cat $file)
+        echo $paired_json
+        SAG_IS_CLOUD_REGISTER_URL=$(jq .env.SAG_IS_CLOUD_REGISTER_URL ./$(aliasName)_Paired.json)
+        SAG_IS_EDGE_CLOUD_ALIAS=$(jq .env.SAG_IS_EDGE_CLOUD_ALIAS ./$(aliasName)_Paired.json)
+        SAG_IS_CLOUD_REGISTER_TOKEN=$(jq .env.SAG_IS_CLOUD_REGISTER_TOKEN ./$(aliasName)_Paired.json)
+        dockerRunCommand=$(jq .dockerRunCommand ./$(aliasName)_Paired.json)
+        echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_URL]$SAG_IS_CLOUD_REGISTER_URL"
+        echo "##vso[task.setvariable variable=SAG_IS_EDGE_CLOUD_ALIAS]EdgeRuntime_$(aliasName)"
+        echo "##vso[task.setvariable variable=SAG_IS_CLOUD_REGISTER_TOKEN]$SAG_IS_CLOUD_REGISTER_TOKEN"
+        echo "##vso[task.setvariable variable=dockerRunCommand]$dockerRunCommand"
+      else
+        echo "File Not found!"
+      fi
+      echo "##vso[task.setvariable variable=FileExists]$fileExists"
+  displayName: 'Register Runtime & Fetch  Details'
+  enabled: true
+- pwsh: |
+     az extension add --name azure-devops
+     az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/ project="webMethodsIO_Integration"
+     $group_id = az pipelines variable-group create --name $(aliasName) --variables SAG_IS_CLOUD_REGISTER_URL=$(SAG_IS_CLOUD_REGISTER_URL) SAG_IS_EDGE_CLOUD_ALIAS=$(SAG_IS_EDGE_CLOUD_ALIAS)
+     $group_id = $(az pipelines variable-group list -p $(System.TeamProject) --group-name $(aliasName) --query '[0].id' -o json)
+     echo $group_id
+     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_URL" --secret false --value $(SAG_IS_CLOUD_REGISTER_URL)
+     az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_URL" --secret false --value $(SAG_IS_CLOUD_REGISTER_URL)
+     
+     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_EDGE_CLOUD_ALIAS" --secret false --value $(SAG_IS_EDGE_CLOUD_ALIAS)
+     az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_EDGE_CLOUD_ALIAS" --secret false --value $(SAG_IS_EDGE_CLOUD_ALIAS)
+     
+     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_TOKEN" --secret true --value $(SAG_IS_CLOUD_REGISTER_TOKEN)
+     az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "SAG_IS_CLOUD_REGISTER_TOKEN" --secret true --value $(SAG_IS_CLOUD_REGISTER_TOKEN)
+     
+     az pipelines variable-group variable create --group-id $group_id --project "webMethodsIO_Integration" --name "dockerRunCommand" --secret false --value $(dockerRunCommand)
+     az pipelines variable-group variable update --group-id $group_id --project "webMethodsIO_Integration" --name "dockerRunCommand" --secret false --value $(dockerRunCommand)
+  env:
+    AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
+  condition: eq(variables['FileExists'], True)
+  displayName: 'Store Runtime Details to Library'
+  

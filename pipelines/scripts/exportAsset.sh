@@ -301,8 +301,8 @@ function exportAsset(){
       fi
       downloadJson=$(curl --location --request GET "${downloadURL}" --output ${assetID}.zip)
 
-      FILE=./${assetID}.zip
-      if [ -f "$FILE" ]; then
+        FILE=./${assetID}.zip
+        if [ -f "$FILE" ]; then
           echo "Download succeeded:" ls -ltr ./${assetID}.zip
       else
           echo "Download failed:"${downloadJson}
