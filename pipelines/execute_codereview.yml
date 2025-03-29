@@ -98,6 +98,7 @@ steps:
     searchFolder: '$(System.DefaultWorkingDirectory)/../results'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review' 
+  displayName: 'Parsing the code review junit'
 - bash: |
     pwd
     cd ../self
