@@ -1,10 +1,10 @@
 ##############################################################################################################
 #                                                                                                            #
-# execute_codereviewme.yml : Execute ISSCR of Flowservices                                                               #
+# execute_codereviewme.yml : Execute ISSCR of Flowservices                                                   #
 #                                                                                                            #
 # ####### Inputs ########                                                                                    #
-# branch: (Mandatory) on which branch code review has to be done                                                         #
-# repoName/projectName: (Mandatory) name of the project                                                                   #
+# branch: (Mandatory) on which branch code review has to be done                                             #
+# repoName/projectName: (Mandatory) name of the project                                                      #
 ##############################################################################################################
 
 trigger: none
