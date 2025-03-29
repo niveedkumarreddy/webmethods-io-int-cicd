@@ -52,11 +52,9 @@ steps:
 
 
 - script: |
-    pwd
-    cd ..
-    ls -ltr
-    cd wmio-isccr
-    ls -ltr
+    cd ../wmio-isccr
+    docker build -t $(gitOwner)/isccr .
+
   displayName: 'ISCCR'
 
 - bash: |
