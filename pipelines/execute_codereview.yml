@@ -55,7 +55,7 @@ steps:
     pwd
     cd ..
     ls -ltr
-    cd wmio_isccr
+    cd wmio-isccr
     ls -ltr
   displayName: 'ISCCR'
 
