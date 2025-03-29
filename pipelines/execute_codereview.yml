@@ -30,6 +30,11 @@ steps:
   persistCredentials: "true"
   clean: "true"
   path: self
+- checkout: wmio_isccrRepo
+  submodules: "true"
+  persistCredentials: "true"
+  clean: "true"
+  path: wmio-isccr
 
 - script: |
     echo "##vso[task.setvariable variable=environment;]play"
@@ -81,7 +86,7 @@ steps:
       fi
       echo "##vso[task.setvariable variable=FileExists]$fileExists"
   displayName: 'Register Runtime & Fetch  Details'
-  enabled: true
+  enabled: false
 - pwsh: |
      az extension add --name azure-devops
      az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/ project="webMethodsIO_Integration"
@@ -103,4 +108,5 @@ steps:
     AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
   condition: eq(variables['FileExists'], True)
   displayName: 'Store Runtime Details to Library'
+  enabled: false
   
