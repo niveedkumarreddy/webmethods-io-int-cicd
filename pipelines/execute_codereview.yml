@@ -48,8 +48,14 @@ steps:
     echo "##vso[task.setvariable variable=visibility;]Public"
     echo "##vso[task.setvariable variable=description;]Automated"
   displayName: 'Default Environment'
+  enabled: false
 
 
+- script: |
+    pwd
+    cd wmio_isccr
+    ls -ltr
+  displayName: 'ISCCR'
 
 - bash: |
     pwd
