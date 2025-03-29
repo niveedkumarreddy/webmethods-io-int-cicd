@@ -53,6 +53,8 @@ steps:
 
 - script: |
     pwd
+    cd ..
+    ls -ltr
     cd wmio_isccr
     ls -ltr
   displayName: 'ISCCR'
