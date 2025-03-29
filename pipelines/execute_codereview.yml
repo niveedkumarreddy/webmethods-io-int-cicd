@@ -19,6 +19,7 @@ variables:
 - group: webMethodsIO_group
 - group: azure_group
 - group: github_group
+- group: IBM_Registry
 - name: repoPath
   value: $(gitOwner)/$(repoName)
 
