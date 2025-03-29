@@ -76,7 +76,8 @@ steps:
     find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
     find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
     find $(repoName)/assets/flowservices/* -type d -name 'pkg_*' -exec cp -r {} review \;
-    ls -ltr ./review/
+    cd review
+    ls -ltr
   displayName: 'Prepare IO Project for Exported Assets'
 
 - bash: |
