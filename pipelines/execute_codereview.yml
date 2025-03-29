@@ -89,7 +89,13 @@ steps:
     pathToPublish: '$(System.DefaultWorkingDirectory)/../results'
     artifactName: '$(repoName)_codeReview'
   displayName: 'Publishing the code review'
-  
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/junit*.xml'
+    searchFolder: '$(System.DefaultWorkingDirectory)/../results'
+    failTaskOnFailedTests: true
+    testRunTitle: '$(repoName) Code Review' 
 - bash: |
     pwd
     cd ../self
