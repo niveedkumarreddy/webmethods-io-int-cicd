@@ -73,8 +73,6 @@ steps:
     mkdir -p review
     mkdir -p results
     mkdir -p options
-    pwd
-    ls -ltr
     find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
     find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
     find $(repoName)/assets/flowservices/* -type d -name 'pkg_*' -exec cp -r {} review \;
