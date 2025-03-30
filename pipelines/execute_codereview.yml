@@ -65,39 +65,15 @@ steps:
   displayName: 'Execute Code Review'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
 
-- script: |
-    cd ../
-    mkdir -p review
-    mkdir -p results/junit
-    mkdir -p options
-    find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
-    find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
-    find $(repoName)/assets/flowservices/* -type d -name 'pkg_*' -exec cp -r {} review \;
-  displayName: 'Prepare IO Project for Exported Assets'
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
-  enabled: false
-
-- script: |
-    cd ../
-    docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results chini007/isccr pkg_ pkg_
-    mv $(System.DefaultWorkingDirectory)/../results/*junit.xml $(System.DefaultWorkingDirectory)/../results/junit/
-    cd $(System.DefaultWorkingDirectory)/../results/junit
-    pwd
-    junitFolder=$(pwd)
-    echo "Junit: "${junitFolder}
-    echo "##vso[task.setvariable variable=junitFolder]$junitFolder"
-    ls -ltr
-  displayName: 'Excute ISCCR'
-  workingDirectory: '$(System.DefaultWorkingDirectory)'
-  enabled: false
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '*.xml'
-    searchFolder: '/home/vsts/work/1/results/junit'
+    searchFolder: '/home/vsts/work/1/results'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit'
+  
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(System.DefaultWorkingDirectory)/../results'
