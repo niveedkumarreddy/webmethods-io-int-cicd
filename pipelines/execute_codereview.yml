@@ -65,6 +65,7 @@ steps:
     cd ../
     mkdir -p review
     mkdir -p results
+    mkdir -P results/junit
     mkdir -p options
     find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
     find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
@@ -75,6 +76,7 @@ steps:
 - script: |
     cd ../
     docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results chini007/isccr pkg_ pkg_
+    mv $(System.DefaultWorkingDirectory)/../results/*junit.xml $(System.DefaultWorkingDirectory)/../results/junit/
     cd $(System.DefaultWorkingDirectory)/../results/
     pwd
     ls -ltr
@@ -87,7 +89,7 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**/MULTI*.xml'
+    testResultsFiles: '**/*junit.xml'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit'
