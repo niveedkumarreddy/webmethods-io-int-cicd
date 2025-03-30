@@ -62,16 +62,18 @@ steps:
     cd ${HOME_DIR}
     chmod +x ./self/pipelines/scripts/*.sh
     ./self/pipelines/scripts/executeCodeReview.sh ${HOME_DIR} true $(repoName) $(gitOwner)/isccr wmio-isccr debug
+    cp ${HOME_DIR}/results/*junit.xml $(System.DefaultWorkingDirectory)
   displayName: 'Execute Code Review'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
 
-- script: |
-    cd $(repoName)
-    echo "Committing code review ..."
-    chmod +x ../self/pipelines/scripts/github/*.sh    
-    ../self/pipelines/scripts/github/commitFeatureBranch.sh $(devUser) $(Build.BuildNumber) $(codeReviewBranch) ${HOME_DIR} debug
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '*.xml'
+    failTaskOnFailedTests: true
+    testRunTitle: '$(repoName) Code Review'
+  displayName: 'Parsing the code review JUnit 1'
 
-  displayName: 'Commit the codereview results to code-review branch'
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
