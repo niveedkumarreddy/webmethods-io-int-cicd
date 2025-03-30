@@ -96,7 +96,7 @@ mkdir -p review
 mkdir -p results
 mkdir -p options
 
-prepareProjectZip ${repoName} ${repoName} ${individualAssetExport}
+prepareProjectZip ${repoName} ${individualAssetExport}
 runCodeReview ${HOME_DIR} ${isccrDir} ${isccrImg}
 
 
