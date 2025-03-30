@@ -80,11 +80,5 @@ steps:
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit'
 
-  
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathToPublish: '$(System.DefaultWorkingDirectory)/../results'
-    artifactName: '$(repoName)_codeReview'
-  displayName: 'Publishing the code review'
 
 
