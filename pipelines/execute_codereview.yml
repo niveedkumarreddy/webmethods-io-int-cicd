@@ -89,8 +89,8 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**/*__junit.xml'
-    searchFolder: '$(System.DefaultWorkingDirectory)/../results/'
+    testResultsFiles: '**/*junit.xml'
+    searchFolder: $(System.DefaultWorkingDirectory)
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review' 
   displayName: 'Parsing the code review JUnit'
