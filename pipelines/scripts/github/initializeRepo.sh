@@ -108,6 +108,7 @@ repoid=$(curl -u ${repo_user}:${PAT} https://api.github.com/repos/${repo_user}/$
           mkdir -p workflows
           cd ..
           cp ../self/assets/github/workflows/dev.yml .github/workflows/
+          cp ../self/assets/github/workflows/codereview.yml .github/workflows/
           git init
           git config user.email "noemail.com"
           git config user.name "${devUser}"
@@ -144,6 +145,11 @@ repoid=$(curl -u ${repo_user}:${PAT} https://api.github.com/repos/${repo_user}/$
               -H "Accept: application/vnd.github+json" \
              -H "X-GitHub-Api-Version: 2022-11-28" \
              https://api.github.com/repos/${repo_user}/${repoName}/actions/workflows/dev.yml/enable
+
+           curl -u ${repo_user}:${PAT} -L -X PUT \
+              -H "Accept: application/vnd.github+json" \
+             -H "X-GitHub-Api-Version: 2022-11-28" \
+             https://api.github.com/repos/${repo_user}/${repoName}/actions/workflows/codereview.yml/enable
              
 
           echo "Repo creation done !!!"
