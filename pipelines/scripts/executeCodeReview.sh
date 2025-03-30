@@ -42,11 +42,11 @@ function prepareProjectZip(){
   repoName=$1
   individualAssetExport=$2
   # Unzip all exports zips
-  find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
+  find ${repoName}/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
   # Unzip all pkg_ zips
-  find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
+  find ${repoName}/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
    # Move all pkg_ to review folder
-  find $(repoName)/assets/flowservices/* -type d -name 'pkg_*' -exec cp -r {} review \;
+  find ${repoName}/assets/flowservices/* -type d -name 'pkg_*' -exec cp -r {} review \;
 }
 
 function runCodeReview(){
