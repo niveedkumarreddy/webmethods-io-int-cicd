@@ -83,6 +83,7 @@ steps:
     pwd
     ls -ltr
     cd $(System.DefaultWorkingDirectory)/../results/junit
+    pwd
     junitFolder=$(pwd)
     echo $(junitFolder)
     ls -ltr
