@@ -82,7 +82,9 @@ steps:
     cd $(System.DefaultWorkingDirectory)
     pwd
     ls -ltr
-    junitFolder=$(System.DefaultWorkingDirectory)/../results/junit
+    cd $(System.DefaultWorkingDirectory)/../results/junit
+    junitFolder=$(pwd)
+    echo $(junitFolder)
 
   displayName: 'Excute ISCCR'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
