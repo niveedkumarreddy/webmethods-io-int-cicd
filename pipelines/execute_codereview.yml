@@ -66,22 +66,20 @@ steps:
   displayName: 'Execute Code Review'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
 
-- task: PublishTestResults@2
+- task: PublishBuildArtifacts@1
   inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '*.xml'
-    failTaskOnFailedTests: true
-    testRunTitle: '$(repoName) Code Review'
-  displayName: 'Parsing the code review JUnit 1'
+    pathToPublish: '$(System.DefaultWorkingDirectory)/../results'
+    artifactName: '$(repoName)_codeReview'
+  displayName: 'Publishing the code review'
 
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '*.xml'
-    searchFolder: '/home/vsts/work/1/results'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit'
+
   
 - task: PublishBuildArtifacts@1
   inputs:
