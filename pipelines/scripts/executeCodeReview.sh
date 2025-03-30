@@ -9,8 +9,11 @@
 HOME_DIR=$1
 individualAssetExport=$2
 repoName=$3
-isccrImg=$4
-isccrDir=$5
+registryUser=$4
+registryToken=$5
+rigistryHost=$6
+isccrImg=$7
+isccrDir=$8
 debug=${@: -1}
 
     if [ -z "$HOME_DIR" ]; then
@@ -81,6 +84,7 @@ function runCodeReview(){
   isccrImg=$3
   # Build docker image
   cd ${HOME_DIR}/${isccrDir}
+  docker login -u ${registryUser} -p ${registryToken} ${rigistryHost}
   docker build -t ${isccrImg} .
 
   cd ${HOME_DIR}
