@@ -96,8 +96,8 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**/*.xml'
-    searchFolder: '/home/vsts/1/results/junit'
+    testResultsFiles: '*.xml'
+    searchFolder: '/home/vsts/work/1/results/junit'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit 2'
