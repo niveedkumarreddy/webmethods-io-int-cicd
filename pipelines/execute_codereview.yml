@@ -85,7 +85,7 @@ steps:
     cd $(System.DefaultWorkingDirectory)/../results/junit
     pwd
     junitFolder=$(pwd)
-    echo $(junitFolder)
+    echo "Junit: "$(junitFolder)
     ls -ltr
   displayName: 'Excute ISCCR'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
@@ -101,7 +101,7 @@ steps:
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '*.xml'
-    searchFolder: '$(junitFolder)'
+    searchFolder: '/home/vsts/work/1/results/junit'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit 2'
