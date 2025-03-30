@@ -65,6 +65,14 @@ steps:
   displayName: 'Execute Code Review'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
 
+- script: |
+    cd ../$(repoName)
+
+    echo "Committing code review ..."
+    chmod +x ../self/pipelines/scripts/github/*.sh    
+    ../self/pipelines/scripts/github/commitFeatureBranch.sh $(devUser) $(Build.BuildNumber) $(codeReviewBranch) ${HOME_DIR} debug
+
+  displayName: 'Commit the codereview results to code-review branch'
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
