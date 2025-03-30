@@ -72,15 +72,13 @@ function runCodeReview(){
   # Run ISCCR docker instance with monts
   docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results ${isccrImg} pkg_ pkg_
   
-  cp ${HOME_DIR}/results/*junit.xml ${HOME_DIR}/results/junit/
-  cd ${HOME_DIR}/results/junit
 }
 
 
 
 cd ${HOME_DIR}
 mkdir -p review
-mkdir -p results/junit
+mkdir -p results
 mkdir -p options
 
 prepareProjectZip ${repoName} ${repoName} ${individualAssetExport}
