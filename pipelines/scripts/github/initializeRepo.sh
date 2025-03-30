@@ -125,11 +125,13 @@ repoid=$(curl -u ${repo_user}:${PAT} https://api.github.com/repos/${repo_user}/$
           git commit -m "first commit"
           git push -u origin qa
           
+          git checkout -b codeReview production
+          git commit -m "first commit"
+          git push -u origin codeReview
+
           git checkout -b ${featureBranchName} production
           git commit -m "first commit"
           git push -u origin ${featureBranchName}
-
-
 
           #Enable Actions
            curl -u ${repo_user}:${PAT} -L -X PUT \
