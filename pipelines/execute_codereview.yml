@@ -60,6 +60,14 @@ steps:
   displayName: 'Build ISCCR Image'
 
 - script: |
+    HOME_DIR=$(System.DefaultWorkingDirectory)/../
+
+    chmod +x ./self/pipelines/scripts/*.sh
+    ./self/pipelines/scripts/executeCodeReview.sh ${HOME_DIR} true $(repoName) debug
+  displayName: 'Execute Code Review'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+- script: |
     cd ../
     mkdir -p review
     mkdir -p results/junit
@@ -69,6 +77,7 @@ steps:
     find $(repoName)/assets/flowservices/* -type d -name 'pkg_*' -exec cp -r {} review \;
   displayName: 'Prepare IO Project for Exported Assets'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
+  enabled: false
 
 - script: |
     cd ../
