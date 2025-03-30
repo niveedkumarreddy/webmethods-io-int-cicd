@@ -100,7 +100,7 @@ steps:
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '*.xml'
-    searchFolder: $(junitFolder)
+    searchFolder: '$(junitFolder)'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit 2'
