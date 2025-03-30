@@ -93,6 +93,14 @@ steps:
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit'
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/*.xml'
+    searchFolder: '/home/vsts/1/results/junit'
+    failTaskOnFailedTests: true
+    testRunTitle: '$(repoName) Code Review'
+  displayName: 'Parsing the code review JUnit 2'
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(System.DefaultWorkingDirectory)/../results'
