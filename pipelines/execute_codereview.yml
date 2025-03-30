@@ -84,6 +84,7 @@ steps:
     pwd
     junitFolder=$(pwd)
     echo "Junit: "${junitFolder}
+    echo "##vso[task.setvariable variable=junitFolder]$junitFolder"
     ls -ltr
   displayName: 'Excute ISCCR'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
@@ -99,7 +100,7 @@ steps:
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '*.xml'
-    searchFolder: '/home/vsts/work/1/results/junit'
+    searchFolder: '$junitFolder'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit 2'
