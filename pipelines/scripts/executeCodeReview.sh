@@ -14,6 +14,7 @@ registryToken=$5
 rigistryHost=$6
 isccrImg=$7
 isccrDir=$8
+customConfigPath=$9
 debug=${@: -1}
 
     if [ -z "$HOME_DIR" ]; then
@@ -39,6 +40,10 @@ debug=${@: -1}
       echo "Missing template parameter isccrDir"
       exit 1
     fi
+    if [ -z "$customConfigPath" ]; then
+      echo "Missing template parameter customConfigPath"
+      exit 1
+    fi
 
     if [ "$debug" == "debug" ]; then
       echo "......Running in Debug mode ......"
@@ -55,9 +60,10 @@ function echod(){
 function prepareProjectZip(){
   repoName=$1
   individualAssetExport=$2
+  customConfigPath=$3
 
   # Copy custom codereview options
-  cp ${HOME_DIR}/${repoName}/codereview/options/*.xml ${HOME_DIR}/options/
+  cp ${customConfigPath}/*.xml ${HOME_DIR}/options/
 
   #Unzip depending on type of exports
   if [ ${individualAssetExport} == true ]; then
@@ -105,7 +111,7 @@ mkdir -p review
 mkdir -p results
 mkdir -p options
 
-prepareProjectZip ${repoName} ${individualAssetExport}
+prepareProjectZip ${repoName} ${individualAssetExport} ${customConfigPath}
 runCodeReview ${HOME_DIR} ${isccrDir} ${isccrImg}
 
 

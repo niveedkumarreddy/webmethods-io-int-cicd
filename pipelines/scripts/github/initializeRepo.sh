@@ -110,10 +110,6 @@ repoid=$(curl -u ${repo_user}:${PAT} https://api.github.com/repos/${repo_user}/$
           # Add github flows
           cp ../self/assets/github/workflows/dev.yml .github/workflows/
           cp ../self/assets/github/workflows/codereview.yml .github/workflows/
-
-          # Add code review custom option for io flowservices
-          mkdir -p codereview/options
-          p ../self/config/codereview/config.xml codereview/options/
           
            #### Create Branches from Prod
           git init
