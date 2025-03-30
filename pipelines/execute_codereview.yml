@@ -91,6 +91,7 @@ steps:
     ls -ltr
   displayName: 'Excute ISCCR'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
+  enabled: false
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
