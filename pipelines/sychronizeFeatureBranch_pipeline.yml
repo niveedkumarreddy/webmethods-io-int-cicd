@@ -12,7 +12,7 @@ variables:
 
 
 pool:
-  vmImage: ubuntu-latestSrinivasan-Sabapathy-ibm-com
+  vmImage: ubuntu-latest
 resources:
   repositories:
   - repository: projectRepo
