@@ -82,15 +82,10 @@ steps:
 - script: |
     cd ../
     docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results chini007/isccr pkg_ pkg_
-    cd results
+    cd $(System.DefaultWorkingDirectory)/../results/
     ls -ltr
   displayName: 'Excute ISCCR'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathToPublish: '$(System.DefaultWorkingDirectory)/../results'
-    artifactName: '$(repoName)_codeReview'
-  displayName: 'Publishing the code review'
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
@@ -99,4 +94,10 @@ steps:
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review' 
   displayName: 'Parsing the code review JUnit'
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(System.DefaultWorkingDirectory)/../results'
+    artifactName: '$(repoName)_codeReview'
+  displayName: 'Publishing the code review'
+
 
