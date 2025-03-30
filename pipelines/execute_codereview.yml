@@ -66,8 +66,7 @@ steps:
   workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 - script: |
-    cd ../$(repoName)
-
+    cd $(repoName)
     echo "Committing code review ..."
     chmod +x ../self/pipelines/scripts/github/*.sh    
     ../self/pipelines/scripts/github/commitFeatureBranch.sh $(devUser) $(Build.BuildNumber) $(codeReviewBranch) ${HOME_DIR} debug
