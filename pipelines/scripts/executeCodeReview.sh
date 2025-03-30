@@ -52,12 +52,27 @@ function echod(){
 function prepareProjectZip(){
   repoName=$1
   individualAssetExport=$2
-  # Unzip all exports zips
-  find ${repoName}/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
-  # Unzip all pkg_ zips
-  find ${repoName}/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
-   # Move all pkg_ to review folder
-  find ${repoName}/assets/flowservices/* -type d -name 'pkg_*' -exec cp -r {} review \;
+  if [ ${individualAssetExport} == true ]; then
+    # Unzip all exports zips
+    find ${repoName}/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
+    # Unzip all pkg_ zips
+    find ${repoName}/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
+    # Move all pkg_ to review folder
+    find ${repoName}/assets/flowservices/* -type d -name 'pkg_*' -exec cp -r {} review \;
+
+    # find all directories named integrations, cd to parent directory and remove all directories except integrations
+    find review -type d -name 'integrations' -exec sh -c 'cd $(dirname {}) && rm -rf $(ls -d */ | grep -v integrations)' \;
+  else
+    unzip ${repoName}/${repoName}.zip -d ${repoName}/
+    # unzip all zip files under wmio/$project/deploy-flows    
+    find ${repoName}/deploy-flows -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
+
+    # find directory starting with pkg_ under deploy-flows and copy the contents review directory
+    find ${repoName}/deploy-flows -type d -name 'pkg_*' -exec cp -r {} review \;
+
+    # find all directories named integrations, cd to parent directory and remove all directories except integrations
+    find review -type d -name 'integrations' -exec sh -c 'cd $(dirname {}) && rm -rf $(ls -d */ | grep -v integrations)' \;
+  fi
 }
 
 function runCodeReview(){
