@@ -64,9 +64,14 @@ function runCodeReview(){
   HOME_DIR=$1
   isccrDir=$2
   isccrImg=$3
-  cd ${HOME_DIR}/${isccr_DIR}
+  # Build docker image
+  cd ${HOME_DIR}/${isccrDir}
   docker build -t ${isccrImg} .
+
+  cd ${HOME_DIR}
+  # Run ISCCR docker instance with monts
   docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results ${isccrImg} pkg_ pkg_
+  
   cp ${HOME_DIR}/results/*junit.xml ${HOME_DIR}/results/junit/
   cd ${HOME_DIR}/results/junit
 }
