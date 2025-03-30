@@ -14,8 +14,8 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-- name: init
-  value: true
+- name: junitFolder
+  value: $(System.DefaultWorkingDirectory)
 - group: webMethodsIO_group
 - group: azure_group
 - group: github_group
@@ -82,6 +82,7 @@ steps:
     cd $(System.DefaultWorkingDirectory)
     pwd
     ls -ltr
+    junitFolder=$(System.DefaultWorkingDirectory)/../results/junit
 
   displayName: 'Excute ISCCR'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
@@ -89,7 +90,7 @@ steps:
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '**/*.xml'
-    searchFolder: '$(System.DefaultWorkingDirectory)../results/junit'
+    searchFolder: '$(System.DefaultWorkingDirectory)/../results/junit'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit'
@@ -97,7 +98,7 @@ steps:
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: '*.xml'
-    searchFolder: '/home/vsts/work/1/results/junit'
+    searchFolder: $(junitFolder)
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review'
   displayName: 'Parsing the code review JUnit 2'
