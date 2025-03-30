@@ -51,6 +51,7 @@ function prepareProjectZip(){
 
 function runCodeReview(){
   HOME_DIR=$1
+  docker build -t $(gitOwner)/isccr .
   docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results chini007/isccr pkg_ pkg_
   cp ${HOME_DIR}/../results/*junit.xml ${HOME_DIR}/../results/junit/
 }
