@@ -9,7 +9,8 @@
 HOME_DIR=$1
 individualAssetExport=$2
 repoName=$3
-isccr=$3
+isccrImg=$4
+isccrDir=$5
 debug=${@: -1}
 
     if [ -z "$HOME_DIR" ]; then
@@ -52,9 +53,12 @@ function prepareProjectZip(){
 
 function runCodeReview(){
   HOME_DIR=$1
-  docker build -t ${isccr} .
+  isccrDir=$2
+  isccrImg=$3
+  cd ${HOME_DIR}/${isccr_DIR}
+  docker build -t ${isccrImg} .
   docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results chini007/isccr pkg_ pkg_
-  cp ${HOME_DIR}/results/*junit.xml ${HOME_DIR}/../results/junit/
+  cp ${HOME_DIR}/results/*junit.xml ${HOME_DIR}/results/junit/
 }
 
 
@@ -65,8 +69,8 @@ mkdir -p results/junit
 mkdir -p options
 
 prepareProjectZip ${repoName} ${repoName} ${individualAssetExport}
-runCodeReview ${HOME_DIR}
-cd $(System.DefaultWorkingDirectory)/../results/junit
+runCodeReview ${HOME_DIR} ${isccrDir} ${isccrImg}
+cd ${HOME_DIR}/results/junit
 
 set +x
 
