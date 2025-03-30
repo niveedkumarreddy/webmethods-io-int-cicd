@@ -28,6 +28,15 @@ debug=${@: -1}
       exit 1
     fi
 
+    if [ -z "$isccrImg" ]; then
+      echo "Missing template parameter isccrImg"
+      exit 1
+    fi
+    if [ -z "$isccrDir" ]; then
+      echo "Missing template parameter isccrDir"
+      exit 1
+    fi
+
     if [ "$debug" == "debug" ]; then
       echo "......Running in Debug mode ......"
     fi
@@ -57,8 +66,9 @@ function runCodeReview(){
   isccrImg=$3
   cd ${HOME_DIR}/${isccr_DIR}
   docker build -t ${isccrImg} .
-  docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results chini007/isccr pkg_ pkg_
+  docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results ${isccrImg} pkg_ pkg_
   cp ${HOME_DIR}/results/*junit.xml ${HOME_DIR}/results/junit/
+  cd ${HOME_DIR}/results/junit
 }
 
 
@@ -70,7 +80,7 @@ mkdir -p options
 
 prepareProjectZip ${repoName} ${repoName} ${individualAssetExport}
 runCodeReview ${HOME_DIR} ${isccrDir} ${isccrImg}
-cd ${HOME_DIR}/results/junit
+
 
 set +x
 
