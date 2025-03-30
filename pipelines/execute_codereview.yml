@@ -89,7 +89,7 @@ steps:
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
-    testResultsFiles: '**/MULTI__CodeReviewReport__junit.xml'
+    testResultsFiles: '**/MULTI*.xml'
     searchFolder: '$(System.DefaultWorkingDirectory)/../results'
     failTaskOnFailedTests: true
     testRunTitle: '$(repoName) Code Review' 
