@@ -485,16 +485,6 @@ ________________________________________________________________________________
 				</parameters>
 			</implementation>
 		</check>
-		<check id="NS3" name="Folder Prefix" enabled="true" ignoreFailure="false">
-			<description><![CDATA[Ensure that all assets exist within the specified prefix folders.  Recommendation is to set a separate prefix folder structure from the package and use this across all packages differentiating below the prefix.  This can be one or two levels deep (but ideally should be no more) and commonly is the inverse domain name of the organisation, e.g. "com.softwareag".]]></description>
-			<implementation>
-				<class>com.softwareag.gcs.wm.codereview.operations.NamingStandards</class>
-				<parameters>
-					<parameter>folder-prefix</parameter>
-					<parameter>%folder-prefix%</parameter>
-				</parameters>
-			</implementation>
-		</check>
 		<check id="NS4" name="Package Name" enabled="true" ignoreFailure="false">
 			<description><![CDATA[Ensure the package prefix has been specified and package name conforms to standards.  <br/>1. The package name should not end with the word "Package" or "Pkg".  <br/>2. Package names must not be prefixed with "Wm". These usually represent packages distributed by webMethods. <br/>3. Packages should start with an uppercase character and only contain alpha numeric character plus the underscore when absolutely required.. <br/>4. Package Name should start with your provided prefix.  A package prefix aids identification of packages created by the organisation.]]></description>
 			<implementation>
@@ -503,7 +493,7 @@ ________________________________________________________________________________
 					<parameter>package</parameter>
 					<parameter>%code.review.pkgname%</parameter>
 					<parameter>%code.review.pkgprefix%</parameter>
-					<parameter>[A-Z]{1}[a-zA-Z0-9_]*</parameter>
+					<parameter>[a-zA-Z]{1}[a-zA-Z0-9_]*</parameter>
 					<!-- pass a system variable called package.prefix -->
 				</parameters>
 			</implementation>
