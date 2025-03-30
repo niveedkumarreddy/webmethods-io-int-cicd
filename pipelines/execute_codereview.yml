@@ -52,16 +52,12 @@ steps:
   path: $(repoName)
 
 
-- script: |
-    cd ../wmio-isccr
-    docker login -u $(username) -p $(token) $(registry)
-  displayName: 'wM Registry Login'
 
 - script: |
     HOME_DIR=$(System.DefaultWorkingDirectory)/../
     cd ${HOME_DIR}
     chmod +x ./self/pipelines/scripts/*.sh
-    ./self/pipelines/scripts/executeCodeReview.sh ${HOME_DIR} true $(repoName) $(gitOwner)/isccr wmio-isccr debug
+    ./self/pipelines/scripts/executeCodeReview.sh ${HOME_DIR} true $(repoName) $(username) $(token) $(registry) $(gitOwner)/isccr wmio-isccr debug
     cp ${HOME_DIR}/results/*junit.xml $(System.DefaultWorkingDirectory)
   displayName: 'Execute Code Review'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
