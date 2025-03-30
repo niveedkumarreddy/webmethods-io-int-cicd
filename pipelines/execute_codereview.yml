@@ -14,8 +14,6 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-- name: junitFolder
-  value: $(System.DefaultWorkingDirectory)
 - group: webMethodsIO_group
 - group: azure_group
 - group: github_group
