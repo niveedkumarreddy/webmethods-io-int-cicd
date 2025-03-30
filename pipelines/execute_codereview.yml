@@ -64,8 +64,7 @@ steps:
 - script: |
     cd ../
     mkdir -p review
-    mkdir -p results
-    mkdir -P results/junit
+    mkdir -p results/junit
     mkdir -p options
     find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
     find $(repoName)/assets/flowservices -name '*.zip' -exec sh -c 'unzip -o -d "${1%*.zip}" "$1"' _ {} \;
