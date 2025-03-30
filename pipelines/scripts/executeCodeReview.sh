@@ -88,7 +88,7 @@ function runCodeReview(){
   docker build -t ${isccrImg} .
 
   cd ${HOME_DIR}
-  # Run ISCCR docker instance with monts
+  # Run ISCCR docker instance with mounts
   docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results ${isccrImg} pkg_ pkg_
   
 }
