@@ -55,6 +55,11 @@ function echod(){
 function prepareProjectZip(){
   repoName=$1
   individualAssetExport=$2
+
+  # Copy custom codereview options
+  cp ${HOME_DIR}/${repoName}/codereview/options/*.xml ${HOME_DIR}/options/
+
+  #Unzip depending on type of exports
   if [ ${individualAssetExport} == true ]; then
     # Unzip all exports zips
     find ${repoName}/assets/flowservices -name '*.zip' -exec sh -c 'unzip -d "${1%*.zip}" "$1"' _ {} \;
