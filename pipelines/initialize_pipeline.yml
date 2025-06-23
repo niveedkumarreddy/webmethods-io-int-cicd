@@ -3,9 +3,10 @@
 # initialize_pipeline.yml : Initialize the repository and also the play/build stage                          #
 #                                                                                                            #
 # ####### Inputs ########                                                                                    #
-# assetID: (Optional) Id of the asset to be Imported                                                         #
-# assetName: (Optional) name of the asset                                                                    #
-# assetType: (Optional) Type of the asset. Currently supported options: workflow, flowservice.               #
+# assetIDList: (Optional) List of asset Ids to be Imported                                                   #
+# assetNameList: (Optional) Asset name list                                                                  #
+# assetTypeList: (Optional) Asset Type List. Currently supported options: workflow, flowservice,             #
+#                 referenceData, rest_api & project_parameter                                                #
 # devUser: (Optional) UserID for commits and audit                                                           #
 # featureBranchName: ((Mandatory) Name of the feature branch.                                                #
 # repoName: (Mandatory) Name of the corresponding repository.                                                #
