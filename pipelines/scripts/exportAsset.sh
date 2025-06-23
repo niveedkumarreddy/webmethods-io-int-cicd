@@ -9,8 +9,8 @@ LOCAL_DEV_URL=$1
 admin_user=$2
 admin_password=$3
 repoName=$4
-assetID=$5
-assetType=$6
+assetIDList=$5
+assetTypeList=$6
 HOME_DIR=$7
 synchProject=$8
 source_type=$9
@@ -38,13 +38,13 @@ debug=${@: -1}
       exit 1
     fi
 
-    if [ -z "$assetID" ]; then
-      echo "Missing template parameter assetID"
+    if [ -z "$assetIDList" ]; then
+      echo "Missing template parameter assetIDList"
       exit 1
     fi
 
-    if [ -z "$assetType" ]; then
-      echo "Missing template parameter assetType"
+    if [ -z "$assetTypeList" ]; then
+      echo "Missing template parameter assetTypeList"
       exit 1
     fi
 
@@ -319,7 +319,73 @@ function exportAsset(){
   cd ${HOME_DIR}/${repoName}
 
 }  
+function splitAndExportAssets() {
 
+  LOCAL_DEV_URL=$1
+  admin_user=$2
+  admin_password=$3
+  repoName=$4
+  assetID=$5
+  assetType=$6
+  HOME_DIR=$7
+  synchProject=$8
+  includeAllReferenceData=$9
+  local assetNameList="$5"
+  local assetTypeList="$6"
+
+  # Desired processing order
+  local desiredOrder=("referenceData" "rest_api" "project_parameter" "workflow" "flowservice" "dafservice")
+
+  # Normalize input: remove spaces around commas
+  assetNameList=$(echo "$assetNameList" | sed 's/ *, */,/g')
+  assetTypeList=$(echo "$assetTypeList" | sed 's/ *, */,/g')
+
+  # Convert to arrays
+  IFS=',' read -ra assetNames <<< "$assetNameList"
+  IFS=',' read -ra assetTypes <<< "$assetTypeList"
+
+  # Trim whitespace from each element
+  for i in "${!assetNames[@]}"; do
+    assetNames[$i]=$(echo "${assetNames[$i]}" | xargs)
+  done
+  for i in "${!assetTypes[@]}"; do
+    assetTypes[$i]=$(echo "${assetTypes[$i]}" | xargs)
+  done
+
+  # Length check
+  local lenNames=${#assetNames[@]}
+  local lenTypes=${#assetTypes[@]}
+  if [ "$lenNames" -ne "$lenTypes" ]; then
+    echo "Error: Mismatch in number of items. assetNameList has $lenNames, assetTypeList has $lenTypes."
+    return 1
+  fi
+
+  # Validate asset types
+  for type in "${assetTypes[@]}"; do
+    local found=false
+    for valid in "${desiredOrder[@]}"; do
+      if [ "$type" == "$valid" ]; then
+        found=true
+        break
+      fi
+    done
+    if ! $found; then
+      echo "Error: Unsupported asset type '$type'."
+      return 1
+    fi
+  done
+
+  # Rearranged processing
+  echo "== Processing in Desired Order =="
+  for orderType in "${desiredOrder[@]}"; do
+    for (( i=0; i<$lenNames; i++ )); do
+      if [ "${assetTypes[$i]}" == "$orderType" ]; then
+        echo "Processing ${assetNames[$i]} of type ${assetTypes[$i]}"
+        exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetNames[$i]} ${assetTypes[$i]} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+      fi
+    done
+  done
+}
 function exportProjectParameters(){
 
     LOCAL_DEV_URL=$1
@@ -374,9 +440,6 @@ function exportProjectParameters(){
                   echo ${metadataJson} > ./metadata.json
                   echo ${data} > ./${key}_${source_type}.json
                   configPerEnv . ${envTypes} "project_parameter" ${key}_${source_type}.json ${key}
-                  #cp -n ./${key}_${source_type}.json ${key}_dev.json 
-                  #cp -n ./${key}_${source_type}.json ${key}_qa.json 
-                  #cp -n ./${key}_${source_type}.json ${key}_prod.json
                   cd ..
                 done
               fi
@@ -455,6 +518,8 @@ if [ ${synchProject} == true ]; then
 
   # Exporting Project Referencedata
 
+  assetID=${assetIDList}
+  assetType=referenceData
   exportReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 
   # Exporting Project Parameters
   #PP Export
@@ -462,5 +527,10 @@ if [ ${synchProject} == true ]; then
   exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   
 else
-  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+
+# Input variables
+#assetIDList=" AssetX ,AssetY , AssetZ,AssetA,AssetB ,AssetC "
+#assetTypeList="flowservice , workflow, referenceData,dafservice, project_parameter , rest_api "
+
+splitAndExportAssets ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} "$assetIDList" "$assetTypeList" ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
 fi  
