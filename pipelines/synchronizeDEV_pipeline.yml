@@ -8,7 +8,7 @@
 #                 workflow, flowservice, referenceData, rest_api & project_parameter.                        #
 # repoName: (Mandatory) Name of the corresponding repository.                                                #
 # synchProject: (Mandatory) True if you want to synchronize complete project. If false, then you have to     #
-#                provide assetIDList and assetTypeList                                                               #
+#                provide assetIDList and assetTypeList                                                       #
 ##############################################################################################################
 
 
