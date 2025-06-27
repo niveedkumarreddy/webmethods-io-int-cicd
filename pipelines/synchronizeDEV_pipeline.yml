@@ -3,8 +3,9 @@
 # synchronizeDEV_pipeline.yml : Imports to DEV Stage                                                         #
 #                                                                                                            #
 # ####### Inputs ########                                                                                    #
-# assetID: (Optional) Id of the asset to be Imported                                                         #
-# assetType: (Optional) Type of the asset. Currently supported options: workflow, flowservice.               #
+# assetIDList: (Optional) Comma sepereated list of Ids of the asset to be Imported                           #
+# assetTypeList: (Optional) Comma sepereated list os asset Types of the asset. Currently supported options: 
+#                 workflow, flowservice.               #
 # repoName: (Mandatory) Name of the corresponding repository.                                                #
 # synchProject: (Mandatory) True if you want to synchronize complete project. If false, then you have to     #
 #                provide assetID and assetType                                                               #
@@ -75,7 +76,7 @@ steps:
     
     repoName=$(perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$(repoName)")
     echo $(repoName)
-    echo $(assetID)
+    echo $(assetIDList)
     LOCAL_DEV_URL=https://$(source_environment_hostname):$(source_environment_port)
     
     pwd
