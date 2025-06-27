@@ -4,11 +4,11 @@
 #                                                                                                            #
 # ####### Inputs ########                                                                                    #
 # assetIDList: (Optional) Comma sepereated list of Ids of the asset to be Imported                           #
-# assetTypeList: (Optional) Comma sepereated list os asset Types of the asset. Currently supported options: 
-#                 workflow, flowservice.               #
+# assetTypeList: (Optional) Comma sepereated list os asset Types of the asset. Currently supported options:  #
+#                 workflow, flowservice, referenceData, rest_api & project_parameter.                        #
 # repoName: (Mandatory) Name of the corresponding repository.                                                #
 # synchProject: (Mandatory) True if you want to synchronize complete project. If false, then you have to     #
-#                provide assetID and assetType                                                               #
+#                provide assetIDList and assetTypeList                                                               #
 ##############################################################################################################
 
 
