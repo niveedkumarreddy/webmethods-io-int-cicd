@@ -71,73 +71,7 @@ function echod(){
   fi
 
 }
-function splitAndImportAssets() {
 
-  LOCAL_DEV_URL=$1
-  admin_user=$2
-  admin_password=$3
-  repoName=$4
-  assetID=$5
-  assetType=$6
-  HOME_DIR=$7
-  synchProject=$8
-  includeAllReferenceData=$9
-  local assetNameList="$5"
-  local assetTypeList="$6"
-
-  # Desired processing order
-  local desiredOrder=("referenceData" "rest_api" "project_parameter" "workflow" "flowservice" "dafservice")
-
-  # Normalize input: remove spaces around commas
-  assetNameList=$(echo "$assetNameList" | sed 's/ *, */,/g')
-  assetTypeList=$(echo "$assetTypeList" | sed 's/ *, */,/g')
-
-  # Convert to arrays
-  IFS=',' read -ra assetNames <<< "$assetNameList"
-  IFS=',' read -ra assetTypes <<< "$assetTypeList"
-
-  # Trim whitespace from each element
-  for i in "${!assetNames[@]}"; do
-    assetNames[$i]=$(echo "${assetNames[$i]}" | xargs)
-  done
-  for i in "${!assetTypes[@]}"; do
-    assetTypes[$i]=$(echo "${assetTypes[$i]}" | xargs)
-  done
-
-  # Length check
-  local lenNames=${#assetNames[@]}
-  local lenTypes=${#assetTypes[@]}
-  if [ "$lenNames" -ne "$lenTypes" ]; then
-    echo "Error: Mismatch in number of items. assetNameList has $lenNames, assetTypeList has $lenTypes."
-    return 1
-  fi
-
-  # Validate asset types
-  for type in "${assetTypes[@]}"; do
-    local found=false
-    for valid in "${desiredOrder[@]}"; do
-      if [ "$type" == "$valid" ]; then
-        found=true
-        break
-      fi
-    done
-    if ! $found; then
-      echo "Error: Unsupported asset type '$type'."
-      return 1
-    fi
-  done
-
-  # Rearranged processing
-  echo "== Processing in Desired Order =="
-  for orderType in "${desiredOrder[@]}"; do
-    for (( i=0; i<$lenNames; i++ )); do
-      if [ "${assetTypes[$i]}" == "$orderType" ]; then
-        echo "Processing ${assetNames[$i]} of type ${assetTypes[$i]}"
-        importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
-      fi
-    done
-  done
-}
 function importAsset() {
   LOCAL_DEV_URL=$1
   admin_user=$2
@@ -473,6 +407,74 @@ function projectParameters(){
   fi
   cd ${HOME_DIR}/${repoName}
 
+}
+
+function splitAndImportAssets() {
+
+  LOCAL_DEV_URL=$1
+  admin_user=$2
+  admin_password=$3
+  repoName=$4
+  assetID=$5
+  assetType=$6
+  HOME_DIR=$7
+  synchProject=$8
+  includeAllReferenceData=$9
+  local assetNameList="$5"
+  local assetTypeList="$6"
+
+  # Desired processing order
+  local desiredOrder=("referenceData" "rest_api" "project_parameter" "workflow" "flowservice" "dafservice")
+
+  # Normalize input: remove spaces around commas
+  assetNameList=$(echo "$assetNameList" | sed 's/ *, */,/g')
+  assetTypeList=$(echo "$assetTypeList" | sed 's/ *, */,/g')
+
+  # Convert to arrays
+  IFS=',' read -ra assetNames <<< "$assetNameList"
+  IFS=',' read -ra assetTypes <<< "$assetTypeList"
+
+  # Trim whitespace from each element
+  for i in "${!assetNames[@]}"; do
+    assetNames[$i]=$(echo "${assetNames[$i]}" | xargs)
+  done
+  for i in "${!assetTypes[@]}"; do
+    assetTypes[$i]=$(echo "${assetTypes[$i]}" | xargs)
+  done
+
+  # Length check
+  local lenNames=${#assetNames[@]}
+  local lenTypes=${#assetTypes[@]}
+  if [ "$lenNames" -ne "$lenTypes" ]; then
+    echo "Error: Mismatch in number of items. assetNameList has $lenNames, assetTypeList has $lenTypes."
+    return 1
+  fi
+
+  # Validate asset types
+  for type in "${assetTypes[@]}"; do
+    local found=false
+    for valid in "${desiredOrder[@]}"; do
+      if [ "$type" == "$valid" ]; then
+        found=true
+        break
+      fi
+    done
+    if ! $found; then
+      echo "Error: Unsupported asset type '$type'."
+      return 1
+    fi
+  done
+
+  # Rearranged processing
+  echo "== Processing in Desired Order =="
+  for orderType in "${desiredOrder[@]}"; do
+    for (( i=0; i<$lenNames; i++ )); do
+      if [ "${assetTypes[$i]}" == "$orderType" ]; then
+        echo "Processing ${assetNames[$i]} of type ${assetTypes[$i]}"
+        importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetNames[$i]} ${assetTypes[$i]} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+      fi
+    done
+  done
 }
 
 cd ${HOME_DIR}/${repoName}
