@@ -532,6 +532,7 @@ else
 # Input variables
 #assetIDList=" AssetX ,AssetY , AssetZ,AssetA,AssetB ,AssetC "
 #assetTypeList="flowservice , workflow, referenceData,dafservice, project_parameter , rest_api "
-
+assetIDList=$(echo "$assetIDList" | sed 's/ *, */,/g')
+assetTypeList=$(echo "$assetTypeList" | sed 's/ *, */,/g')
 splitAndExportAssets ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} "$assetIDList" "$assetTypeList" ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
 fi  

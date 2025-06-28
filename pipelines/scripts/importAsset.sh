@@ -552,6 +552,9 @@ if [ ${synchProject} == true ]; then
 
 else
   #importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+  # Clean it (remove spaces around commas)
+  assetIDList=$(echo "$assetIDList" | sed 's/ *, */,/g')
+  assetTypeList=$(echo "$assetTypeList" | sed 's/ *, */,/g')
   splitAndImportAssets ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} "$assetIDList" "$assetTypeList" ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
 fi 
 set +x
