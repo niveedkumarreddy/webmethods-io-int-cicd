@@ -550,6 +550,6 @@ if [ ${synchProject} == true ]; then
 
 else
   #importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
-  splitAndImportAssets ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetIDList} ${assetTypeList} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+  splitAndImportAssets ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} "$assetIDList" "$assetTypeList" ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
 fi 
 set +x
