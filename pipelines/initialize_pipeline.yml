@@ -98,13 +98,14 @@ steps:
         "$(admin_password)" \
         "$(repoName)" 2> >(tee >&2))  
         echo "Captured Project ID: [$project_id]"
+
         config_yaml=$(cat <<EOF
-        project:
-          id: "$project_id"
-          description: "Created by pipeline"
-        EOF
-        )
-        ./self/pipelines/scripts/github/commitProjectConfig.sh "$(devUser)" "$(repoName)" "project-config.yml" "$config_yaml" ${HOME_DIR} debug
+project:
+  id: "$project_id"
+  description: "Created by pipeline"
+EOF
+)
+        ./self/pipelines/scripts/github/commitProjectConfig.sh "$(devUser)" "$(repoName)" "project-config.yml" "$config_yaml" "${HOME_DIR}" "$(featureBranchName)" debug
       else
         ######## Create a feature branch from prod 
         echo "Repo Exists, Check and sync feature branch from Prod"
