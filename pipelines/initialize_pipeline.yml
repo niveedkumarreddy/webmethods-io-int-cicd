@@ -100,11 +100,10 @@ steps:
         echo "Captured Project ID: [$project_id]"
 
         config_yaml=$(cat <<EOF
-project:
-  id: "$project_id"
-  description: "Created by pipeline"
-EOF
-)
+        project:
+          id: "$project_id"
+          description: "Created by pipeline"
+        EOF)
         ./self/pipelines/scripts/github/commitProjectConfig.sh "$(devUser)" "$(repoName)" "project-config.yml" "$config_yaml" "${HOME_DIR}" "$(featureBranchName)" debug
       else
         ######## Create a feature branch from prod 
