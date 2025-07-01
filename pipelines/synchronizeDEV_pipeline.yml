@@ -93,7 +93,7 @@ steps:
     echo "Captured Project ID: [$project_id]"
 
     echo "Check and create Project ..."
-    project_id=$(./self/pipelines/scripts/createProject.sh \
+    project_id=$(../self/pipelines/scripts/createProject.sh \
               "${LOCAL_DEV_URL}" \
               "$(admin_user)" \
               "$(admin_password)" \
