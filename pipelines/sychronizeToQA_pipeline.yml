@@ -85,7 +85,7 @@ steps:
     
     #### Check and create Project
     echo "Fetching project id"
-    existingProject_id=$(yq e '.project.id' "./project-config.yml")
+    existingProject_id=$(yq e '.project.project-id' "./project-config.yml")
     echo "Captured Project ID: [$project_id]"
 
     echo "Check and create Project ..."
