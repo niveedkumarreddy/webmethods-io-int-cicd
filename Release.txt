@@ -1,3 +1,9 @@
+##### July 2025 Release ########
+1. Project creation with UID, removed the workaround to maintain same ProjectID
+2. Multi asset support: Now you can pass comma separated multiple assets to be exported/imported
+3. Code Review for FLowservice: Added a code review as a qulaity gate using ISCCR (Licensed) for flow services.
+4. Bug fixes
+
 ##### Jan 2025 Release ########
 1. IBM Template and URL updates
 2. Repo Moved from SoftwareAG Org to IBM

@@ -17,45 +17,27 @@ isccrDir=$8
 customConfigPath=$9
 debug=${@: -1}
 
-    if [ -z "$HOME_DIR" ]; then
-      echo "Missing template parameter HOME_DIR"
-      exit 1
-    fi
-    
-    if [ -z "$individualAssetExport" ]; then
-      echo "Missing template parameter individualAssetExport"
-      exit 1
-    fi
+# Validate required inputs
+[ -z "$HOME_DIR" ] && echo "Missing template parameter HOME_DIR" >&2 && exit 1
+[ -z "$individualAssetExport" ] && echo "Missing template parameter individualAssetExport" >&2 && exit 1
+[ -z "$isccrImg" ] && echo "Missing template parameter isccrImg" >&2 && exit 1
+[ -z "$repoName" ] && echo "Missing template parameter repoName" >&2 && exit 1
+[ -z "$registryUser" ] && echo "Missing template parameter HOME_DIR" >&2 && exit 1
+[ -z "$registryToken" ] && echo "Missing template parameter individualAssetExport" >&2 && exit 1
+[ -z "$rigistryHost" ] && echo "Missing template parameter isccrImg" >&2 && exit 1
+[ -z "$isccrDir" ] && echo "Missing template parameter repoName" >&2 && exit 1
+[ -z "$customConfigPath" ] && echo "Missing template parameter repoName" >&2 && exit 1
 
-    if [ -z "$repoName" ]; then
-      echo "Missing template parameter repoName"
-      exit 1
-    fi
+# Debug mode
+if [ "$debug" == "debug" ]; then
+  echo "......Running in Debug mode ......" >&2
+  set -x
+fi
 
-    if [ -z "$isccrImg" ]; then
-      echo "Missing template parameter isccrImg"
-      exit 1
-    fi
-    if [ -z "$isccrDir" ]; then
-      echo "Missing template parameter isccrDir"
-      exit 1
-    fi
-    if [ -z "$customConfigPath" ]; then
-      echo "Missing template parameter customConfigPath"
-      exit 1
-    fi
-
-    if [ "$debug" == "debug" ]; then
-      echo "......Running in Debug mode ......"
-    fi
-
-
-function echod(){
-  if [ "$debug" == "debug" ]; then
-    echo $1
-    set -x
-  fi
+function echod() {
+  echo "$@" >&2
 }
+
 
 function prepareProjectZip(){
   repoName=$1
@@ -103,7 +85,6 @@ function runCodeReview(){
   docker run -v ./options:/mnt/code_review_options -v ./review:/mnt/code_review -v ./results:/mnt/code_review_results ${isccrImg} pkg_ pkg_
   
 }
-
 
 
 cd ${HOME_DIR}
