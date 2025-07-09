@@ -11,6 +11,7 @@
  repo_user=$3
  repoName=$4
  PAT=$5
+ HOME_DIR=$6
  debug=${@: -1}
 
 # Validate required inputs
@@ -19,6 +20,7 @@
 [ -z "$repo_user" ] && echo "Missing template parameter repo_user" >&2 && exit 1
 [ -z "$repoName" ] && echo "Missing template parameter repoName" >&2 && exit 1
 [ -z "$PAT" ] && echo "Missing template parameter PAT" >&2 && exit 1
+[ -z "$HOME_DIR" ] && echo "Missing template parameter HOME_DIR" >&2 && exit 1
 
 
 # Debug mode
@@ -45,7 +47,7 @@ function echod() {
   fi
 
   # Encrypt the value using your Python script
-   encryptedValue=$(python3.10 ../self/pipelines/scripts/github/encryptGithubSecret.py "${keyValue}" "${secretValue}")
+   encryptedValue=$(python3.10 $HOME_DIR/self/pipelines/scripts/github/encryptGithubSecret.py "${keyValue}" "${secretValue}")
    
   # Construct the JSON payload
   secretJson=$(jq -n \

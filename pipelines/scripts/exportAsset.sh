@@ -67,11 +67,10 @@ function maskFieldsInJson() {
       value=$(echo "$masked_json" | jq -r "getpath($path)")
 
       # Store secret (e.g., in GitHub Actions)
-      ../self/pipelines/scripts/github/storeSecret.sh "$field" "$value" "$repoUser" "$repoName" "$PAT" debug
+      $HOME_DIR/self/pipelines/scripts/github/storeSecret.sh "$field" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
       
       # Mask value in JSON
       masked_json=$(echo "$masked_json" | jq "setpath($path; \"****MASKED****\")")
-      echod $masked_json
     done
   done
 
