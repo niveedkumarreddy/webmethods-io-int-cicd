@@ -147,7 +147,7 @@ function exportConnection(){
             name=$(echo "$item" | jq -r '.name')
             mkdir -p ./$name
             cd $name
-            maskedJson=maskFieldsInJson "$item" client_id client_secret access_token refresh_token
+            maskedJson=$(maskFieldsInJson "$item" client_id client_secret access_token refresh_token)
             echo "$maskedJson" > ${name}_${source_type}.json
             configPerEnv . ${envTypes} "connection" ${name}_${source_type}.json $name
             echod "✅ Saved ${name}_${source_type}.json"
