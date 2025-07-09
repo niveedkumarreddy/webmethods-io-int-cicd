@@ -66,6 +66,7 @@ function maskFieldsInJson() {
 
       # Mask value in JSON
       masked_json=$(echo "$masked_json" | jq "setpath($path; \"****MASKED****\")")
+      echod $masked_json
     done
   done
 
