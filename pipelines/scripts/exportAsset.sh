@@ -16,6 +16,8 @@ synchProject=$8
 source_type=$9
 includeAllReferenceData=${10}
 envTypes=${11}
+repoUser=${12}
+PAT=${13}
 debug=${@: -1}
 
 # Validate required inputs
@@ -30,6 +32,8 @@ debug=${@: -1}
 [ -z "$source_type" ] && echo "Missing template parameter source_type" >&2 && exit 1
 [ -z "$includeAllReferenceData" ] && echo "Missing template parameter includeAllReferenceData" >&2 && exit 1
 [ -z "$envTypes" ] && echo "Missing template parameter envTypes" >&2 && exit 1
+[ -z "$repoUser" ] && echo "Missing template parameter repoUser" >&2 && exit 1
+[ -z "$PAT" ] && echo "Missing template parameter PAT" >&2 && exit 1
 
 
 # Debug mode
@@ -62,7 +66,7 @@ function maskFieldsInJson() {
       value=$(echo "$masked_json" | jq -r "getpath($path)")
 
       # Store secret (e.g., in GitHub Actions)
-      #./store_secret.sh "$field" "$value"
+      ./github/storeSecret.sh "$field" "$value" "$repoUser" "$repoName" "$PAT" debug
 
       # Mask value in JSON
       masked_json=$(echo "$masked_json" | jq "setpath($path; \"****MASKED****\")")
