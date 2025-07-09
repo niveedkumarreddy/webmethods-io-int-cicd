@@ -45,8 +45,8 @@ function echod() {
   fi
 
   # Encrypt the value using your Python script
-  encryptedValue=$(python3.10 ../self/pipelines/scripts/github/encryptGithubSecret.py "${keyValue}" "${secretValue}")
-
+   encryptedValue=$(python3.10 ../self/pipelines/scripts/github/encryptGithubSecret.py "${keyValue}" "${secretValue}")
+   
   # Construct the JSON payload
   secretJson=$(jq -n \
     --arg value "$encryptedValue" \
