@@ -46,15 +46,30 @@ function maskFieldsInJson() {
   local json_input="$1"
   shift
   local fields=("$@")
-
-  local jq_expr="."
+  local masked_json="$json_input"
 
   for field in "${fields[@]}"; do
-    jq_expr+=" | (.data.$field? // empty) |= \"****MASKED****\""
-    jq_expr+=" | (.$field? // empty) |= \"****MASKED****\""
+    # Find all paths ending in the sensitive field
+    mapfile -t paths < <(echo "$masked_json" | jq -r "paths | select(.[-1] == \"$field\") | @json")
+
+    if [[ ${#paths[@]} -eq 0 ]]; then
+      echo "🔍 Field '$field' not found, skipping..."
+      continue
+    fi
+
+    for path in "${paths[@]}"; do
+      # Extract value at the path
+      value=$(echo "$masked_json" | jq -r "getpath($path)")
+
+      # Store secret (e.g., in GitHub Actions)
+      #./store_secret.sh "$field" "$value"
+
+      # Mask value in JSON
+      masked_json=$(echo "$masked_json" | jq "setpath($path; \"****MASKED****\")")
+    done
   done
 
-  echo "$json_input" | jq "$jq_expr"
+  echo "$masked_json"
 }
 
 function exportSingleReferenceData () {
