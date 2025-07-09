@@ -116,9 +116,9 @@ function exportConnection(){
             name=$(echo "$item" | jq -r '.name')
             mkdir -p ./$name
             cd $name
-            echo "$item" > ${source_type}.json
+            echo "$item" > $name_${source_type}.json
             echod "✅ Saving ${source_type}.json"
-            configPerEnv . ${envTypes} "connection" ${source_type}.json
+            configPerEnv . ${envTypes} "connection" $name_${source_type}.json $name
             echod "✅ Saved ${source_type}.json"
             cd ..
           done
