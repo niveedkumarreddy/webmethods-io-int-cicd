@@ -6,11 +6,11 @@
 #                                                                           #
 #############################################################################
 
- secretName="$1"
- secretValue="$2"
- repo_user="$3"
- repoName="$4"
- PAT="$5"
+ secretName=$1
+ secretValue=$2
+ repo_user=$3
+ repoName=$4
+ PAT=$5
  debug=${@: -1}
 
 # Validate required inputs

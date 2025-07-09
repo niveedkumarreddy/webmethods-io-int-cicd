@@ -46,6 +46,8 @@ function echod() {
   echo "$@" >&2
 }
 
+echod "Export Asset Shell"
+
 function maskFieldsInJson() {
   local json_input="$1"
   shift
