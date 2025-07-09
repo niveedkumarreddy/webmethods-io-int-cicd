@@ -132,10 +132,9 @@ function exportConnection(){
             mkdir -p ./$name
             cd $name
             maskedJson=maskFieldsInJson "$item" client_id client_secret access_token refresh_token
-            echo "$maskedJson" > $name_${source_type}.json
-            echod "✅ Saving $name_${source_type}.json"
-            configPerEnv . ${envTypes} "connection" $name_${source_type}.json $name
-            echod "✅ Saved $name_${source_type}.json"
+            echo "$maskedJson" > ${name}_${source_type}.json
+            configPerEnv . ${envTypes} "connection" ${name}_${source_type}.json $name
+            echod "✅ Saved ${name}_${source_type}.json"
             cd ..
           done
         fi
