@@ -50,8 +50,8 @@ function maskFieldsInJson() {
   local jq_expr="."
 
   for field in "${fields[@]}"; do
-    jq_expr+=" | (.output.data.$field? // empty) |= \"****MASKED****\""
-    jq_expr+=" | (.output.$field? // empty) |= \"****MASKED****\""
+    jq_expr+=" | (.data.$field? // empty) |= \"****MASKED****\""
+    jq_expr+=" | (.$field? // empty) |= \"****MASKED****\""
   done
 
   echo "$json_input" | jq "$jq_expr"
@@ -131,11 +131,11 @@ function exportConnection(){
             name=$(echo "$item" | jq -r '.name')
             mkdir -p ./$name
             cd $name
-            maskFieldsInJson "$item" client_id client_secret access_token refresh_token
-            echo "$item" > $name_${source_type}.json
-            echod "✅ Saving ${source_type}.json"
+            maskedJson=maskFieldsInJson "$item" client_id client_secret access_token refresh_token
+            echo "$maskedJson" > $name_${source_type}.json
+            echod "✅ Saving $name_${source_type}.json"
             configPerEnv . ${envTypes} "connection" $name_${source_type}.json $name
-            echod "✅ Saved ${source_type}.json"
+            echod "✅ Saved $name_${source_type}.json"
             cd ..
           done
         fi
