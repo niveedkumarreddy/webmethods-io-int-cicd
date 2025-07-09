@@ -57,6 +57,14 @@ steps:
     echo $(System.DefaultWorkingDirectory)
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: 'Get Environment Tenant Details'
+
+# setup python environment
+- script: |
+    
+    python3.10 -m pip3 install --upgrade pip
+    pip3 install pynacl
+    chmod +x ./pipelines/scripts/github/encryptGithubSecret.py
+      
 - script: |
     #echo $(source_environment_hostname)
     #echo $(source_environment_port)
