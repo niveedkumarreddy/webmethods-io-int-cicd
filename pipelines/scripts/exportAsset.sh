@@ -114,11 +114,12 @@ function exportConnection(){
           cd ./assets/connections
           echo "$connListJson" | jq -c '.output[]' | while read -r item; do
             name=$(echo "$item" | jq -r '.name')
-            mkdir -p ./$item
-            cd $item
-            echod "✅ Saving ${name}.json"
-            configPerEnv . ${envTypes} "connection" ${name}.json
-            echod "✅ Saved ${name}.json"
+            mkdir -p ./$name
+            cd $name
+            echo "$item" > ${source_type}.json
+            echod "✅ Saving ${source_type}.json"
+            configPerEnv . ${envTypes} "connection" ${source_type}.json
+            echod "✅ Saved ${source_type}.json"
             cd ..
           done
         fi
