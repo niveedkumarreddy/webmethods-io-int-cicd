@@ -18,66 +18,28 @@ includeAllReferenceData=${10}
 envTypes=${11}
 debug=${@: -1}
 
-    if [ -z "$LOCAL_DEV_URL" ]; then
-      echo "Missing template parameter LOCAL_DEV_URL"
-      exit 1
-    fi
-    
-    if [ -z "$admin_user" ]; then
-      echo "Missing template parameter admin_user"
-      exit 1
-    fi
-
-    if [ -z "$admin_password" ]; then
-      echo "Missing template parameter admin_password"
-      exit 1
-    fi
-
-    if [ -z "$repoName" ]; then
-      echo "Missing template parameter repoName"
-      exit 1
-    fi
-
-    if [ -z "$assetIDList" ]; then
-      echo "Missing template parameter assetIDList"
-      exit 1
-    fi
-
-    if [ -z "$assetTypeList" ]; then
-      echo "Missing template parameter assetTypeList"
-      exit 1
-    fi
-
-    if [ -z "$HOME_DIR" ]; then
-      echo "Missing template parameter HOME_DIR"
-      exit 1
-    fi
-
-    if [ -z "$source_type" ]; then
-      echo "Missing template parameter source_type"
-      exit 1
-    fi
-    if [ -z "$includeAllReferenceData" ]; then
-      echo "Missing template parameter includeAllReferenceData"
-      exit 1
-    fi
-    if [ -z "$envTypes" ]; then
-      echo "Missing template parameter envTypes"
-      exit 1
-    fi   
-    if [ "$debug" == "debug" ]; then
-      echo "******* Running in Debug mode ******"
-      set -x
-    fi
+# Validate required inputs
+[ -z "$LOCAL_DEV_URL" ] && echo "Missing template parameter LOCAL_DEV_URL" >&2 && exit 1
+[ -z "$admin_user" ] && echo "Missing template parameter admin_user" >&2 && exit 1
+[ -z "$admin_password" ] && echo "Missing template parameter admin_password" >&2 && exit 1
+[ -z "$repoName" ] && echo "Missing template parameter repoName" >&2 && exit 1
+[ -z "$assetIDList" ] && echo "Missing template parameter assetIDList" >&2 && exit 1
+[ -z "$assetTypeList" ] && echo "Missing template parameter assetTypeList" >&2 && exit 1
+[ -z "$HOME_DIR" ] && echo "Missing template parameter HOME_DIR" >&2 && exit 1
+[ -z "$synchProject" ] && echo "Missing template parameter synchProject" >&2 && exit 1
+[ -z "$source_type" ] && echo "Missing template parameter source_type" >&2 && exit 1
+[ -z "$includeAllReferenceData" ] && echo "Missing template parameter includeAllReferenceData" >&2 && exit 1
+[ -z "$envTypes" ] && echo "Missing template parameter envTypes" >&2 && exit 1
 
 
+# Debug mode
+if [ "$debug" == "debug" ]; then
+  echo "......Running in Debug mode ......" >&2
+  set -x
+fi
 
-
-function echod(){
-  if [ "$debug" == "debug" ]; then
-    echo $1
-    set -x
-  fi
+function echod() {
+  echo "$@" >&2
 }
 
 function exportSingleReferenceData () {
@@ -102,15 +64,13 @@ function exportSingleReferenceData () {
   -u ${admin_user}:${admin_password})
   rdExport=$(echo "$rdJson" | jq '.output // empty')
   if [ -z "$rdExport" ];   then
-    echo "Empty reference data defined for the name:" ${rdName}
+    echod "Empty reference data defined for the name:" ${rdName}
   else
     columnDelimiter=$(echo "$rdJson" | jq -c -r '.output.columnDelimiter')
     rdExport=$(echo "$rdJson" | jq -c -r '.output.dataRecords')
     if [[ "$columnDelimiter" == "," ]]; then
-      echod "COMMA"
       datajson=$(echo "$rdExport" | jq -c -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv')
     else
-      echod "Not a COMMA:" ${columnDelimiter}
       datajson=$(echo "$rdExport" | jq -c -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' | sed "s/\",\"/\"${columnDelimiter}\"/g")
     fi
 
@@ -128,6 +88,42 @@ function exportSingleReferenceData () {
   cd ${HOME_DIR}/${repoName}
 }
 
+function exportConnection(){
+  LOCAL_DEV_URL=$1
+  admin_user=$2
+  admin_password=$3
+  repoName=$4
+  assetID=$5
+  assetType=$6
+  HOME_DIR=$7
+  cd ${HOME_DIR}/${repoName}
+
+  CONN_LIST_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/configurations/connections
+
+  connListJson=$(curl  --location --request GET ${CONN_LIST_URL} \
+      --header 'Content-Type: application/json' \
+      --header 'Accept: application/json' \
+      -u ${admin_user}:${admin_password})
+
+      connexport=$(echo "$connListJson" | jq -r -c '.output[].name // empty')
+
+        if [ -z "$connexport" ];   then
+            echod "No connections defined for the project" 
+        else
+          mkdir -p ./assets/connections
+          cd ./assets/connections
+          echo "$connListJson" | jq -c '.output[]' | while read -r item; do
+            name=$(echo "$item" | jq -r '.name')
+            mkdir -p ./$item
+            cd $item
+            echod "✅ Saving ${name}.json"
+            configPerEnv . ${envTypes} "connection" ${name}.json
+            echod "✅ Saved ${name}.json"
+            cd ..
+          done
+        fi
+  cd ${HOME_DIR}/${repoName}
+}
 
 function exportReferenceData (){ 
   LOCAL_DEV_URL=$1
@@ -150,7 +146,7 @@ function exportReferenceData (){
   projectID=$(echo "$projectJson" | jq -r -c '.output.uid // empty')
 
   if [ -z "$projectID" ];   then
-      echo "Incorrect Project/Repo name"
+      echod "Incorrect Project/Repo name"
       exit 1
   fi
 
@@ -167,14 +163,14 @@ function exportReferenceData (){
   rdListExport=$(echo "$rdListJson" | jq -r -c '.output[].name // empty')
 
   if [ -z "$rdListExport" ];   then
-            echo "No reference data defined for the project" 
+            echod "No reference data defined for the project" 
   else
       for item in $(jq -r '.output[] | .name' <<< "$rdListJson"); do
         echod "Inside Ref Data Loop:" "$item"
         rdName=${item}
         exportSingleReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${rdName} ${assetType} ${HOME_DIR} ${projectID}
       done
-    echo "Reference Data export Succeeded"
+    echod "Reference Data export Succeeded"
   fi
 
   cd ${HOME_DIR}/${repoName}
@@ -194,7 +190,7 @@ function configPerEnv(){
      if [ ${configType} == "referenceData" ]; then
         cp ./$sourceFile ./$v.csv
      else
-        if [ ${configType} == "project_parameter" ]; then
+        if [[ "$configType" == "project_parameter" || "$configType" == "connection" ]]; then
             cp ./$sourceFile ./${key}_${v}.json
         fi
       fi
@@ -514,11 +510,16 @@ if [ ${synchProject} == true ]; then
             echo "$accountListJson" > user_accounts.json
             echo "Account export Succeeded"
         fi
+  
+  #Expoting Connections
+  assetID=${assetIDList}
+  assetType=connection
+  exportConnection ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR}
+
   cd ${HOME_DIR}/${repoName}
 
 
   # Exporting Project Referencedata
-
   assetID=${assetIDList}
   assetType=referenceData
   exportReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} 

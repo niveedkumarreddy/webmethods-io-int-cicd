@@ -25,8 +25,8 @@ debug=${@: -1}
 [ -z "$registryUser" ] && echo "Missing template parameter HOME_DIR" >&2 && exit 1
 [ -z "$registryToken" ] && echo "Missing template parameter individualAssetExport" >&2 && exit 1
 [ -z "$rigistryHost" ] && echo "Missing template parameter isccrImg" >&2 && exit 1
-[ -z "$isccrDir" ] && echo "Missing template parameter repoName" >&2 && exit 1
-[ -z "$customConfigPath" ] && echo "Missing template parameter repoName" >&2 && exit 1
+[ -z "$isccrDir" ] && echo "Missing template parameter isccrDir" >&2 && exit 1
+[ -z "$customConfigPath" ] && echo "Missing template parameter customConfigPath" >&2 && exit 1
 
 # Debug mode
 if [ "$debug" == "debug" ]; then
