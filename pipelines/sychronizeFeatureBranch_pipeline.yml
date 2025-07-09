@@ -63,7 +63,9 @@ steps:
     
     python3.10 -m pip3 install --upgrade pip
     pip3 install pynacl
-    chmod +x ./self/pipelines/scripts/github/encryptGithubSecret.py
+    pwd
+    echo $(System.DefaultWorkingDirectory)
+    chmod +x ../self/pipelines/scripts/github/encryptGithubSecret.py
 
   displayName: 'Setup Python3 Environment'
   workingDirectory: '$(System.DefaultWorkingDirectory)'
