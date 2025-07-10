@@ -63,6 +63,11 @@ steps:
   workingDirectory: '$(System.DefaultWorkingDirectory)'
   displayName: 'Get Environment Tenant Details'
 # setup python environment
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'
+    addToPath: true
+
 - script: |
     
     python3.10 -m pip3 install --upgrade pip

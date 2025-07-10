@@ -88,7 +88,7 @@ repoid=$(curl -u ${repo_user}:${PAT} https://api.github.com/repos/${repo_user}/$
           keyValue=$(echo "$keyJson" | jq -r '.key')
           token=$(echo ${AZURE_TOKEN})
 
-          encryptedValue=$(python3.10 ../self/pipelines/scripts/github/encryptGithubSecret.py ${keyValue} ${token})
+          encryptedValue=$(python ../self/pipelines/scripts/github/encryptGithubSecret.py ${keyValue} ${token})
          
 
           secretJson='{"encrypted_value":"'"${encryptedValue}"'","key_id":"'"${keyId}"'"}'
