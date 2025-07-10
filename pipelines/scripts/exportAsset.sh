@@ -49,6 +49,7 @@ function echod() {
 
 function maskFieldsInJson() {
   local json_input="$1"
+  local key="$2"
   shift
   local fields=("$@")
   local masked_json="$json_input"
@@ -67,7 +68,12 @@ function maskFieldsInJson() {
       value=$(echo "$masked_json" | jq -r "getpath($path)")
 
       # Store secret (e.g., in GitHub Actions)
-      $HOME_DIR/self/pipelines/scripts/github/storeSecret.sh "$field" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
+      IFS=, read -ra values <<< "$envTypes"
+      for v in "${values[@]}"
+      do
+        # things with "$v"
+        $HOME_DIR/self/pipelines/scripts/github/storeSecret.sh "${key}_${field}_${v}" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
+      done
       
       # Mask value in JSON
       masked_json=$(echo "$masked_json" | jq "setpath($path; \"****MASKED****\")")
@@ -151,7 +157,7 @@ function exportConnection(){
             name=$(echo "$item" | jq -r '.name')
             mkdir -p ./$name
             cd $name
-            maskedJson=$(maskFieldsInJson "$item" client_id client_secret access_token refresh_token)
+            maskedJson=$(maskFieldsInJson "$item" "$name" client_id client_secret access_token refresh_token)
             echo "$maskedJson" > ${name}_${source_type}.json
             configPerEnv . ${envTypes} "connection" ${name}_${source_type}.json $name
             echod "✅ Saved ${name}_${source_type}.json"
