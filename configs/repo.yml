@@ -1,2 +1,3 @@
 repo:
   user: "chini007"   # user to create repo in github
+  provider: "github"

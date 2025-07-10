@@ -18,6 +18,7 @@ includeAllReferenceData=${10}
 envTypes=${11}
 repoUser=${12}
 PAT=${13}
+provider=${14}
 debug=${@: -1}
 
 # Validate required inputs
@@ -72,7 +73,9 @@ function maskFieldsInJson() {
       for v in "${values[@]}"
       do
         # things with "$v"
-        $HOME_DIR/self/pipelines/scripts/github/storeSecret.sh "${key}_${field}_${v}" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
+        fullSecretName="${key}_${field}_${v}"
+        #$HOME_DIR/self/pipelines/scripts/github/storeSecret.sh "${key}_${field}_${v}" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
+        $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
       done
       
       # Mask value in JSON
