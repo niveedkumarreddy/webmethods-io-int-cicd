@@ -59,12 +59,15 @@ steps:
   displayName: 'Get Environment Tenant Details'
 
 # setup python environment
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'
+    addToPath: true
+
 - script: |
     
     python3.10 -m pip3 install --upgrade pip
     pip3 install pynacl
-    pwd
-    echo $(System.DefaultWorkingDirectory)
     chmod +x ../self/pipelines/scripts/github/encryptGithubSecret.py
 
   displayName: 'Setup Python3 Environment'
