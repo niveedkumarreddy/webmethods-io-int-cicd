@@ -19,13 +19,12 @@ envTypes=${11}
 repoUser=${12}
 PAT=${13}
 provider=${14}
-vaultName=${15}
-resourceGroup=${16}
-location=${17}           # e.g. westeurope
-azure_tenant_id=${18}        # Azure AD tenant ID
-sp_app_id=${19}              # Service Principal App ID (aka client_id)
-sp_password=${20}            # Service Principal password (aka client_secret)
-access_object_id=${21}
+resourceGroup=${15}
+location=${16}           # e.g. westeurope
+azure_tenant_id=${17}        # Azure AD tenant ID
+sp_app_id=${18}              # Service Principal App ID (aka client_id)
+sp_password=${19}            # Service Principal password (aka client_secret)
+access_object_id=${20}
 debug=${@: -1}
 
 # Validate required inputs
