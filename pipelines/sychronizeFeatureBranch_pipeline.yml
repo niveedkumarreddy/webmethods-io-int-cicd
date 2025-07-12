@@ -90,7 +90,8 @@ steps:
     HOME_DIR=$(System.DefaultWorkingDirectory)/../
     cd $(System.DefaultWorkingDirectory)/../
     cd $(repoName)
-    chmod +x ../self/pipelines/scripts/*.sh    
+    chmod +x -R ../self/pipelines/scripts/*.sh  
+      
 
     config_dir=${HOME_DIR}self/configs/env
    
