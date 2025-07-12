@@ -51,7 +51,7 @@ steps:
     echo "##vso[task.setvariable variable=admin_user]`yq -e ".tenant.admin_username" configs/env/play.yml`"
     echo "##vso[task.setvariable variable=source_type]`yq -e ".tenant.type" configs/env/play.yml`"
     echo "##vso[task.setvariable variable=repo_user]`yq -e ".repo.user" configs/repo.yml`"
-    echo "##vso[task.setvariable variable=provider]`yq -e ".repo.provider" configs/repo.yml`"
+    echo "##vso[task.setvariable variable=security_provider]`yq -e ".repo.provider" configs/repo.yml`"
     PROJECTNAME=$(perl -MURI::Escape -e 'print uri_escape($ARGV[0]);' "$(repoName)")
     #echo ${PROJECTNAME}
     echo "##vso[build.updatebuildnumber]$(Build.BuildNumber)-${PROJECTNAME}"

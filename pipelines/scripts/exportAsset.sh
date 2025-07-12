@@ -19,6 +19,13 @@ envTypes=${11}
 repoUser=${12}
 PAT=${13}
 provider=${14}
+vaultName=${15}
+resourceGroup=${16}
+location=${17}           # e.g. westeurope
+azure_tenant_id=${18}        # Azure AD tenant ID
+sp_app_id=${19}              # Service Principal App ID (aka client_id)
+sp_password=${20}            # Service Principal password (aka client_secret)
+access_object_id=${21}
 debug=${@: -1}
 
 # Validate required inputs
@@ -74,7 +81,6 @@ function maskFieldsInJson() {
       do
         # things with "$v"
         fullSecretName="${key}_${field}_${v}"
-        #$HOME_DIR/self/pipelines/scripts/github/storeSecret.sh "${key}_${field}_${v}" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
         $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
       done
       
@@ -154,6 +160,10 @@ function exportConnection(){
         if [ -z "$connexport" ];   then
             echod "No connections defined for the project" 
         else
+          # Setup Azure Key Vault
+          if [ ${provider} == "azure" ]; then
+            $HOME_DIR/self/pipelines/scripts/secrets/vault/azure/setupAzureKeyVault.sh ${repoName} ${resourceGroup} ${location} ${azure_tenant_id} ${sp_app_id} ${sp_password} ${access_object_id} debug
+          fi
           mkdir -p ./assets/connections
           cd ./assets/connections
           echo "$connListJson" | jq -c '.output[]' | while read -r item; do
