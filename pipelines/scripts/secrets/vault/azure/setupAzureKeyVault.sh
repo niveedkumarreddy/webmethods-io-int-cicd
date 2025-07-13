@@ -72,14 +72,18 @@ else
   az keyvault create --name "$VAULT_NAME" --resource-group "$RESOURCE_GROUP" --location "$LOCATION" >/dev/null
 fi
 
-# ============ ACCESS POLICY ============
+# ============ RBAC ROLE ASSIGNMENT ============
 if [ -n "$ACCESS_OBJECT_ID" ]; then
-  echod "🔐 Assigning secret permissions to object: $ACCESS_OBJECT_ID"
-  az keyvault set-policy \
-    --name "$VAULT_NAME" \
-    --object-id "$ACCESS_OBJECT_ID" \
-    --secret-permissions get set list delete \
-    >/dev/null
+  echod "🔐 Assigning 'Key Vault Secrets Officer' role to object: $ACCESS_OBJECT_ID"
+
+  VAULT_SCOPE="/subscriptions/$(az account show --query id --output tsv)/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.KeyVault/vaults/$VAULT_NAME"
+
+  az role assignment create \
+    --assignee "$ACCESS_OBJECT_ID" \
+    --role "Key Vault Secrets Officer" \
+    --scope "$VAULT_SCOPE" >/dev/null
+
+  echod "✅ RBAC Role assignment complete."
 fi
 
 echod "🎉 Azure Key Vault '$VAULT_NAME' is ready to use!"
