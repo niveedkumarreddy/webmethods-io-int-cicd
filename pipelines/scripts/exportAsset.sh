@@ -19,12 +19,13 @@ envTypes=${11}
 repoUser=${12}
 PAT=${13}
 provider=${14}
-resourceGroup=${15}
-location=${16}           # e.g. westeurope
-azure_tenant_id=${17}        # Azure AD tenant ID
-sp_app_id=${18}              # Service Principal App ID (aka client_id)
-sp_password=${19}            # Service Principal password (aka client_secret)
-access_object_id=${20}
+vaultName=${15}
+resourceGroup=${16}
+location=${17}           # e.g. westeurope
+azure_tenant_id=${18}        # Azure AD tenant ID
+sp_app_id=${19}              # Service Principal App ID (aka client_id)
+sp_password=${20}            # Service Principal password (aka client_secret)
+access_object_id=${21}
 debug=${@: -1}
 
 # Validate required inputs
@@ -41,6 +42,14 @@ debug=${@: -1}
 [ -z "$envTypes" ] && echo "Missing template parameter envTypes" >&2 && exit 1
 [ -z "$repoUser" ] && echo "Missing template parameter repoUser" >&2 && exit 1
 [ -z "$PAT" ] && echo "Missing template parameter PAT" >&2 && exit 1
+[ -z "$provider" ] && echo "Missing template parameter provider" >&2 && exit 1
+[ -z "$vaultName" ] && echo "Missing template parameter vaultName" >&2 && exit 1
+[ -z "$resourceGroup" ] && echo "Missing template parameter resourceGroup" >&2 && exit 1
+[ -z "$location" ] && echo "Missing template parameter location" >&2 && exit 1#
+[ -z "$azure_tenant_id" ] && echo "Missing template parameter azure_tenant_id" >&2 && exit 1
+[ -z "$sp_app_id" ] && echo "Missing template parameter sp_app_id" >&2 && exit 1
+[ -z "$sp_password" ] && echo "Missing template parameter sp_password" >&2 && exit 1
+[ -z "$access_object_id" ] && echo "Missing template parameter access_object_id" >&2 && exit 1
 
 
 # Debug mode
@@ -161,7 +170,7 @@ function exportConnection(){
         else
           # Setup Azure Key Vault
           if [ ${provider} == "azure" ]; then
-            $HOME_DIR/self/pipelines/scripts/secrets/vault/azure/setupAzureKeyVault.sh ${repoName} ${resourceGroup} ${location} ${azure_tenant_id} ${sp_app_id} ${sp_password} ${access_object_id} debug
+            $HOME_DIR/self/pipelines/scripts/secrets/vault/azure/setupAzureKeyVault.sh ${vaultName} ${resourceGroup} ${location} ${azure_tenant_id} ${sp_app_id} ${sp_password} ${access_object_id} debug
           fi
           mkdir -p ./assets/connections
           cd ./assets/connections
