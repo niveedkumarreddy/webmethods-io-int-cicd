@@ -43,10 +43,8 @@ case "$provider" in
     "$HOME_DIR/self/pipelines/scripts/secrets/bitbucket/storeSecret.sh" "$secretName" "$secretValue" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" "$debug"
     ;;
   azure)
-    "$HOME_DIR/self/pipelines/scripts/secrets/vault/storeSecret.sh" "$secretName" "$secretValue" "$HOME_DIR" "$debug"
-    ;;
-  hcvault)
-    "$HOME_DIR/self/pipelines/scripts/secrets/vault/storeSecret.sh" "$secretName" "$secretValue" "$HOME_DIR" "$debug"
+    VAULT_NAME="$repoUser"   # Pass vault name as repoUser for Azure
+    "$HOME_DIR/self/pipelines/scripts/secrets/azure/storeAzureSecret.sh" "$VAULT_NAME" "$secretName" "$secretValue" "$debug"
     ;;
   *)
     echo "❌ Unknown provider '$provider'"

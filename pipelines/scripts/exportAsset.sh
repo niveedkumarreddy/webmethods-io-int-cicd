@@ -88,7 +88,7 @@ function maskFieldsInJson() {
       for v in "${values[@]}"
       do
         # things with "$v"
-        fullSecretName="${key}_${field}_${v}"
+        fullSecretName="${repoName}_${key}_${field}_${v}"
         $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
       done
       
