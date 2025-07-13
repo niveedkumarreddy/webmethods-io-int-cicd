@@ -78,10 +78,10 @@ if [ -n "$ACCESS_OBJECT_ID" ]; then
 
   VAULT_SCOPE="/subscriptions/$(az account show --query id --output tsv)/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.KeyVault/vaults/$VAULT_NAME"
 
-  az role assignment create \
-    --assignee "$ACCESS_OBJECT_ID" \
-    --role "Key Vault Secrets Officer" \
-    --scope "$VAULT_SCOPE" >/dev/null
+az role assignment create \
+  --assignee cefa51b1-28b6-409c-b5c2-4b39eeb08089 \
+  --role 'Key Vault Secrets Officer' \
+  --scope "$VAULT_SCOPE"
 
   echod "✅ RBAC Role assignment complete."
 fi
