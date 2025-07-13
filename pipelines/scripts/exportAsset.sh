@@ -87,11 +87,12 @@ function maskFieldsInJson() {
       IFS=, read -ra values <<< "$envTypes"
       for v in "${values[@]}"
       do
-        # things with "$v"
-        fullSecretName="${repoName}_${key}_${field}_${v}"
-        $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
+        if [ "$provider" == "azure" ]; then
+          $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$vaultName" unused unused "$HOME_DIR" debug
+        else
+          $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
+        fi      
       done
-      
       # Mask value in JSON
       masked_json=$(echo "$masked_json" | jq "setpath($path; \"****MASKED****\")")
     done
@@ -178,7 +179,7 @@ function exportConnection(){
             name=$(echo "$item" | jq -r '.name')
             mkdir -p ./$name
             cd $name
-            maskedJson=$(maskFieldsInJson "$item" "$name" client_id client_secret access_token refresh_token)
+            maskedJson=$(maskFieldsInJson "$item" "$name" client_id client_secret access_token refresh_token username password)
             echo "$maskedJson" > ${name}_${source_type}.json
             configPerEnv . ${envTypes} "connection" ${name}_${source_type}.json $name
             echod "✅ Saved ${name}_${source_type}.json"
