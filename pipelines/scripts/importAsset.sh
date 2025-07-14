@@ -372,31 +372,34 @@ function importConnections(){
   admin_user=$2
   admin_password=$3
   repoName=$4
-  assetID=$5
-  assetType=$6
-  HOME_DIR=$7
-  synchProject=$8
-  source_type=$9
-  
-  cd ${HOME_DIR}/${repoName}
+  assetType=$5
+  HOME_DIR=$6
+  synchProject=$7
+  source_type=$8
+  projectID=$9
+
+  cd "${HOME_DIR}/${repoName}" || exit 1
   ls -ltr
 
-  #Importing Reference Data
+  # Importing Connections
   DIR="./assets/connections/"
-  connection_folders=(./assets/connections/*)
+  connection_folders=("$DIR"*/)
+
   if [ ${#connection_folders[@]} -gt 0 ]; then
-    # Setup Azure Key Vault
-    if [ ${provider} == "azure" ]; then
-      $HOME_DIR/self/pipelines/scripts/secrets/vault/azure/setupAzureKeyVault.sh ${vaultName} ${resourceGroup} ${location} ${azure_tenant_id} ${sp_app_id} ${sp_password} ${access_object_id} debug
+    # Setup Azure Key Vault (only once)
+    if [ "$provider" == "azure" ]; then
+      "$HOME_DIR/self/pipelines/scripts/secrets/vault/azure/setupAzureKeyVault.sh" "$vaultName" "$resourceGroup" "$location" "$azure_tenant_id" "$sp_app_id" "$sp_password" "$access_object_id" debug
     fi
-    for folder in ./assets/connections/*/; do 
+
+    for folder in "$DIR"*/; do 
         account_name="$(basename "$folder")"
-        # Find JSON file for target environment
         matching_file=$(find "$folder" -type f -name "*-${source_type}.json" | head -n 1)
+
         if [ -n "$matching_file" ]; then
           base_name=$(basename "$matching_file" .json)
           echod "📦 Importing connection: $base_name from account folder: $account_name"
-          importSingleConnection ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${folder} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
+          
+          importSingleConnection "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$account_name" "$assetType" "$HOME_DIR" "$synchProject" "$source_type" "$projectID"
         else
           echod "⚠️  No file found for env '$source_type' in account '$account_name'"
         fi
@@ -404,10 +407,11 @@ function importConnections(){
   else
     echod "No connections to import"
   fi
- 
- cd ${HOME_DIR}/${repoName}
 
+  cd "${HOME_DIR}/${repoName}" || exit 1
 }
+
+
 function unmaskFieldsInJson() {
   local json_input="$1"
   local account_name="$2"
