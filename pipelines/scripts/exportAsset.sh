@@ -76,7 +76,7 @@ function maskFieldsInJson() {
     mapfile -t paths < <(echo "$masked_json" | jq -r "paths | select(.[-1] == \"$field\") | @json")
 
     if [[ ${#paths[@]} -eq 0 ]]; then
-      echo "🔍 Field '$field' not found, skipping..."
+      echod "🔍 Field '$field' not found, skipping..."
       continue
     fi
 
