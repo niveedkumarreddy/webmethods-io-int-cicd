@@ -472,7 +472,7 @@ function importSingleConnection(){
     unmasked_json=$(unmaskFieldsInJson "$(cat "$matching_file")" "$account_name" "${repoName}" "${source_type}" "${HOME_DIR}" "$provider" "$vaultName")
 
     CONN_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/configurations/connections
-    getresponse=$(curl --silent --location --request PUT "$CONN_GET_URL" \
+    getresponse=$(curl --silent --location --request GET "$CONN_GET_URL" \
         --header 'Content-Type: application/json' \
         --header 'Accept: application/json' \
         -u "${admin_user}:${admin_password}")
