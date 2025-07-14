@@ -67,7 +67,6 @@ function echod() {
 function maskFieldsInJson() {
   local json_input="$1"
   local key="$2"
-  local configType="$3"
   shift
   local fields=("$@")
   local masked_json="$json_input"
