@@ -497,7 +497,7 @@ function importSingleConnection(){
         -u "${admin_user}:${admin_password}" \
         --data-raw "$unmasked_json")
 
-    connimport=$(echo "$response" | jq -r -c '.output[].name // empty')
+    connimport=$(echo "$response" | jq -r -c '.output.name // empty')
     if [ -z "$connimport" ];   then
       echod "❌ Connection '$account_name' could not be imported. Response: $response"
     else
