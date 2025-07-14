@@ -47,7 +47,7 @@ case "$provider" in
     "$HOME_DIR/self/pipelines/scripts/secrets/vault/azure/storeAzureSecret.sh" "$VAULT_NAME" "$secretName" "$secretValue" "$debug"
     ;;
   *)
-    echo "❌ Unknown provider '$provider'"
+    echod "❌ Unknown provider '$provider'"
     exit 1
     ;;
 esac

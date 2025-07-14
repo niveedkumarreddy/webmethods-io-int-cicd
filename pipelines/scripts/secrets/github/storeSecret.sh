@@ -42,7 +42,7 @@ function echod() {
   keyValue=$(echo "$response" | jq -r '.key')
 
   if [[ -z "$keyId" || "$keyId" == "null" ]]; then
-    echo "❌ Failed to retrieve repository public key."
+    echod"❌ Failed to retrieve repository public key."
     return 1
   fi
 
@@ -65,7 +65,7 @@ function echod() {
     -d "$secretJson")
 
   if [[ "$response" == "201" || "$response" == "204" ]]; then
-    echo "✅ Secret '${secretName}' successfully stored in GitHub."
+    echod "✅ Secret '${secretName}' successfully stored in GitHub."
   else
-    echo "❌ Failed to store secret '${secretName}'. HTTP status: $response"
+    echod "❌ Failed to store secret '${secretName}'. HTTP status: $response"
   fi

@@ -187,7 +187,7 @@ function exportConnection(){
             name=$(echo "$item" | jq -r '.name')
             mkdir -p ./$name
             cd $name
-            maskedJson=$(maskFieldsInJson "$item" "$name" client_id client_secret access_token refresh_token username password)
+            maskedJson=$(maskFieldsInJson "$item" "$name" client_id client_secret access_token refresh_token)
             echo "$maskedJson" > ${name}_${source_type}.json
             configPerEnv . ${envTypes} "connection" ${name}_${source_type}.json $name
             echod "✅ Saved ${name}_${source_type}.json"
@@ -264,7 +264,9 @@ function configPerEnv(){
      else
         if [[ "$configType" == "project_parameter" || "$configType" == "connection" ]]; then
             cp ./$sourceFile ./${key}_${v}.json
-        fi
+            echod "***Printing File Before Printing ***"
+            cat ./$sourceFile ./${key}_${v}.json
+         fi
       fi
   done
 
