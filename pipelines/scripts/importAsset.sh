@@ -427,11 +427,9 @@ function unmaskFieldsInJson() {
   mapfile -t fields < <(yq eval ".project.accounts.\"$account_name\".secrets[]" "$project_config_file")
 
   for field in "${fields[@]}"; do
-    # Compose secret name
     fullSecretName="Project-${repo_name}-Account-${account_name}-Field-${field}-Env-${env}"
     fullSecretName=$(echo "$fullSecretName" | sed 's/_/-/g')
 
-    # Fetch secret using the wrapper
     secret_value=$("$HOME_DIR/self/pipelines/scripts/getSecret.sh" "$provider" "$fullSecretName" "$vaultName" "$HOME_DIR" "$debug")
 
     if [[ -z "$secret_value" || "$secret_value" == "null" ]]; then
@@ -439,12 +437,9 @@ function unmaskFieldsInJson() {
       continue
     fi
 
-    # Replace masked value with actual secret in JSON
-    unmasked_json=$(echo "$unmasked_json" | jq --arg secret "$secret_value" \
-                       --arg field "$field" \
-                       'walk(if type == "object" and has($field) and .[$field] == "****MASKED****" 
-                             then .[$field] = $secret 
-                             else . end)')
+    unmasked_json=$(echo "$unmasked_json" | jq --arg field "$field" --arg secret "$secret_value" '
+      (.. | objects | select(has($field)) | select(.[ $field ] == "****MASKED****"))[$field] |= $secret
+    ')
   done
 
   echo "$unmasked_json"
