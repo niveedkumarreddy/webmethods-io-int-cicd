@@ -16,62 +16,34 @@ HOME_DIR=$7
 synchProject=$8
 source_type=$9
 includeAllReferenceData=${10}
+vaultName=${11}
 debug=${@: -1}
 
 
-    if [ -z "$LOCAL_DEV_URL" ]; then
-      echo "Missing template parameter LOCAL_DEV_URL"
-      exit 1
-    fi
-    
-    if [ -z "$admin_user" ]; then
-      echo "Missing template parameter admin_user"
-      exit 1
-    fi
 
-    if [ -z "$admin_password" ]; then
-      echo "Missing template parameter admin_password"
-      exit 1
-    fi
+# Validate required inputs
+[ -z "$LOCAL_DEV_URL" ] && echo "Missing template parameter LOCAL_DEV_URL" >&2 && exit 1
+[ -z "$admin_user" ] && echo "Missing template parameter admin_user" >&2 && exit 1
+[ -z "$admin_password" ] && echo "Missing template parameter admin_password" >&2 && exit 1
+[ -z "$repoName" ] && echo "Missing template parameter repoName" >&2 && exit 1
+[ -z "$assetIDList" ] && echo "Missing template parameter assetIDList" >&2 && exit 1
+[ -z "$assetTypeList" ] && echo "Missing template parameter assetTypeList" >&2 && exit 1
+[ -z "$HOME_DIR" ] && echo "Missing template parameter HOME_DIR" >&2 && exit 1
+[ -z "$synchProject" ] && echo "Missing template parameter synchProject" >&2 && exit 1
+[ -z "$source_type" ] && echo "Missing template parameter source_type" >&2 && exit 1
+[ -z "$includeAllReferenceData" ] && echo "Missing template parameter includeAllReferenceData" >&2 && exit 1
 
-    if [ -z "$repoName" ]; then
-      echo "Missing template parameter repoName"
-      exit 1
-    fi
+PROJECT_CONFIG_FILE="${HOME_DIR}/${repoName}/project-config.yml"
 
-    if [ -z "$assetIDList" ]; then
-      echo "Missing template parameter assetIDList"
-      exit 1
-    fi
+# Debug mode
+if [ "$debug" == "debug" ]; then
+  echo "......Running in Debug mode ......" >&2
+  set -x
+fi
 
-    if [ -z "$assetTypeList" ]; then
-      echo "Missing template parameter assetTypeList"
-      exit 1
-    fi
-
-    if [ -z "$HOME_DIR" ]; then
-      echo "Missing template parameter HOME_DIR"
-      exit 1
-    fi
-        if [ -z "$source_type" ]; then
-      echo "Missing template parameter source_type"
-      exit 1
-    fi
-    if [ "$debug" == "debug" ]; then
-      echo "......Running in Debug mode ......"
-      set -x
-    fi
-
-
-function echod(){
-  
-  if [ "$debug" == "debug" ]; then
-    echo $1
-    
-  fi
-
+function echod() {
+  echo "$@" >&2
 }
-
 function importAsset() {
   LOCAL_DEV_URL=$1
   admin_user=$2
@@ -85,12 +57,12 @@ function importAsset() {
 
   echod $(pwd)
   echod $(ls -ltr)
-  echo "AssetType:" $assetType
+  echod "AssetType:" $assetType
   if [[ $assetType = referenceData* ]]; then
     #Importing Reference Data
     DIR="./assets/projectConfigs/referenceData/"
     if [ -d "$DIR" ]; then
-        echo "Project referenceData needs to be synched"
+        echod "Project referenceData needs to be synched"
         PROJECT_ID_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}
         projectJson=$(curl  --location --request GET ${PROJECT_ID_URL} \
             --header 'Content-Type: application/json' \
@@ -98,7 +70,7 @@ function importAsset() {
             -u ${admin_user}:${admin_password})
         projectID=$(echo "$projectJson" | jq -r -c '.output.uid // empty')
         if [ -z "$projectID" ];   then
-            echo "Incorrect Project/Repo name"
+            echod "Incorrect Project/Repo name"
             exit 1
         fi
         echod "ProjectID:" ${projectID}
@@ -152,7 +124,7 @@ function importAsset() {
     if [ -f "$FILE" ]; then
      ####### Check if asset with this name exist
 
-        echo "$FILE exists. Importing ..."
+        echod "$FILE exists. Importing ..."
         importedName=$(curl --location --request POST ${IMPORT_URL} \
                     --header 'Content-Type: multipart/form-data' \
                     --header 'Accept: application/json' \
@@ -162,20 +134,20 @@ function importAsset() {
           name=$(echo "$importedName" | jq '.output.message // empty')
           success='"IMPORT_SUCCESS"'
           if [ "$name" == "$success" ];   then
-            echo "Import Succeeded:" ${importedName}
+            echod "Import Succeeded:" ${importedName}
           else
-            echo "Import Failed:" ${importedName}
+            echod "Import Failed:" ${importedName}
           fi
         else
           name=$(echo "$importedName" | jq '.output.name // empty')
           if [ -z "$name" ];   then
-            echo "Import failed:" ${importedName}
+            echod "Import failed:" ${importedName}
           else
-            echo "Import Succeeded:" ${importedName}
+            echod "Import Succeeded:" ${importedName}
           fi
         fi
     else
-      echo "$FILE does not exists, Nothing to import"
+      echod "$FILE does not exists, Nothing to import"
     fi
 
     if [ ${synchProject} != true ]; then
@@ -291,7 +263,7 @@ function importSingleRefData(){
   #Importing Reference Data
   DIR="./assets/projectConfigs/referenceData/"
   if [ -d "$DIR" ]; then
-    echo "Project referenceData needs to be synched"
+    echod "Project referenceData needs to be synched"
     echod "ProjectID:" ${projectID}
     cd ./assets/projectConfigs/referenceData/
     if [ -d "$d" ]; then
@@ -313,11 +285,11 @@ function importSingleRefData(){
         -u ${admin_user}:${admin_password})
         rdExport=$(echo "$rdJson" | jq '.output // empty')
         if [ -z "$rdExport" ];   then
-          echo "Refrence Data does not exists, Creating ....:" ${refDataName}
+          echod "Refrence Data does not exists, Creating ....:" ${refDataName}
           POST_REF_DATA_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/referencedata
           method="POST"               
         else
-          echo "Refrence Data exists, Updating ....:" ${refDataName}
+          echod "Refrence Data exists, Updating ....:" ${refDataName}
           POST_REF_DATA_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/referencedata/${refDataName}
           method="PUT"   
         fi
@@ -331,9 +303,9 @@ function importSingleRefData(){
             --form ${formKey} -u ${admin_user}:${admin_password})  
         refDataOutput=$(echo "$projectPostJson" | jq -r -c '.integration.message.description')
         if [ "$refDataOutput"=="Success" ];   then
-          echo "Reference Data created/updated successfully"
+          echod "Reference Data created/updated successfully"
         else
-          echo "Reference Data failed:" ${projectPostJson}
+          echod "Reference Data failed:" ${projectPostJson}
         fi
       cd -
     fi
@@ -380,6 +352,132 @@ function importRefData(){
 
 }
 
+function importConnections(){ 
+  LOCAL_DEV_URL=$1
+  admin_user=$2
+  admin_password=$3
+  repoName=$4
+  assetID=$5
+  assetType=$6
+  HOME_DIR=$7
+  synchProject=$8
+  source_type=$9
+  
+  cd ${HOME_DIR}/${repoName}
+  ls -ltr
+
+  #Importing Reference Data
+  DIR="./assets/connections/"
+  connection_folders=(./assets/connections/*)
+  if [ ${#connection_folders[@]} -gt 0 ]; then
+    for folder in ./assets/connections/*/; do 
+        account_name="$(basename "$folder")"
+        # Find JSON file for target environment
+        matching_file=$(find "$folder" -type f -name "*-${source_type}.json" | head -n 1)
+        if [ -n "$matching_file" ]; then
+          base_name=$(basename "$matching_file" .json)
+          echod "📦 Importing connection: $base_name from account folder: $account_name"
+          importSingleConnection ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${folder} ${assetType} ${HOME_DIR} ${synchProject} ${source_type} ${projectID}
+        else
+          echod "⚠️  No file found for env '$source_type' in account '$account_name'"
+        fi
+    done
+  else
+    echod "No connections to import"
+  fi
+ 
+ cd ${HOME_DIR}/${repoName}
+
+}
+function unmaskFieldsInJson() {
+  local json_input="$1"
+  local account_name="$2"
+  local repo_name="$3"
+  local env="$4"
+  local HOME_DIR="$5"
+  local provider="$6"
+  local vaultName="$7"   # Vault name (Azure) or repoUser (GitHub/Bitbucket)
+
+  local project_config_file="$HOME_DIR/$repo_name/project-config.yml"
+  local unmasked_json="$json_input"
+
+  # Read secrets list for this account from YAML
+  mapfile -t fields < <(yq eval ".project.accounts.\"$account_name\".secrets[]" "$project_config_file")
+
+  for field in "${fields[@]}"; do
+    # Compose secret name
+    fullSecretName="Project-${repo_name}-Account-${account_name}-Field-${field}-Env-${env}"
+    fullSecretName=$(echo "$fullSecretName" | sed 's/_/-/g')
+
+    # Fetch secret using the wrapper
+    secret_value=$("$HOME_DIR/self/pipelines/scripts/getSecret.sh" "$provider" "$fullSecretName" "$vaultName" "$HOME_DIR" "$debug")
+
+    if [[ -z "$secret_value" || "$secret_value" == "null" ]]; then
+      echo "⚠️  Secret not found for $fullSecretName. Skipping."
+      continue
+    fi
+
+    # Replace masked value with actual secret in JSON
+    unmasked_json=$(echo "$unmasked_json" | jq --arg secret "$secret_value" \
+                       --arg field "$field" \
+                       'walk(if type == "object" and has($field) and .[$field] == "****MASKED****" 
+                             then .[$field] = $secret 
+                             else . end)')
+  done
+
+  echo "$unmasked_json"
+}
+
+
+function importSingleConnection(){
+  LOCAL_DEV_URL=$1
+  admin_user=$2
+  admin_password=$3
+  repoName=$4
+  assetID=$5
+  assetType=$6
+  HOME_DIR=$7
+  synchProject=$8
+  source_type=$9
+  projectID=${10}
+  folder=$assetID
+
+  cd ${HOME_DIR}/${repoName}
+  #Importing Reference Data
+  folder="./assets/connections/$folder"
+  account_name="$(basename "$folder")"
+  echod "Importing Connection $account_name from $folder"
+  # Find JSON file for target environment
+  matching_file=$(find "$folder" -type f -name "*-${source_type}.json" | head -n 1)
+  if [ -n "$matching_file" ]; then
+    base_name=$(basename "$matching_file" .json)
+    echod "📦 Importing connection: $base_name from account folder: $account_name"
+    # 🛡️ Unmask the JSON before import
+    unmasked_json=$(unmaskFieldsInJson "$(cat "$matching_file")" "$provider" "$vaultName")
+    CONN_PUT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/configurations/connections/${account_name}
+    # Import using PUT
+    response=$(curl --silent --location --request PUT "$CONN_PUT_URL" \
+        --header 'Content-Type: application/json' \
+        --header 'Accept: application/json' \
+        -u "${admin_user}:${admin_password}" \
+        --data-raw "$unmasked_json")
+
+
+    connimport=$(echo "$response" | jq -r -c '.output[].name // empty')
+    if [ -z "$connimport" ];   then
+      echod "Connections could not be imported " $response
+    else
+      echod "✅ Import successfull: $response"
+    fi
+
+  else
+    echod "⚠️  No file found for env '$source_type' in account '$account_name'"
+  fi
+
+  cd -
+  cd ${HOME_DIR}/${repoName}
+
+}
 
 function projectParameters(){
  # Importing Project Parameters
@@ -479,8 +577,15 @@ function splitAndImportAssets() {
 
 cd ${HOME_DIR}/${repoName}
 
-# APIs import
+
 if [ ${synchProject} == true ]; then
+
+  # Connections import
+  assetID=${assetIDList}
+  assetType=Connection
+  importConnections ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type}
+
+  # APIs import
   echod "Listing files"
   shopt -s nullglob dotglob
   api_files=(./assets/rest_api/*.zip)

@@ -263,9 +263,7 @@ function configPerEnv(){
         cp ./$sourceFile ./$v.csv
      else
         if [[ "$configType" == "project_parameter" || "$configType" == "connection" ]]; then
-            cp ./$sourceFile ./${key}_${v}.json
-            echod "***Printing File Before Printing ***"
-            cat ./${key}_${v}.json
+            cp ./$sourceFile ./${key}-${v}.json
          fi
       fi
   done
