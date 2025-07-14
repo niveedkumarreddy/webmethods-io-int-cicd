@@ -99,10 +99,8 @@ function maskFieldsInJson() {
         fi     
         # Update YAML with field name
         yq eval -i \
-          ".project.accounts.\"${key}\".secrets //= [] | \
-          .project.accounts.\"${key}\".secrets += [\"${field}\"] | \
-          .project.accounts.\"${key}\".secrets |= unique" \
-          "$PROJECT_CONFIG_FILE"
+        ".project.accounts.\"${key}\".secrets = ((.project.accounts.\"${key}\".secrets // []) + [\"${field}\"] | unique)" \
+        "$PROJECT_CONFIG_FILE"
       done
       # Mask value in JSON
       masked_json=$(echo "$masked_json" | jq "setpath($path; \"****MASKED****\")")
