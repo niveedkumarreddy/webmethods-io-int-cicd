@@ -475,10 +475,10 @@ function importSingleConnection(){
     unmasked_json=$(unmaskFieldsInJson "$(cat "$matching_file")" "$provider" "$vaultName")
 
     CONN_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/configurations/connections
-    getresponse=$(curl --silent --location --request PUT "$CONN_PUT_URL" \
+    getresponse=$(curl --silent --location --request PUT "$CONN_GET_URL" \
         --header 'Content-Type: application/json' \
         --header 'Accept: application/json' \
-        -u "${admin_user}:${admin_password}"
+        -u "${admin_user}:${admin_password}")
 
 
     #Logic to check if ${account_name}
@@ -510,7 +510,7 @@ function importSingleConnection(){
   else
     echod "⚠️  No file found for env '$source_type' in account '$account_name'"
   fi
-
+  cd - >/dev/null
   cd ${HOME_DIR}/${repoName}
 }
 
