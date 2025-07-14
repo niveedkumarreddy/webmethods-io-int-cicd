@@ -469,7 +469,7 @@ function importSingleConnection(){
     base_name=$(basename "$matching_file" .json)
     echod "📦 Importing connection: $base_name from account folder: $account_name"
     # 🛡️ Unmask the JSON before import
-    unmasked_json=$(unmaskFieldsInJson "$(cat "$matching_file")" "$provider" "$vaultName")
+    unmasked_json=$(unmaskFieldsInJson "$(cat "$matching_file")" "$account_name" "${repoName}" "${source_type}" "${HOME_DIR}" "$provider" "$vaultName")
 
     CONN_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/configurations/connections
     getresponse=$(curl --silent --location --request PUT "$CONN_GET_URL" \
