@@ -87,7 +87,7 @@ function maskFieldsInJson() {
       IFS=, read -ra values <<< "$envTypes"
       for v in "${values[@]}"
       do
-        fullSecretName="${repoName}_${key}_${field}_${v}"
+        fullSecretName="${repoName}-${key}-${field}-${v}"
         if [ "$provider" == "azure" ]; then
           $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$vaultName" unused unused "$HOME_DIR" debug
         else
