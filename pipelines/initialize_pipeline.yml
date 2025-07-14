@@ -104,6 +104,7 @@ steps:
         "$(repoName)" 2> >(tee >&2))  
         echo "Captured Project ID: [$project_id]"
         ./self/pipelines/scripts/github/commitProjectConfig.sh "$(repoName)" "project-config" ".project.project-id" "$project_id" "${HOME_DIR}" true "$(devUser)" "$(featureBranchName)" debug
+        ./self/pipelines/scripts/github/commitProjectConfig.sh "$(repoName)" "project-config" ".project.project-name" "$(repoName)" "${HOME_DIR}" true "$(devUser)" "$(featureBranchName)" debug
       else
         ######## Create a feature branch from prod 
         echo "Repo Exists, Check and sync feature branch from Prod"
