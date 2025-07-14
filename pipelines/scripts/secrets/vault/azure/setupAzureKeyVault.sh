@@ -19,6 +19,8 @@ ACCESS_OBJECT_ID=$7       # Optional: Object ID to grant access
 DEBUG="${@: -1}"          # Optional: enable debug logs
 
 
+
+
 # ============ DEBUG MODE ============
 if [[ "$DEBUG" == "debug" || "$DEBUG" == "true" ]]; then
   echo "🔍 Running in debug mode" >&2
@@ -36,6 +38,12 @@ if [[ -z "$VAULT_NAME" || -z "$RESOURCE_GROUP" || -z "$LOCATION" || -z "$TENANT_
   echod "Usage: ./setupAzureKeyVault.sh <vault_name> <resource_group> <location> <tenant_id> <sp_app_id> <sp_password> [access_object_id] [debug]"
   exit 1
 fi
+
+# ============ TRIM INPUTS ============
+SP_APP_ID=$(echo "$SP_APP_ID" | xargs)
+ACCESS_OBJECT_ID=$(echo "$ACCESS_OBJECT_ID" | xargs)
+TENANT_ID=$(echo "$TENANT_ID" | xargs)
+
 
 # ============ INSTALL AZ CLI (if missing) ============
 if ! command -v az &> /dev/null; then
