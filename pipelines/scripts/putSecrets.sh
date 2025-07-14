@@ -44,7 +44,7 @@ case "$provider" in
     ;;
   azure)
     VAULT_NAME="$repoUser"   # Pass vault name as repoUser for Azure
-    "$HOME_DIR/self/pipelines/scripts/secrets/azure/storeAzureSecret.sh" "$VAULT_NAME" "$secretName" "$secretValue" "$debug"
+    "$HOME_DIR/self/pipelines/scripts/secrets/vault/azure/storeAzureSecret.sh" "$VAULT_NAME" "$secretName" "$secretValue" "$debug"
     ;;
   *)
     echo "❌ Unknown provider '$provider'"
