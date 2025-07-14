@@ -49,7 +49,7 @@ fi
 
 # ============ LOGIN ============
 echod "🔐 Logging into Azure..."
-az login --service-principal -u "$SP_APP_ID" -p "$SP_PASSWORD" --tenant "$TENANT_ID" >/dev/null
+az login --service-principal -u "$SP_APP_ID" -p "$SP_PASSWORD" --tenant "$TENANT_ID" --only-show-errors >/dev/null
 
 if [ $? -ne 0 ]; then
   echod "❌ Azure login failed."
@@ -60,7 +60,7 @@ fi
 echod "📁 Checking resource group..."
 az group show --name "$RESOURCE_GROUP" >/dev/null 2>&1 || {
   echod "📁 Resource group not found, creating..."
-  az group create --name "$RESOURCE_GROUP" --location "$LOCATION" >/dev/null
+  az group create --name "$RESOURCE_GROUP" --location "$LOCATION" --only-show-errors >/dev/null
 }
 
 # ============ KEY VAULT ============
@@ -69,7 +69,7 @@ if az keyvault show --name "$VAULT_NAME" --resource-group "$RESOURCE_GROUP" >/de
   echod "✅ Key vault '$VAULT_NAME' already exists."
 else
   echod "🚀 Creating key vault '$VAULT_NAME'..."
-  az keyvault create --name "$VAULT_NAME" --resource-group "$RESOURCE_GROUP" --location "$LOCATION" >/dev/null
+  az keyvault create --name "$VAULT_NAME" --resource-group "$RESOURCE_GROUP" --location "$LOCATION" --only-show-errors >/dev/null
 fi
 
 # ============ RBAC ROLE ASSIGNMENT ============
@@ -81,7 +81,7 @@ if [ -n "$ACCESS_OBJECT_ID" ]; then
 az role assignment create \
   --assignee "$SP_APP_ID" \
   --role 'Key Vault Secrets Officer' \
-  --scope "$VAULT_SCOPE"
+  --scope "$VAULT_SCOPE" --only-show-errors >/dev/null
 
   echod "✅ RBAC Role assignment complete."
 fi

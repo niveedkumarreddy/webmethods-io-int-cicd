@@ -31,7 +31,7 @@ fi
 
 # ============ STORE SECRET ============
 echod "🔐 Storing secret '$SECRET_NAME' in vault '$VAULT_NAME'..."
-az keyvault secret set --vault-name "$VAULT_NAME" --name "$SECRET_NAME" --value "$SECRET_VALUE"
+az keyvault secret set --vault-name "$VAULT_NAME" --name "$SECRET_NAME" --value "$SECRET_VALUE" --only-show-errors >/dev/null
 
 if [ $? -eq 0 ]; then
   echod "✅ Secret '$SECRET_NAME' successfully stored."
