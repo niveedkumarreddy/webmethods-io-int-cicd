@@ -88,7 +88,9 @@ function maskFieldsInJson() {
       for v in "${values[@]}"
       do
         fullSecretName="${repoName}-${key}-${field}-${v}"
+        fullSecretName=$(echo "$fullSecretName" | sed 's/_/-/g')
         if [ "$provider" == "azure" ]; then
+          
           $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$vaultName" unused unused "$HOME_DIR" debug
         else
           $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
