@@ -372,12 +372,12 @@ function importConnections(){
   admin_user=$2
   admin_password=$3
   repoName=$4
-  assetType=$5
-  HOME_DIR=$6
-  synchProject=$7
-  source_type=$8
-  projectID=$9
-
+  assetID=$5
+  assetType=$6
+  HOME_DIR=$7
+  synchProject=$8
+  source_type=$9
+  
   cd "${HOME_DIR}/${repoName}" || exit 1
   ls -ltr
 
@@ -399,7 +399,7 @@ function importConnections(){
           base_name=$(basename "$matching_file" .json)
           echod "📦 Importing connection: $base_name from account folder: $account_name"
           
-          importSingleConnection "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$account_name" "$assetType" "$HOME_DIR" "$synchProject" "$source_type" "$projectID"
+          importSingleConnection "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$account_name" "$assetType" "$HOME_DIR" "$synchProject" "$source_type"
         else
           echod "⚠️  No file found for env '$source_type' in account '$account_name'"
         fi
@@ -410,7 +410,6 @@ function importConnections(){
 
   cd "${HOME_DIR}/${repoName}" || exit 1
 }
-
 
 function unmaskFieldsInJson() {
   local json_input="$1"
@@ -462,7 +461,6 @@ function importSingleConnection(){
   HOME_DIR=$7
   synchProject=$8
   source_type=$9
-  projectID=${10}
   folder=$assetID
 
   cd ${HOME_DIR}/${repoName}
