@@ -14,7 +14,7 @@ DEBUG="${@: -1}"   # Optional last parameter 'debug'
 
 # ============ DEBUG MODE ============
 if [[ "$DEBUG" == "debug" || "$DEBUG" == "true" ]]; then
-  echo "🔍 Running in debug mode"
+  echo "🔍 Running in debug mode" >&2
   set -x
 fi
 
