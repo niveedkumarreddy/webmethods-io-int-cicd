@@ -473,29 +473,45 @@ function importSingleConnection(){
     echod "📦 Importing connection: $base_name from account folder: $account_name"
     # 🛡️ Unmask the JSON before import
     unmasked_json=$(unmaskFieldsInJson "$(cat "$matching_file")" "$provider" "$vaultName")
-    CONN_PUT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/configurations/connections/${account_name}
+
+    CONN_GET_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/configurations/connections
+    getresponse=$(curl --silent --location --request PUT "$CONN_PUT_URL" \
+        --header 'Content-Type: application/json' \
+        --header 'Accept: application/json' \
+        -u "${admin_user}:${admin_password}"
+
+
+    #Logic to check if ${account_name}
+    account_exists=$(echo "$getresponse" | jq -r ".output[]?.name" | grep -Fx "$account_name" || true)
+
+    if [ -n "$account_exists" ]; then
+      echod "🔄 Account '$account_name' exists. Using PUT to update."
+      createMethod=PUT
+    else
+      echod "➕ Account '$account_name' does not exist. Using POST to create."
+      createMethod=POST
+    fi
+
+    CONN_CREATE_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/configurations/connections/${account_name}
     # Import using PUT
-    response=$(curl --silent --location --request PUT "$CONN_PUT_URL" \
+    response=$(curl --silent --location --request "$createMethod" "$CONN_CREATE_URL" \
         --header 'Content-Type: application/json' \
         --header 'Accept: application/json' \
         -u "${admin_user}:${admin_password}" \
         --data-raw "$unmasked_json")
 
-
     connimport=$(echo "$response" | jq -r -c '.output[].name // empty')
     if [ -z "$connimport" ];   then
-      echod "Connections could not be imported " $response
+      echod "❌ Connection '$account_name' could not be imported. Response: $response"
     else
-      echod "✅ Import successfull: $response"
+      echod "✅ Import successful for '$account_name'"
     fi
 
   else
     echod "⚠️  No file found for env '$source_type' in account '$account_name'"
   fi
 
-  cd -
   cd ${HOME_DIR}/${repoName}
-
 }
 
 function projectParameters(){
