@@ -2,7 +2,8 @@
 
 #############################################################################
 #                                                                           #
-# deleteProjectSecrets.sh : Delelets all the secrets for a project          #
+# deleteProjectSecrets.sh : Deletes all secrets for a project from Azure    #
+# Key Vault, with optional purge & retry for soft-deleted secrets.          #
 #                                                                           #
 #############################################################################
 
@@ -21,13 +22,16 @@ if [[ -z "$VAULT_NAME" || -z "$PROJECT_NAME" ]]; then
   exit 1
 fi
 
+# Retry settings for purge
+MAX_RETRIES=10
+SLEEP_SECONDS=5
+
 echo "🔍 Fetching secrets for project: $PROJECT_NAME from vault: $VAULT_NAME..."
 [[ "$PURGE" == "true" ]] && echo "⚠️  Purge enabled: secrets will be permanently removed."
 
-# Normalize project name: underscores to hyphens
 SEARCH_PATTERN=$(echo "$PROJECT_NAME" | sed 's/_/-/g')
 
-# ===== Active Secrets Deletion =====
+# ===== ACTIVE SECRETS DELETION =====
 secret_names=$(az keyvault secret list --vault-name "$VAULT_NAME" --query "[].name" -o tsv)
 
 found=0
@@ -39,7 +43,23 @@ while IFS= read -r secret_name; do
 
     if [[ "$PURGE" == "true" ]]; then
       echo "🔥 Purging deleted secret: $secret_name"
-      az keyvault secret purge --vault-name "$VAULT_NAME" --name "$secret_name"
+
+      attempt=1
+      while true; do
+        if az keyvault secret purge --vault-name "$VAULT_NAME" --name "$secret_name"; then
+          echo "✅ Purged secret: $secret_name"
+          break
+        else
+          if [ "$attempt" -ge "$MAX_RETRIES" ]; then
+            echo "❌ Failed to purge $secret_name after $MAX_RETRIES attempts."
+            break
+          fi
+          echo "⏳ Secret '$secret_name' still being deleted... Retrying in $SLEEP_SECONDS seconds (Attempt $attempt/$MAX_RETRIES)"
+          sleep "$SLEEP_SECONDS"
+          ((attempt++))
+        fi
+      done
+
     fi
   fi
 done <<< "$secret_names"
@@ -48,7 +68,7 @@ if [[ $found -eq 0 ]]; then
   echo "ℹ️  No active secrets found matching pattern: $SEARCH_PATTERN"
 fi
 
-# ===== Purge Orphaned Soft-Deleted Secrets =====
+# ===== PURGE ORPHANED SOFT-DELETED SECRETS =====
 if [[ "$PURGE" == "true" ]]; then
   echo "🛠️  Checking for soft-deleted secrets to purge..."
 
@@ -57,7 +77,23 @@ if [[ "$PURGE" == "true" ]]; then
   while IFS= read -r deleted_secret; do
     if [[ "$deleted_secret" == *"$SEARCH_PATTERN"* ]]; then
       echo "🔥 Purging soft-deleted secret: $deleted_secret"
-      az keyvault secret purge --vault-name "$VAULT_NAME" --name "$deleted_secret"
+
+      attempt=1
+      while true; do
+        if az keyvault secret purge --vault-name "$VAULT_NAME" --name "$deleted_secret"; then
+          echo "✅ Purged soft-deleted secret: $deleted_secret"
+          break
+        else
+          if [ "$attempt" -ge "$MAX_RETRIES" ]; then
+            echo "❌ Failed to purge $deleted_secret after $MAX_RETRIES attempts."
+            break
+          fi
+          echo "⏳ Soft-deleted secret '$deleted_secret' still being deleted... Retrying in $SLEEP_SECONDS seconds (Attempt $attempt/$MAX_RETRIES)"
+          sleep "$SLEEP_SECONDS"
+          ((attempt++))
+        fi
+      done
+
     fi
   done <<< "$deleted_secrets"
 
