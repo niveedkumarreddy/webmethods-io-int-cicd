@@ -16,7 +16,14 @@ HOME_DIR=$7
 synchProject=$8
 source_type=$9
 includeAllReferenceData=${10}
-vaultName=${11}
+provider=${11}
+vaultName=${12}
+resourceGroup=${13}
+location=${14}           # e.g. westeurope
+azure_tenant_id=${15}        # Azure AD tenant ID
+sp_app_id=${16}              # Service Principal App ID (aka client_id)
+sp_password=${17}            # Service Principal password (aka client_secret)
+access_object_id=${18}
 debug=${@: -1}
 
 
@@ -32,6 +39,14 @@ debug=${@: -1}
 [ -z "$synchProject" ] && echo "Missing template parameter synchProject" >&2 && exit 1
 [ -z "$source_type" ] && echo "Missing template parameter source_type" >&2 && exit 1
 [ -z "$includeAllReferenceData" ] && echo "Missing template parameter includeAllReferenceData" >&2 && exit 1
+[ -z "$provider" ] && echo "Missing template parameter provider" >&2 && exit 1
+[ -z "$vaultName" ] && echo "Missing template parameter vaultName" >&2 && exit 1
+[ -z "$resourceGroup" ] && echo "Missing template parameter resourceGroup" >&2 && exit 1
+[ -z "$location" ] && echo "Missing template parameter location" >&2 && exit 1#
+[ -z "$azure_tenant_id" ] && echo "Missing template parameter azure_tenant_id" >&2 && exit 1
+[ -z "$sp_app_id" ] && echo "Missing template parameter sp_app_id" >&2 && exit 1
+[ -z "$sp_password" ] && echo "Missing template parameter sp_password" >&2 && exit 1
+[ -z "$access_object_id" ] && echo "Missing template parameter access_object_id" >&2 && exit 1
 
 PROJECT_CONFIG_FILE="${HOME_DIR}/${repoName}/project-config.yml"
 
@@ -370,6 +385,10 @@ function importConnections(){
   DIR="./assets/connections/"
   connection_folders=(./assets/connections/*)
   if [ ${#connection_folders[@]} -gt 0 ]; then
+    # Setup Azure Key Vault
+    if [ ${provider} == "azure" ]; then
+      $HOME_DIR/self/pipelines/scripts/secrets/vault/azure/setupAzureKeyVault.sh ${vaultName} ${resourceGroup} ${location} ${azure_tenant_id} ${sp_app_id} ${sp_password} ${access_object_id} debug
+    fi
     for folder in ./assets/connections/*/; do 
         account_name="$(basename "$folder")"
         # Find JSON file for target environment
