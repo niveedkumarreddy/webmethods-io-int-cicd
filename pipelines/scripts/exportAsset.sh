@@ -51,6 +51,7 @@ debug=${@: -1}
 [ -z "$sp_password" ] && echo "Missing template parameter sp_password" >&2 && exit 1
 [ -z "$access_object_id" ] && echo "Missing template parameter access_object_id" >&2 && exit 1
 
+PROJECT_CONFIG_FILE="${HOME_DIR}/${repoName}/project-config.yml"
 
 # Debug mode
 if [ "$debug" == "debug" ]; then
@@ -66,6 +67,7 @@ function echod() {
 function maskFieldsInJson() {
   local json_input="$1"
   local key="$2"
+  local configType="$3"
   shift
   local fields=("$@")
   local masked_json="$json_input"
@@ -87,14 +89,16 @@ function maskFieldsInJson() {
       IFS=, read -ra values <<< "$envTypes"
       for v in "${values[@]}"
       do
-        fullSecretName="${repoName}-${key}-${field}-${v}"
+        fullSecretName="Project-${repoName}-Account-${key}-Field-${field}-Env-${v}"
         fullSecretName=$(echo "$fullSecretName" | sed 's/_/-/g')
         if [ "$provider" == "azure" ]; then
           
           $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$vaultName" unused unused "$HOME_DIR" debug
         else
           $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
-        fi      
+        fi     
+        # Update YAML to track field under the account
+        yq eval -i ".project.accounts.${key}.secrets |= unique + [\"${field}\"]" "$PROJECT_CONFIG_FILE" 
       done
       # Mask value in JSON
       masked_json=$(echo "$masked_json" | jq "setpath($path; \"****MASKED****\")")
