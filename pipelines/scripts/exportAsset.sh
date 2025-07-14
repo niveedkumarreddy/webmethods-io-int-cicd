@@ -98,7 +98,15 @@ function maskFieldsInJson() {
           $HOME_DIR/self/pipelines/scripts/putSecrets.sh "$provider" "$fullSecretName" "$value" "$repoUser" "$repoName" "$PAT" "$HOME_DIR" debug
         fi     
         # Update YAML to track field under the account
-        yq eval -i ".project.accounts.${key}.secrets |= unique + [\"${field}\"]" "$PROJECT_CONFIG_FILE" 
+        # Ensure 'secrets' is an array before adding to it
+        yq eval -i "
+          if .project.accounts.${key}.secrets then
+            .project.accounts.${key}.secrets += [\"${field}\"]
+          else
+            .project.accounts.${key}.secrets = [\"${field}\"]
+          end |
+          .project.accounts.${key}.secrets |= unique
+        " "$PROJECT_CONFIG_FILE" 
       done
       # Mask value in JSON
       masked_json=$(echo "$masked_json" | jq "setpath($path; \"****MASKED****\")")
