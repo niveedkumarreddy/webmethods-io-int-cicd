@@ -1,7 +1,7 @@
 ##### July 2025 Release ########
 1. Project creation with UID, removed the workaround to maintain same ProjectID
 2. Multi asset support: Now you can pass comma separated multiple assets to be exported/imported
-3. Code Review for FLowservices: Added "code review" as a qulaity gate using ISCCR (Licensed) for flow services.
+3. Code Review for Flowservices: Added "code review" as a quality gate using ISCCR (Licensed) for flow services.
 4. Account/Connection Support
 5. Vault Integration
 6. Bug fixes
