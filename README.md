@@ -14,7 +14,7 @@ This document extends the [original automation framework for webMethods.io Integ
   Promote multiple assets (APIs, workflows, flowservices, reference data, projectParameters) together in a single release cycle. (Complete Project support has been there from begining)
 
 - ✅ **Integrated Code Review Process**  
-  Added "code review" as a qulaity gate using ISCCR (Licensed) for flow services.
+  Added "code review" as a qulaity gate using ISCCR (Licensed) for flow services. [code review blog](https://community.ibm.com/community/user/viewdocument/cloud-native-isccr-continuous-cod?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments)
 
 - ✅ **Secret Vault Integration**  
   Sensitive credentials (tokens, client secrets, credentials) are stored in Azure Key Vault or GitHub secrets and auto-injected during deployments.
@@ -107,6 +107,7 @@ This is a sample setup, but definitely not limited to the above components, fram
 - [IBM webMethods.io API Docs](https://www.ibm.com/docs/en/wm-integration/11.0.11?topic=reference-webmethods-integration-apis)
 - [Official CLI](https://github.com/SoftwareAG/webmethods-io-integration-apicli (Being Migrated))
 - [Original Framework](https://community.ibm.com/community/user/integration/viewdocument/devops-for-webmethodsio-integratio?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments)
+- [Code review blog](https://community.ibm.com/community/user/viewdocument/cloud-native-isccr-continuous-cod?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments)
 
 ---
 
