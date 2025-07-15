@@ -131,6 +131,6 @@ All content in these repositories including code has been provided by IBM under 
 ## 🚀 Next Steps
 
 - Develop Anywhere Deploy Anywhere (DADA / IWHI) support.
-- Individual asset support
+- Individual asset support for Account/Connection
 - Unit Testing.
 
