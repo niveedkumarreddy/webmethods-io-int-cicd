@@ -1,201 +1,135 @@
-# DevOps for webMethods.IO Integration
+# 🚀 webMethods.io Integration DevOps Framework — Extended
 
-    This article shows how to design and setup an automated CI/CD process and framework for webMethods.io 
-    using the inbuilt APIs (or CLI). Here we have used Azure DevOps as our orchestration platform, 
-    GitHub as repository platform and Postman/Newman as test framework. 
+This document extends the [original automation framework for webMethods.io Integration](https://community.ibm.com/community/user/integration/viewdocument/devops-for-webmethodsio-integratio?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments), highlighting new capabilities such as API-first integration, multi-asset promotion, integrated code review, and secret vault support. The framework is designed for GitHub repositories and Azure DevOps pipelines but can be adapted to other platforms.
 
-# Use-case
-When organizations start using webMethods.io Integration for business use-cases, the need for having a continuous integration and delivery process becomes very important. These processes will enable the business to have a "Faster release rate", "More Test reliability" & "Faster to Market".
+---
+![alt text](./images/markdown/wmIO.gif)
 
-This use-case will highlight a solution utilizing webMethods.io import & export APIs (or CLI) and Azure Devops to extract and store the code assets in repository (GitHub). By integrating repository workflows and azure pipelines, this process will automate the promotion of assets to different stages/environment as per the organizations promotion workflow. This will also showcase how to automate the test framework for respective stages/environments.
+## 📌 What's New
 
-![](./images/markdown/delivery.png)  ![](./images/markdown/overview.png)
+- ✅ **API (Integration) Support**  
+  Automate REST API-based integrations, alongside workflows, flowservices.
 
-The automation around webMethods.io Integration APIs have been implemented using scripts, which will make customization easier if the organization chooses to adopt an alternative orchestration platform.
+- ✅ **Multi-Asset Promotion Support**  
+  Promote multiple assets (APIs, workflows, flowservices, reference data, projectParameters) together in a single release cycle. (Complete Project support has been there from begining)
 
-# Assumptions / Scope / Prerequisite
-1. 4 Environments: Play/build, Dev, QA & Prod. 
-2. Azure DevOps as Orchestration Platform
-3. GitHub: as the code repository
-4. GitHub Enterprise: For Pipelines/Scripts
-5. Postman/Newman as test framework
+- ✅ **Integrated Code Review Process**  
+  Added "code review" as a qulaity gate using ISCCR (Licensed) for flow services.
 
-# Git Workflow
-We will assume that the organization is following the below GIT Workflows.
+- ✅ **Secret Vault Integration**  
+  Sensitive credentials (tokens, client secrets, credentials) are stored in Azure Key Vault or GitHub secrets and auto-injected during deployments.
 
-![](./images/markdown/SingleFeature.png)    ![](./images/markdown/MultiFeature.png)
+- ✅ **Simplified Configuration Management**  
+  YAML-based project configurations track accounts, secrets, and environment-specific metadata.
 
-# Steps
-1. **Initialize**
-   1. Developer starts by executing *Initialize Pipeline* (Automation)
-   2. This checks if the request is for an existing asset or a new implementation
-   3. If new, automation will 
-      1. Initialize a repository
-      2. Create standardized branches, including requested Feature Branch
-      3. Create a project in Play/Build environment
-   4. If existing, automation will
-      1. Clone the Prod branch to Feature branch
-      2. Import asset to Play/Build environment
+---
 
-![](./images/markdown/Initialize.png)
+## 📈 Framework Overview
 
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**API's Used** 
-   *  /projects/{{*projectName*}}, 
-   *  /projects/{{*projectName*}}/workflow-import, 
-   *  /projects/{{*projectName*}}/flow-import, 
-   *  /ut-flow/referencedata/{{*projectUID*}}/{{*referenceDataName*}}, 
-   *  /ut-flow/referencedata/create/{{*projectUID*}}, 
-   *  /ut-flow/referencedata/update/{{*projectUID*}}/{{*referenceDataName*}}, 
-   *  /projects/{{*projectName*}}/params/{{*parameterUID*}}, 
-   *  /projects/{{*projectName*}}/params
-<br> 
-<br> 
-<br> 
+1. **Export & Version Control**
+   - Assets are exported from webMethods.io using APIs.
+   - Secrets are extracted, masked, and stored separately.
+   - Code and metadata are committed to GitHub.
 
+2. **Pull Request & Code Review**
+   - Developers raise pull requests for new or updated assets.
+   - Code review workflows ensure peer validation before merge. This could also be triggered on PRs (say feature --> codeReview branch)
 
-2. **Develop & Commit**
-   1. Developer starts developing
-   2. After completion they will execute synchronizeToFeature Pipeline (Automation)
-   3. Automation will 
-      1. Export the asset
-      2. Commit the asset to Feature Branch
+3. **Promotion & Deployment**
+   - Azure DevOps triggers automate import and deployment.
+   - Vault secrets are dynamically injected before deployment.
+   - Supports batch promotion of multiple assets.
 
-![](,/../images/markdown/synchronizeToFeature.png)
+4. **Automated Testing (Optional)**
+   - Postman/Newman test collections validate assets post-deployment.
 
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**API's Used**
-   * /projects/{{*projectName*}}/workflows/{{*assetID*}}/export, 
-   * /projects/{{*projectName*}}/flows/{{*assetID*}}/export, 
-   * /projects/{{*projectName*}}/assets, 
-   * /projects/{{*projectName*}}/accounts, 
-   * /ut-flow/referencedata/{{*projectUID*}}, 
-   * /ut-flow/referencedata/{{*projectUID*}}/{{*referenceDataName*}}, 
-   * /projects/{{*projectName*}}/params/{{*parameterUID*}}, 
-   * /projects/{{*projectName*}}/params
-<br> 
-<br> 
-<br> 
+---
 
-3. **Deliver / Promote to DEV**
-   1. Once the implementation is finished, developer manually creates a Pull Request from Feature Branch to DEV
-   2. This will trigger the synchronizeToDev pipeline (Automation)
-   3. Automation will 
-      1. Checkout the DEV branch
-      2. Import the asset to DEV environment
-      3. And then kicks off automated test for the associated project/repo with data/assertions specific to DEV
-   4. On failure, developer needs to fix/re-develop the asset (Step 2).
+## 🛠️ Components
 
-![](./images/markdown/synchronizeToDev.png)
+| Component        | Role                         |
+|------------------|------------------------------|
+| Azure DevOps     | CI/CD Pipeline Orchestration |
+| GitHub           | Source Control + Code Review |
+| Azure Key Vault  | Secret Storage               |
+| Postman/Newman   | Automated Testing            |
+| webMethods.io    | Target Integration Platform  |
 
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**API's Used** 
-   *  /projects/{{*projectName*}}, 
-   *  /projects/{{*projectName*}}/workflow-import, 
-   *  /projects/{{*projectName*}}/flow-import, 
-   *  /ut-flow/referencedata/{{*projectUID*}}/{{*referenceDataName*}}, 
-   *  /ut-flow/referencedata/create/{{*projectUID*}}, 
-   *  /ut-flow/referencedata/update/{{*projectUID*}}/{{*referenceDataName*}}, 
-   *  /projects/{{*projectName*}}/params/{{*parameterUID*}}, 
-   *  /projects/{{*projectName*}}/params
-   *  /projects/{{*projectName*}}/workflows/{{*assetID*}}/run
-   *  /projects/{{*projectName*}}/flows/{{*assetName*}}/run
-<br> 
-<br> 
-<br> 
+This is a sample setup, but definitely not limited to the above components, framework could be used with other components like, bitbucket, bamboo, gitlab, jenkins etc.
 
-4. **Deliver / Promote to QA**
-   1. After Dev cycle is complete, developer manually creates a Pull Request from Feature Branch to QA.  
-   2. This will trigger the synchronizeToQA pipeline (Automation)
-   3. Automation will 
-      1. Checkout the QA branch
-      2. Import the asset to QA environment
-      3. And then kicks off automated test for the associated project/repo with data/assertions specific to QA
-   4. On failure, developer needs to fix/re-develop the asset (Step 2).
+---
 
-![](./images/markdown/synchronizeToQA.png)
+## 🔐 Vault Integration
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**API's Used:** ***SAME AS STEP 3***
-<br> 
-<br> 
-<br> 
+- Secrets stored securely in:
+  - Azure Key Vault (recommended for Azure-hosted projects)
+  - GitHub Encrypted Secrets (fallback)
 
-5. **Deliver / Promote to PROD**
-   1. Once the automated test and UAT is successfully finished, developer manually creates a Pull Request from Feature Branch to PROD.  PROD deployment may have different approval cycle.
-   2. Respective operations team will manually trigger the synchronizeToPROD pipeline (Automation)
-   3. Automation will 
-      1. Checkout the PROD branch
-      2. Create a release
-      3. Import the asset to PROD environment
-      4. And then kicks off automated Smoke test, if any for PROD.
-   4. On failure, developer needs to fix/re-develop the asset (Step 2). And release will be rolled back.
+- During import, masked fields are dynamically replaced with actual secrets from vault.
 
-![](./images/markdown/synchronizeToPROD.png)
+---
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**API's Used:** ***SAME AS STEP 3***
-<br> 
-<br> 
-<br> 
+## ⚖️ Multi-Asset Promotion Workflow (Individual asset promotion)
 
-# Downloads / Assets / References
-1. Repository for automation, scripts & sample assets. Github: https://github.com/IBM/webmethods-io-int-cicd
-2. Presentation: https://github.com/IBM/webmethods-io-int-cicd/blob/main/presentation/webMethodsIO_Integration_CICD.pptx 
-3. Demo recording: 
-4. API Documentation: https://www.ibm.com/docs/en/wm-integration/11.0.11?topic=reference-webmethods-integration-apis
-5. CLI Repository: https://github.com/SoftwareAG/webmethods-io-integration-apicli (Being Migrated)
+- Supports selecting and promoting multiple assets together:
+  - APIs
+  - workflows
+  - flowservices
+  - Reference Data
+  - Project parametets
 
-# Next Steps
-1. Incorporate design for Hybrid use-case
-2. Extend testing framework
-3. Incorporate design for code review
+---
 
-## How to use/test
-1. Clone / Fork the automation repo
-2. Adjust the environment configs
-3. Configure your Azure DevOps tenant 
-   1. Create Project 
-   2. Link automation repo to get the pipelines
-   3. In project settings, create Service Connections for Automation repository and Code Repository
-4. Start the "*Initialize*" pipeline
-5. Check that the respective repo and webMethods.io project is created
-6. Import sample assets from automation repo
-7. Start "*synchronizeToFeature*" pipeline
-8. Check whether new assets have been committed to feature branch
-9. Adjust the test cases for each environment from automation repo and commit it code repo feature branch created above. *Note: Follow the folder structure documented*
-10. Create a Pull Request in code repository from Feature Branch to DEV
-11. Start "*synchronizeToDev*" pipeline. (This has been automated for Github, please refer to Github automation document).
-12. Check code has been Imported/Promoted to Dev environment
-13. Check whether Test has been automatically triggered.
+## 📊 Code Review Enforcement
 
-# Useful links   
+- Feature branch-based development.
+- Pull Requests mandatory before merging to DEV/QA/PROD branches.
+- Peer reviews using GitHub workflows.
+- Secrets never committed in clear text.
 
-📘 Explore the Knowledge Base    
-Dive into a wealth of webMethods tutorials and articles in our [Tech Community Knowledge Base](https://community.ibm.com/community/user/integration/communities/community-home/all-news?communitykey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&LibraryFolderKey=&DefaultView=&8e5b3238-cf51-4036-aa29-601a6cd3e1b3=eyJ2aWV3dHlwZSI6ImNhcmQifQ%3D%3D).  
+---
 
-💡 Get Expert Answers    
-Stuck or just curious? Ask the webMethods experts directly on our [Forum](https://community.ibm.com/community/user/integration/communities/community-home?communitykey=82b75916-ed06-4a13-8eb6-0190da9f1bfa).  
+## 📊 Example Pipelines
 
-🚀 Try webMethods    
-See webMethods in action with a [Free Trial IPaaS](https://www.ibm.com/products/webmethods-integration).[Free Trial On Premise](https://community.ibm.com/community/user/integration/viewdocument/guide-to-downloading-and-installing?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments).  
+| Stage            | Trigger            | Outcome                         |
+|------------------|--------------------|---------------------------------|
+| **Initialize**   | Manual             | New project + repo setup        |
+| **Synchronize**  | Manual             | Export + Commit assets          |
+| **Promote to DEV**| PR to DEV         | Import assets, inject secrets   |
+| **Promote to QA** | PR to QA          | Batch deploy + automated tests  |
+| **Promote to PROD**| Manual Approval  | Deploy to production            |
 
+---
 
-More to discover
-* [DevOps for webMethods.io Integration](https://community.ibm.com/community/user/integration/viewdocument/devops-for-webmethodsio-integratio?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments)
-* [webMethods DevOps](https://tech.forums.softwareag.com/t/recording-webmethods-virtual-meetup-may-19th-2023-webmethods-devops/278975)  
+## 📘 Documentation & Resources
 
-# Contribution
+- [Framework Repository](https://github.com/IBM/webmethods-io-int-cicd)
+- [IBM webMethods.io API Docs](https://www.ibm.com/docs/en/wm-integration/11.0.11?topic=reference-webmethods-integration-apis)
+- [Official CLI](https://github.com/SoftwareAG/webmethods-io-integration-apicli (Being Migrated))
+- [Original Framework](https://community.ibm.com/community/user/integration/viewdocument/devops-for-webmethodsio-integratio?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments)
 
-## How to Contribute
-This is an open-source project and requires community contributions to remain useful. Anyone can contribute to the project in the following ways:
-1. Fork this repository.
-2. Make your enhancements/ changes.
-3. Create a Pull Request.
-4. Finally, development team will evaluate the Pull Request and merge it to the source code.
+---
 
-## Raising Issues / Bugs
+## 🤝 Contribution
 
-In case of Bugs, please create an issue with following details
-1. Version
-2. Detailed description (with images if needed)
-3. Error stacktace (log snippets)
+- Fork → Enhance → Pull Request.
+- Contributions welcome for:
+  - New orchestration platform adapters.
+  - Additional secret providers.
+  - Pipeline optimization.
 
-# Disclaimer
+---
+
+## ⚠️ Disclaimer
 ## IBM Public Repository Disclosure
 All content in these repositories including code has been provided by IBM under the associated open source software license and IBM is under no obligation to provide enhancements, updates, or support. IBM developers produced this code as an open source project (not as an IBM product), and IBM makes no assertions as to the level of quality nor security, and will not be maintaining this code going forward.
+
+
+---
+
+## 🚀 Next Steps
+
+- Develop Anywhere Deploy Anywhere (DADA / IWHI) support.
+- Individual asset support
+- Unit Testing.
+
