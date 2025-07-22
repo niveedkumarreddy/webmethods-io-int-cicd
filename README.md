@@ -8,7 +8,7 @@ This document extends the [original automation framework for webMethods.io Integ
 ## 📌 What's New
 
 - ✅ **API (Integration) Support**  
-  Automate REST API-based integrations, alongside workflows, flowservices.
+  Automate API (integrations) promotion, alongside workflows, flowservices.
 
 - ✅ **Multi-Asset Promotion Support**  
   Promote multiple assets (APIs, workflows, flowservices, reference data, projectParameters) together in a single release cycle. (Complete Project support has been there from begining)
@@ -16,8 +16,11 @@ This document extends the [original automation framework for webMethods.io Integ
 - ✅ **Integrated Code Review Process**  
   Added "code review" as a qulaity gate using ISCCR (Licensed) for flow services. [code review blog](https://community.ibm.com/community/user/viewdocument/cloud-native-isccr-continuous-cod?CommunityKey=82b75916-ed06-4a13-8eb6-0190da9f1bfa&tab=librarydocuments)
 
+- ✅ **Account/Connection Promotion Support**  
+  Added support for automating Account promotion with separating metadata and credentials (Valut) and also separate config per stage.
+
 - ✅ **Secret Vault Integration**  
-  Sensitive credentials (tokens, client secrets, credentials) are stored in Azure Key Vault or GitHub secrets and auto-injected during deployments.
+  Sensitive credentials (tokens, client secrets, credentials) for account/connectuins can stored in Azure Key Vault or GitHub secrets and auto-injected during deployments.
 
 - ✅ **Simplified Configuration Management**  
   YAML-based project configurations track accounts, secrets, and environment-specific metadata.
