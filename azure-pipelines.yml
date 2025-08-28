@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  name: SelfHostedPool    # replace with your agent pool name (or "Default")
+  name: Default    # replace with your agent pool name (or "Default")
 
 strategy:
   matrix:
