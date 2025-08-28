@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  name: SelfHostedPool    # replace with your agent pool name (or "Default")
 
 strategy:
   matrix:
