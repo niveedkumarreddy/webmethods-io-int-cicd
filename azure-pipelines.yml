@@ -7,18 +7,18 @@ trigger:
 - main
 
 pool:
-  name: MyWindowsAgent   # your self-hosted pool
+  name: MyWindowsAgent   # your self-hosted agent pool
 
 strategy:
   matrix:
     Python38:
-      python.path: 'C:\Users\NiveedKumarReddyBoll\AppData\Local\Programs\Python\Python38\python.exe'
+      python.path: 'C:\Python38\python.exe'
     Python39:
-      python.path: 'C:\Users\NiveedKumarReddyBoll\AppData\Local\Programs\Python\Python39\python.exe'
+      python.path: 'C:\azagent\agent\_work\_tool\Python\3.9.13\x64\python.exe'
     Python310:
-      python.path: 'C:\Users\NiveedKumarReddyBoll\AppData\Local\Programs\Python\Python310\python.exe'
+      python.path: 'C:\azagent\agent\_work\_tool\Python\3.10.11\x64\python.exe'
     Python311:
-      python.path: 'C:\Users\NiveedKumarReddyBoll\AppData\Local\Programs\Python\Python311\python.exe'
+      python.path: 'C:\Python311\python.exe'
 
 steps:
 - script: |
@@ -29,4 +29,4 @@ steps:
 - script: |
     "$(python.path)" -m pip install pytest pytest-azurepipelines
     "$(python.path)" -m pytest
-  displayName: 'pytest'
+  displayName: 'Run tests'
