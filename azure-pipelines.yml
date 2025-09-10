@@ -7,31 +7,26 @@ trigger:
 - main
 
 pool:
-  name: MyWindowsAgent
+  name: MyWindowsAgent   # your self-hosted pool
 
 strategy:
   matrix:
     Python38:
-      python.version: '3.8'
+      python.path: 'C:\Users\NiveedKumarReddyBoll\AppData\Local\Programs\Python\Python38\python.exe'
     Python39:
-      python.version: '3.9'
+      python.path: 'C:\Users\NiveedKumarReddyBoll\AppData\Local\Programs\Python\Python39\python.exe'
     Python310:
-      python.version: '3.10'
+      python.path: 'C:\Users\NiveedKumarReddyBoll\AppData\Local\Programs\Python\Python310\python.exe'
     Python311:
-      python.version: '3.11'
+      python.path: 'C:\Users\NiveedKumarReddyBoll\AppData\Local\Programs\Python\Python311\python.exe'
 
 steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
-
 - script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
+    "$(python.path)" -m pip install --upgrade pip
+    "$(python.path)" -m pip install -r requirements.txt
   displayName: 'Install dependencies'
 
 - script: |
-    pip install pytest pytest-azurepipelines
-    pytest
+    "$(python.path)" -m pip install pytest pytest-azurepipelines
+    "$(python.path)" -m pytest
   displayName: 'pytest'
