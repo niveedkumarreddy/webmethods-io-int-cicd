@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: MyWindowsAgent
+  name: MyWindowsAgent
 
 strategy:
   matrix:
