@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  name: Default    # replace with your agent pool name (or "Default")
+  vmImage: ubuntu-latest
 
 strategy:
   matrix:
@@ -21,12 +21,17 @@ strategy:
       python.version: '3.11'
 
 steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '$(python.version)'
+  displayName: 'Use Python $(python.version)'
+
 - script: |
-    py -$(python.version) -m pip install --upgrade pip
-    py -$(python.version) -m pip install -r requirements.txt
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
   displayName: 'Install dependencies'
 
 - script: |
-    py -$(python.version) -m pip install pytest pytest-azurepipelines
-    py -$(python.version) -m pytest
+    pip install pytest pytest-azurepipelines
+    pytest
   displayName: 'pytest'
