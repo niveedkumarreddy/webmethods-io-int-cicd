@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  name: MyWindowsAgent
+  vmImage: 'windows-latest'
 
 strategy:
   matrix:
