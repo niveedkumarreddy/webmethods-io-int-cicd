@@ -1,0 +1,32 @@
+# Python package
+# Create and test a Python package on multiple Python versions.
+# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+
+trigger:
+- main
+
+pool:
+  name: MyWindowsAgent   # your self-hosted agent pool
+
+strategy:
+  matrix:
+    Python38:
+      python.path: 'C:\Python38\python.exe'
+    Python39:
+      python.path: 'C:\azagent\agent\_work\_tool\Python\3.9.13\x64\python.exe'
+    Python310:
+      python.path: 'C:\azagent\agent\_work\_tool\Python\3.10.11\x64\python.exe'
+    Python311:
+      python.path: 'C:\Python311\python.exe'
+
+steps:
+- script: |
+    "$(python.path)" -m pip install --upgrade pip
+    "$(python.path)" -m pip install -r src/requirements.txt
+  displayName: 'Install dependencies'
+
+- script: |
+    "$(python.path)" -m pip install pytest pytest-azurepipelines
+    "$(python.path)" -m pytest
+  displayName: 'Run tests'
