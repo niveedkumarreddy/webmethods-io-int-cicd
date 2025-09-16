@@ -1,23 +1,158 @@
-trigger:
-- main
+##############################################################################################################
+#                                                                                                            #
+# initialize_pipeline.yml : Initialize the repository and also the play/build stage                          #
+#                                                                                                            #
+# ####### Inputs ########                                                                                    #
+# assetIDList: (Optional) Comma separated list of asset Ids to be Imported                                   #
+# assetNameList: (Optional) Comma separatred asset name list                                                 #
+# assetTypeList: (Optional) Comma seperated asset Type List. Currently supported options: workflow,          #
+#                 flowservice, referenceData, rest_api & project_parameter                                   #
+# devUser: (Optional) UserID for commits and audit                                                           #
+# featureBranchName: ((Mandatory) Name of the feature branch.                                                #
+# repoName: (Mandatory) Name of the corresponding repository.                                                #
+# synchProject: (Mandatory) True if you want to synchronize complete project. If false, then you have to     #
+#                provide assetID and assetType                                                               #
+##############################################################################################################
 
-stages:
-- stage: Initialize
-  jobs:
-  - job: Init
-    steps:
-    - template: pipelines/initialize_pipeline.yml
+trigger: none
 
-- stage: SyncFeature
-  dependsOn: Initialize
-  jobs:
-  - job: SyncFeature
-    steps:
-    - template: pipelines/sychronizeFeatureBranch_pipeline.yml
 
-- stage: SyncDEV
-  dependsOn: SyncFeature
-  jobs:
-  - job: SyncDEV
-    steps:
-    - template: pipelines/synchronizeDEV_pipeline.yml
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+- name: init
+  value: true
+- group: webMethodsIO_group
+- group: azure_group
+- group: github_group
+- name: repoPath
+  value: $(gitOwner)/$(repoName)
+
+
+
+steps:
+- checkout: self
+  submodules: "true"
+  persistCredentials: "true"
+  clean: "true"
+  path: self
+
+- script: |
+    echo "##vso[task.setvariable variable=assetIDList;]NA"
+    echo "##vso[task.setvariable variable=assetTypeList;]NA"
+    echo "##vso[task.setvariable variable=assetNameList;]NA"
+  condition: eq(variables['synchProject'], 'true') 
+  displayName: 'Adjust variables'
+
+
+
+- bash: |
+    pwd
+    cd ../self
+    pwd
+    ls -ltr
+    echo "##vso[task.setvariable variable=source_environment_hostname]`yq -e ".tenant.hostname" configs/env/play.yml`"
+    echo "##vso[task.setvariable variable=source_environment_port]`yq -e ".tenant.port" configs/env/play.yml`"
+    echo "##vso[task.setvariable variable=admin_user]`yq -e ".tenant.admin_username" configs/env/play.yml`"
+    echo "##vso[task.setvariable variable=source_type]`yq -e ".tenant.type" configs/env/play.yml`"
+    echo "##vso[task.setvariable variable=repo_user]`yq -e ".repo.user" configs/repo.yml`"
+
+    echo "##vso[build.updatebuildnumber]$(Build.BuildNumber)-$(repoName)"
+    echo $(System.DefaultWorkingDirectory)
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  displayName: 'Get Environment Tenant Details'
+# setup python environment
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.10'
+    addToPath: true
+
+- script: |
+    
+    python3.10 -m pip3 install --upgrade pip
+    pip3 install pynacl
+    chmod +x ./pipelines/scripts/github/encryptGithubSecret.py
+
+  displayName: 'Setup Python3 Environment'
+  workingDirectory: '$(System.DefaultWorkingDirectory)'
+  condition: succeeded()
+- script: |
+      cd ../
+
+      ########GitHub 
+        HOME_DIR=$(System.DefaultWorkingDirectory)/../
+
+        chmod +x ./self/pipelines/scripts/github/*.sh
+        ./self/pipelines/scripts/github/initializeRepo.sh $(repo_user) $(PAT) $(AZURE_TOKEN) $(repoName) $(devUser) $(featureBranchName) ${HOME_DIR} debug
+
+  displayName: 'Create a repo and required branches'
+  
+- script: |
+      cd ../
+      LOCAL_DEV_URL=https://$(source_environment_hostname):$(source_environment_port)
+      echo ${LOCAL_DEV_URL}
+      HOME_DIR=$(System.DefaultWorkingDirectory)/../
+      if [ $(init) == true ]; then
+        echo "New repo created"
+        ######## Check & Create Project 
+        chmod +x ./self/pipelines/scripts/*.sh
+        project_id=$(./self/pipelines/scripts/createProject.sh \
+        "${LOCAL_DEV_URL}" \
+        "$(admin_user)" \
+        "$(admin_password)" \
+        "$(repoName)" 2> >(tee >&2))  
+        echo "Captured Project ID: [$project_id]"
+        ./self/pipelines/scripts/github/commitProjectConfig.sh "$(repoName)" "project-config" ".project.project-id" "$project_id" "${HOME_DIR}" true "$(devUser)" "$(featureBranchName)" debug
+        ./self/pipelines/scripts/github/commitProjectConfig.sh "$(repoName)" "project-config" ".project.project-name" "$(repoName)" "${HOME_DIR}" true "$(devUser)" "$(featureBranchName)" debug
+      else
+        ######## Create a feature branch from prod 
+        echo "Repo Exists, Check and sync feature branch from Prod"
+        if [ $(synchProject) != true ]; then
+          echo "Patch Initialize"
+          if [ -z "$(assetIDList)" ]; then
+            echo "##vso[task.logissue type=error;]Missing parameter \"assetIDList\""
+            echo "##vso[task.complete result=Failed;]"
+            exit 1
+          fi
+                  
+          if [ -z "$(assetTypeList)" ]; then
+            echo "##vso[task.logissue type=error;]Missing parameter \"assetTypeList\""
+            echo "##vso[task.complete result=Failed;]"
+            exit 1
+          fi
+        else
+          echo "Project Initialize"
+       fi  
+          rm -rf ./$(repoName)
+
+          git clone -b production https://$(repo_user):$(PAT)@github.com/$(repo_user)/$(repoName).git
+          cd $(repoName)
+          branchExists=$(git ls-remote --exit-code --heads origin $(featureBranchName))
+          if [ ! -z "${branchExists// }" ]; 
+          then
+              echo "Branch $(featureBranchName) already exists"
+          else
+              echo "Branch $(featureBranchName) doesnt exists, synching from prod ..."
+              chmod +x ../self/pipelines/scripts/github/*.sh
+              ../self/pipelines/scripts/github/createFeatureFromProdBranch.sh $(devUser) $(featureBranchName) ${HOME_DIR} debug
+              # Project Check
+              chmod +x ../self/pipelines/scripts/*.sh
+              echo "Check and create Project ..."
+              project_id=$(./self/pipelines/scripts/createProject.sh \
+              "${LOCAL_DEV_URL}" \
+              "$(admin_user)" \
+              "$(admin_password)" \
+              "$(repoName)" 2> >(tee >&2))  
+              echo "Captured Project ID: [$project_id]"
+              # Import
+                  echo "Importing asset ..."
+              ../self/pipelines/scripts/importAsset.sh ${LOCAL_DEV_URL} $(admin_user) $(admin_password) $(repoName) $(assetIDList) $(assetTypeList) ${HOME_DIR} $(synchProject) $(source_type) true debug
+          
+              
+          fi
+      fi
+  displayName: 'Create / Sychronize the projects'
+  
+
+  
