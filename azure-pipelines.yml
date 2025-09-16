@@ -1,32 +1,23 @@
-# Python package
-# Create and test a Python package on multiple Python versions.
-# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
-
 trigger:
 - main
 
-pool:
-  name: MyWindowsAgent   # your self-hosted agent pool
+stages:
+- stage: Initialize
+  jobs:
+  - job: Init
+    steps:
+    - template: pipelines/initialize_pipeline.yml
 
-strategy:
-  matrix:
-    Python38:
-      python.path: 'C:\Python38\python.exe'
-    Python39:
-      python.path: 'C:\azagent\agent\_work\_tool\Python\3.9.13\x64\python.exe'
-    Python310:
-      python.path: 'C:\azagent\agent\_work\_tool\Python\3.10.11\x64\python.exe'
-    Python311:
-      python.path: 'C:\Python311\python.exe'
+- stage: SyncFeature
+  dependsOn: Initialize
+  jobs:
+  - job: SyncFeature
+    steps:
+    - template: pipelines/sychronizeFeatureBranch_pipeline.yml
 
-steps:
-- script: |
-    "$(python.path)" -m pip install --upgrade pip
-    "$(python.path)" -m pip install -r requirements.txt
-  displayName: 'Install dependencies'
-
-#- script: |
-#    "$(python.path)" -m pip install pytest pytest-azurepipelines
-#    "$(python.path)" -m pytest
-#  displayName: 'Run tests'
+- stage: SyncDEV
+  dependsOn: SyncFeature
+  jobs:
+  - job: SyncDEV
+    steps:
+    - template: pipelines/synchronizeDEV_pipeline.yml
