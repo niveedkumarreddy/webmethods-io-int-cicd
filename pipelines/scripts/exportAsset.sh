@@ -619,22 +619,6 @@ if [ ${synchProject} == true ]; then
     echod $assetID
     exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   done
-   # Exporting Scheduler
-  for item in $(jq  -c -r '.output.Scheduler[]' <<< "$projectListJson"); do
-    echod "Inside Scheduler Loop"
-    assetID=$item
-    assetType=sScheduler
-    echod $assetID
-    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
-  done
-   # For Export Project Configuration
-  for item in $(jq  -c -r '.output.project_configuration[]' <<< "$projectListJson"); do
-    echod "Inside project_configuration Loop"
-    assetID=$item
-    assetType=project_configuration
-    echod $assetID
-    exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
-  done
 
   #Expoting Accounts
   ACCOUNT_LIST_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/accounts
@@ -671,6 +655,16 @@ if [ ${synchProject} == true ]; then
   # Exporting Project Parameters
   #PP Export
   assetType=project_parameter
+  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+  
+  # For Export Scheduler
+  assetID=${assetIDList}
+  $assetType = Scheduler
+  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+        
+  # For Export Project Configuration
+  assetID=${assetIDList}
+  $assetType = project_configuration
   exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   
 else
