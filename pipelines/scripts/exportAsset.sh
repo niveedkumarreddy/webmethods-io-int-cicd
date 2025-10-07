@@ -659,12 +659,12 @@ if [ ${synchProject} == true ]; then
   
   # For Export Scheduler
   assetID=${assetIDList}
-  $assetType = Scheduler
+  assetType=Scheduler
   exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
         
   # For Export Project Configuration
   assetID=${assetIDList}
-  $assetType = project_configuration
+  assetType=project_configuration
   exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   
 else
