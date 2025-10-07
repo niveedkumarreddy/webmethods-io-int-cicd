@@ -18,7 +18,7 @@ resources:
   repositories:
   - repository: projectRepo
     type: github
-    endpoint: github
+    endpoint: Github_devops_mvp
     name: $(repoPath)
     ref: $(featureBranchName)
 steps:
