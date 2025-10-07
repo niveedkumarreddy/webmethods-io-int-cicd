@@ -342,17 +342,16 @@ function exportAsset(){
                 cd ./assets/dafservices
                 echo "DAFservice Export:" ${EXPORT_URL}
                 echod $(ls -ltr)
-			else
-			  if [[ $assetType = soap_api* ]]; then
-				EXPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/export
-				soap_api_json="{\"soap_api\": [\"${assetID}\"]}"
-				cd ${HOME_DIR}/${repoName}
-				mkdir -p ./assets/soap_api
-				cd ./assets/soap_api
-				echod "SOAP_API Export:" ${EXPORT_URL} "with JSON: "${soap_api_json}
-				echod $(ls -ltr)
-	
-				fi	
+              else
+                if [[ $assetType = soap_api* ]]; then
+                  EXPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/export
+                  soap_api_json="{\"soap_api\": [\"${assetID}\"]}"
+                  cd ${HOME_DIR}/${repoName}
+                  mkdir -p ./assets/soap_api
+                  cd ./assets/soap_api
+                  echod "SOAP_API Export:" ${EXPORT_URL} "with JSON: "${soap_api_json}
+                  echod $(ls -ltr)
+                fi	
               fi
             fi
           fi
@@ -378,7 +377,6 @@ function exportAsset(){
         fi
 	  fi
      if [ -n "$linkJson" ] && [ "$linkJson" != "null" ]; then
-			   
       downloadURL=$(echo "$linkJson" | jq -r '.output.download_link')
       
       regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
