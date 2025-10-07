@@ -410,8 +410,8 @@ function exportAsset(){
       # For Export Scheduler
         if [[ $assetType = Scheduler* ]]; then
         echo "Calling another script"
-              echod "SCHEDULER Export Process is Start"
-           bash -x ${HOME_DIR}/exportSchedulersList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
+            echod "SCHEDULER Export Process is Start"
+            ../self/pipelines/scripts/exportSchedulersList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
             echod "SCHEDULER Export Process is End"
             echod $(ls -ltr)
         fi
@@ -419,8 +419,8 @@ function exportAsset(){
        # For Export Project Configuration
         if [[ $assetType = project_configuration* ]]; then
         echo "Calling project configuration script"
-              echod "Project Configuration Export Process is Start"
-           bash -x ${HOME_DIR}/exportProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+            echod "Project Configuration Export Process is Start"
+            ../self/pipelines/scripts/exportProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
             echod "project configuration Export Process is End"
             echod $(ls -ltr)
         fi
