@@ -342,7 +342,7 @@ function exportAsset(){
                 cd ./assets/dafservices
                 echo "DAFservice Export:" ${EXPORT_URL}
                 echod $(ls -ltr)
-            else
+			else
 			  if [[ $assetType = soap_api* ]]; then
 				EXPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/projects/${repoName}/export
 				soap_api_json="{\"soap_api\": [\"${assetID}\"]}"
@@ -352,7 +352,7 @@ function exportAsset(){
 				echod "SOAP_API Export:" ${EXPORT_URL} "with JSON: "${soap_api_json}
 				echod $(ls -ltr)
 	
-       
+				fi	
               fi
             fi
           fi
@@ -363,22 +363,22 @@ function exportAsset(){
         --header 'Content-Type: application/json' \
         --header 'Accept: application/json' \
         --data-raw "$rest_api_json" -u ${admin_user}:${admin_password})
-      else     
-          if [[ $assetType = soap_api* ]]; then
+		else
+			if [[ $assetType = soap_api* ]]; then
 			linkJson=$(curl  --location --request POST ${EXPORT_URL} \
 			--header 'Content-Type: application/json' \
 			--header 'Accept: application/json' \
 			--data-raw "$soap_api_json" -u ${admin_user}:${admin_password})
-		else   
-        linkJson=$(curl  --location --request POST ${EXPORT_URL} \
-        --header 'Content-Type: application/json' \
-        --header 'Accept: application/json' \
-        -u ${admin_user}:${admin_password})
-      fi
-      fi
+		else     
+			linkJson=$(curl  --location --request POST ${EXPORT_URL} \
+			--header 'Content-Type: application/json' \
+			--header 'Accept: application/json' \
+			-u ${admin_user}:${admin_password})
+          fi
+        fi
 	  fi
      if [ -n "$linkJson" ] && [ "$linkJson" != "null" ]; then
-														 
+			   
       downloadURL=$(echo "$linkJson" | jq -r '.output.download_link')
       
       regex='(https?|ftp|file)://[-[:alnum:]\+&@#/%?=~_|!:,.;]*[-[:alnum:]\+&@#/%=~_|]'
