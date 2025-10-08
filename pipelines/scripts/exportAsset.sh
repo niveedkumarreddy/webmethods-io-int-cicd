@@ -351,6 +351,42 @@ function exportAsset(){
                   cd ./assets/soap_api
                   echod "SOAP_API Export:" ${EXPORT_URL} "with JSON: "${soap_api_json}
                   echod $(ls -ltr)
+                else
+                  if [[ $assetType = Scheduler* ]]; then
+                    echo "Calling another script"
+                    echod "SCHEDULER Export Process is Start"
+                    ../self/pipelines/scripts/exportSchedulersList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
+                    echod "SCHEDULER Export Process is End"
+                    echod $(ls -ltr)
+                    return
+                  else
+                    if [[ $assetType = project_configuration* ]]; then
+                      echo "Calling project configuration script"
+                      echod "Project Configuration Export Process is Start"
+                      ../self/pipelines/scripts/exportProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+                      echod "project configuration Export Process is End"
+                      echod $(ls -ltr)
+                      return
+                    else
+                      if [[ $assetType = project_variable* ]]; then
+                        echo "Calling project variable script"
+                        echod "Project variable Export Process is Start"
+                        ../self/pipelines/scripts/exportProjectVariable.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+                        echod "project variable Export Process is End"
+                        echod $(ls -ltr)
+                        return
+                      else
+                        if [[ $assetType = certificate* ]]; then
+                          echo "Calling project Certificate script"
+                          echod "Project Certificate Export Process is Start"
+                          ../self/pipelines/scripts/exportCertificatesList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+                          echod "project Certificate Export Process is End"
+                          echod $(ls -ltr)
+                          return
+                        fi
+                      fi
+                    fi
+                  fi
                 fi	
               fi
             fi
@@ -405,36 +441,7 @@ function exportAsset(){
             exportReferenceData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR}
           fi
         fi
-      fi
-      
-      # For Export Scheduler
-        if [[ $assetType = Scheduler* ]]; then
-        echo "Calling another script"
-            echod "SCHEDULER Export Process is Start"
-            ../self/pipelines/scripts/exportSchedulersList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
-            echod "SCHEDULER Export Process is End"
-            echod $(ls -ltr)
-        fi
-      
-       # For Export Project Configuration
-        if [[ $assetType = project_configuration* ]]; then
-        echo "Calling project configuration script"
-            echod "Project Configuration Export Process is Start"
-            ../self/pipelines/scripts/exportProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
-            echod "project configuration Export Process is End"
-            echod $(ls -ltr)
-        fi
-        
-        # For Export Project Configuration
-        if [[ $assetType = configuration_kl* ]]; then
-        echo "Calling project configuration script"
-              echod "Project Configuration Export Process is Start"
-           bash -x ${HOME_DIR}/exportProjectConfigurationList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
-            echod "project configuration Export Process is End"
-            echod $(ls -ltr)
-        fi
-        
-     
+      fi 
   cd ${HOME_DIR}/${repoName}
 
 }  
@@ -665,6 +672,16 @@ if [ ${synchProject} == true ]; then
   # For Export Project Configuration
   assetID=${assetIDList}
   assetType=project_configuration
+  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+  
+  # For Export Project Variable
+  assetID=${assetIDList}
+  assetType=project_variable
+  exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+  
+  # For Export Certificate
+  assetID=${assetIDList}
+  assetType=certificate
   exportAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
   
 else
