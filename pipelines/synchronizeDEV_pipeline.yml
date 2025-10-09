@@ -29,7 +29,7 @@ resources:
     type: github
     endpoint: Github_devops_mvp
     name: $(repoPath)
-    ref: dev
+    ref: $(featureBranchName)
 
 steps:
 - checkout: projectRepo
