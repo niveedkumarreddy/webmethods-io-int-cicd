@@ -66,11 +66,11 @@ function exportSchedulersList() {
         echo "$SchedulersListExport" | jq '.' > "$SchedulersList_file"
         echo "✅ Schedulers List saved to: $SchedulersList_file"
 
-        echo "SINGLE_SCHEDULER = $SINGLE_SCHEDULER"
-        if [ "$SINGLE_SCHEDULER" == "true" ]; then
-            echo "$SchedulersListJson" | jq -r '.output[].serviceName' > "$SchedulersKeyList_file"
-            echo "✅ Scheduler keys saved to: $SchedulersKeyList_file"
-        fi
+        # echo "SINGLE_SCHEDULER = $SINGLE_SCHEDULER"
+        # if [ "$SINGLE_SCHEDULER" == "true" ]; then
+        #     echo "$SchedulersListJson" | jq -r '.output[].serviceName' > "$SchedulersKeyList_file"
+        #     echo "✅ Scheduler keys saved to: $SchedulersKeyList_file"
+        # fi
     fi
 
      exportSingleScheduler "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$SchedulersKeyList_file" "$SINGLE_SCHEDULER"
@@ -94,7 +94,7 @@ function exportSingleScheduler() {
     echo "SchedulersKeyList_file=$SchedulersKeyList_file"
     echo "SINGLE_SCHEDULER=$SINGLE_SCHEDULER"
 
-    if [ "$SINGLE_SCHEDULER" == "true" ]; then
+    # if [ "$SINGLE_SCHEDULER" == "true" ]; then
         output_dir="./assets/projectConfigs/Schedulers"
         output_file="$output_dir/Single_Schedulers_file.json"
         single_schedule_array="[]"
@@ -137,7 +137,7 @@ function exportSingleScheduler() {
 
         echo "$single_schedule_array" | jq '.' > "$output_file"
         echo "✅ Full scheduler config written to: $output_file"
-    fi
+   #  fi
 }
 
 # Start execution
