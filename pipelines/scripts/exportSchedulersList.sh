@@ -65,6 +65,8 @@ function exportSchedulersList() {
         mkdir -p ./assets/projectConfigs/Schedulers
         echo "$SchedulersListExport" | jq '.' > "$SchedulersList_file"
         echo "✅ Schedulers List saved to: $SchedulersList_file"
+        echo "$SchedulersListJson" | jq -r '.output[].serviceName' > "$SchedulersKeyList_file"
+        echo "✅ Scheduler keys saved to: $SchedulersKeyList_file"
 
         # echo "SINGLE_SCHEDULER = $SINGLE_SCHEDULER"
         # if [ "$SINGLE_SCHEDULER" == "true" ]; then
