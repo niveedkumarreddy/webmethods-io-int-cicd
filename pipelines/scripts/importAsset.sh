@@ -121,6 +121,13 @@ function importAsset() {
               cd ${HOME_DIR}/${repoName}/assets/dafservices
               echod "DAFservice Import:" ${IMPORT_URL}
               echod $(ls -ltr)
+			  else
+				if [[ $assetType = soap_api* ]]; then
+				IMPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/project-import
+				cd ${HOME_DIR}/${repoName}/assets/dafservices
+				echod "SOAP API Import: "${IMPORT_URL}
+				echod $(ls -ltr)
+			  fi
             fi
           fi
         fi
@@ -129,7 +136,7 @@ function importAsset() {
         echod ${IMPORT_URL}
         echod ${PWD}
     FILE=./${assetID}.zip
-    if [[ $assetType = rest_api* ]]; then
+    if [[ $assetType == rest_api* || $assetType == soap_api* ]]; then
       formKey="project=@"${FILE}
     else
       formKey="recipe=@"${FILE}
@@ -145,7 +152,7 @@ function importAsset() {
                     --header 'Accept: application/json' \
                     --form ${formKey} --form ${overwriteKey} -u ${admin_user}:${admin_password})    
 
-        if [[ $assetType = rest_api* ]]; then
+        if [[ $assetType == rest_api* || $assetType == soap_api* ]]; then
           name=$(echo "$importedName" | jq '.output.message // empty')
           success='"IMPORT_SUCCESS"'
           if [ "$name" == "$success" ];   then
@@ -172,6 +179,25 @@ function importAsset() {
       fi
       fi
     fi
+	
+	# For Import Scheduler
+        if [[ $assetType = Scheduler* ]]; then
+        echo "Calling another script"
+              echod "SCHEDULER Import Process is Start"
+             bash -x ${HOME_DIR}/importSchedulersList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
+            echod "SCHEDULER Import Process is End"
+            echod $(ls -ltr)
+        fi
+    
+    # For Import Project Configuration
+        if [[ $assetType = project_configuration* ]]; then
+        echo "Calling another script"
+              echod "project_configuration Import Process is Start"
+             bash -x ${HOME_DIR}/importProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+            echod "project_configuration Import Process is End"
+            echod $(ls -ltr)
+        fi
+	
   fi
  cd ${HOME_DIR}/${repoName}
 }
@@ -555,7 +581,6 @@ function splitAndImportAssets() {
 
   # Desired processing order
   local desiredOrder=("referenceData" "rest_api" "project_parameter" "workflow" "flowservice" "dafservice" "Scheduler" "project_configuration"  )
-
 
   # Normalize input: remove spaces around commas
   assetNameList=$(echo "$assetNameList" | sed 's/ *, */,/g')
