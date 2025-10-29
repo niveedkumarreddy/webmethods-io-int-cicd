@@ -124,9 +124,37 @@ function importAsset() {
 			  else
 				if [[ $assetType = soap_api* ]]; then
 				IMPORT_URL=${LOCAL_DEV_URL}/apis/v1/rest/project-import
-				cd ${HOME_DIR}/${repoName}/assets/dafservices
+				cd ${HOME_DIR}/${repoName}/assets/soap_api
 				echod "SOAP API Import: "${IMPORT_URL}
 				echod $(ls -ltr)
+				else
+				  if [[ $assetType = Scheduler* ]]; then
+				  echod " Scheduler Import: "${assetType}
+				  ../self/pipelines/scripts/importSchedulersList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
+				  cd ${HOME_DIR}/${repoName}/assets/projectConfigs/Schedulers
+				  echod $(ls -ltr)
+				  else
+				    if [[ $assetType = project_configuration* ]]; then
+				    echod " project configuration Import: "${assetType}
+				    ../self/pipelines/scripts/importProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+				    cd ${HOME_DIR}/${repoName}/assets/projectConfigs/ProjectConfiguration
+				    echod $(ls -ltr)
+					else
+					  if [[ $assetType = project_variable* ]]; then
+					  echod " project variable Import: "${assetType}
+					  ../self/pipelines/scripts/importProjectVariables.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+					  cd ${HOME_DIR}/${repoName}/assets/projectConfigs/ProjectVariable
+					  echod $(ls -ltr)
+                      else
+                        if [[ $assetType = certificate* ]]; then
+                        echod " project variable Import: "${assetType}
+                        ../self/pipelines/scripts/importCertificate.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+                        cd ${HOME_DIR}/${repoName}/assets/projectConfigs/Certificates
+                        echod $(ls -ltr)
+                      fi
+				    fi
+				  fi
+			    fi
 			  fi
             fi
           fi
@@ -179,25 +207,6 @@ function importAsset() {
       fi
       fi
     fi
-	
-	# For Import Scheduler
-        if [[ $assetType = Scheduler* ]]; then
-        echo "Calling another script"
-              echod "SCHEDULER Import Process is Start"
-             bash -x ${HOME_DIR}/importSchedulersList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
-            echod "SCHEDULER Import Process is End"
-            echod $(ls -ltr)
-        fi
-    
-    # For Import Project Configuration
-        if [[ $assetType = project_configuration* ]]; then
-        echo "Calling another script"
-              echod "project_configuration Import Process is Start"
-             bash -x ${HOME_DIR}/importProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
-            echod "project_configuration Import Process is End"
-            echod $(ls -ltr)
-        fi
-	
   fi
  cd ${HOME_DIR}/${repoName}
 }
@@ -580,7 +589,7 @@ function splitAndImportAssets() {
   local assetTypeList="$6"
 
   # Desired processing order
-  local desiredOrder=("referenceData" "rest_api" "project_parameter" "workflow" "flowservice" "dafservice" "Scheduler" "project_configuration"  )
+  local desiredOrder=("referenceData" "rest_api" "project_parameter" "workflow" "flowservice" "dafservice" "Scheduler" "project_configuration" "project_variable" "certificate")
 
   # Normalize input: remove spaces around commas
   assetNameList=$(echo "$assetNameList" | sed 's/ *, */,/g')
@@ -707,11 +716,49 @@ if [ ${synchProject} == true ]; then
   else
     echod "No DAFservices to import"
   fi
+  
+  # soap_api import
+  shopt -s nullglob dotglob
+  fs_files=(./assets/soap_api/*.zip)
+  if [ ${#fs_files[@]} -gt 0 ]; then
+    for filename in ./assets/soap_api/*.zip; do 
+        base_name=${filename##*/}
+        parent_name="$(basename "$(dirname "$filename")")"
+        base_name=${base_name%.*}
+        echod $base_name${filename%.*}
+        echod $parent_name
+        importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${base_name} ${parent_name} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
+    done
+  else
+    echod "No soap_api to import"
+  fi
+  
+
   assetID=${assetIDList}
   assetType=referenceData
   importRefData ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type}
   assetType=project_parameter
   projectParameters ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${source_type}
+  
+  # Scheduler import
+  assetID=${assetIDList}
+  assetType=Scheduler
+  ../self/pipelines/scripts/importSchedulersList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
+  
+  # Project Configuration import
+  assetID=${assetIDList}
+  assetType=project_configuration
+  ../self/pipelines/scripts/importProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+  
+  # Project variables import
+  assetID=${assetIDList}
+  assetType=project_variable
+  ../self/pipelines/scripts/importProjectVariables.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+  
+  # Project variables import
+  assetID=${assetIDList}
+  assetType=certificate
+  ../self/pipelines/scripts/importCertificate.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
 
 else
   #importAsset ${LOCAL_DEV_URL} ${admin_user} ${admin_password} ${repoName} ${assetID} ${assetType} ${HOME_DIR} ${synchProject} ${includeAllReferenceData}
