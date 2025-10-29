@@ -363,7 +363,7 @@ function exportAsset(){
                     if [[ $assetType = project_configuration* ]]; then
                       echo "Calling project configuration script"
                       echod "Project Configuration Export Process is Start"
-                      ../self/pipelines/scripts/exportProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+                      ../self/pipelines/scripts/exportProjectConfiguration.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
                       echod "project configuration Export Process is End"
                       echod $(ls -ltr)
                       return
@@ -371,7 +371,7 @@ function exportAsset(){
                       if [[ $assetType = project_variable* ]]; then
                         echo "Calling project variable script"
                         echod "Project variable Export Process is Start"
-                        ../self/pipelines/scripts/exportProjectVariable.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+                        ../self/pipelines/scripts/exportProjectVariable.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
                         echod "project variable Export Process is End"
                         echod $(ls -ltr)
                         return
@@ -379,7 +379,7 @@ function exportAsset(){
                         if [[ $assetType = certificate* ]]; then
                           echo "Calling project Certificate script"
                           echod "Project Certificate Export Process is Start"
-                          ../self/pipelines/scripts/exportCertificatesList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR"
+                          ../self/pipelines/scripts/exportCertificatesList.sh "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$repoName" "$HOME_DIR" "$assetID"
                           echod "project Certificate Export Process is End"
                           echod $(ls -ltr)
                           return
