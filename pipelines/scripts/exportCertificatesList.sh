@@ -34,7 +34,7 @@ exportCertificatesList() {
     repoName=$4
     HOME_DIR=$5
     assetID=$6
-    CERT_TYPE=$7
+    #CERT_TYPE=$7
 
     echo "Running exportCertificatesList with parameters:"
     echo "LOCAL_DEV_URL=$LOCAL_DEV_URL"
@@ -43,7 +43,7 @@ exportCertificatesList() {
     echo "repoName=$repoName"
     echo "HOME_DIR=$HOME_DIR"
     echo "assetID=$assetID"
-    echo "CERT_TYPE=$CERT_TYPE"
+    #echo "CERT_TYPE=$CERT_TYPE"
     echo "---------------------------------------------"
 
     cd "${HOME_DIR}/${repoName}" || exit 1
