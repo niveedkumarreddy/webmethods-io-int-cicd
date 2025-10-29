@@ -589,7 +589,8 @@ function splitAndImportAssets() {
   local assetTypeList="$6"
 
   # Desired processing order
-  local desiredOrder=("referenceData" "rest_api" "project_parameter" "workflow" "flowservice" "dafservice" "Scheduler" "project_configuration" "project_variable" "certificate")
+ # local desiredOrder=("referenceData" "rest_api" "project_parameter" "workflow" "flowservice" "dafservice" "Scheduler" "project_configuration" "project_variable" "certificate")
+ local desiredOrder=("referenceData" "rest_api" "project_parameter" "workflow" "flowservice" "dafservice" "project_configuration")
 
   # Normalize input: remove spaces around commas
   assetNameList=$(echo "$assetNameList" | sed 's/ *, */,/g')
