@@ -67,14 +67,14 @@ exportCertificatesList() {
         echo "$CertificatesListJson" | jq '.' > "$CertificatesList_file"
         echo "✅ Certificates List saved to: $CertificatesList_file"
 
-        # Extract and iterate over certificates
-        jq -r '.certificates[]
+       # Extract and iterate over certificates from "output" array
+        jq -r '.output[]
             | [.certificateType,
-               (if .certificateType == "PARTNER_CERTIFICATE" then .name
-                elif .certificateType == "KEY_STORE" then .keyStoreName
-                elif .certificateType == "TRUST_STORE" then .TrustStoreName
-                else empty end)
-              ]
+            (if .certificateType == "PARTNER_CERTIFICATE" then .name
+            elif .certificateType == "KEY_STORE" then .keyStoreName
+            elif .certificateType == "TRUST_STORE" then .TrustStoreName
+            else empty end)
+            ]
             | @tsv' "$CertificatesList_file" | while IFS=$'\t' read -r CERT_TYPE CERT_NAME; do
 
             if [[ -n "$CERT_NAME" && -n "$CERT_TYPE" ]]; then
