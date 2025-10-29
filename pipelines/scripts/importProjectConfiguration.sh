@@ -32,15 +32,13 @@ function importProjectConfiguration() {
     admin_password=$3
     repoName=$4
     HOME_DIR=$5
-    source_env_name=$6
-    project_id=$7
+
 
     echo "Running importProjectConfiguration with parameters:"
     echo "LOCAL_DEV_URL=$LOCAL_DEV_URL"
     echo "admin_user=$admin_user"
     echo "repoName=$repoName"
     echo "HOME_DIR=$HOME_DIR"
-    echo "source_env_name=$source_env_name"
 
     cd "${HOME_DIR}/${repoName}" || exit 1
 
@@ -51,6 +49,8 @@ function importProjectConfiguration() {
     generated_on=$(date +%s)
 
     # If you have split files, read and assemble them
+    source_env_name=$(jq -r '.metadata.source' $file_dir/ProjectConfiguration_List_Full.json)
+    project_id=$(jq -r '.metadata.project' $file_dir/ProjectConfiguration_List_Full.json)
     packages=$(jq '.' $file_dir/configurations_packages.json)
     variables=$(jq '.' $file_dir/configurations_variables.json)
     connections=$(jq '.' $file_dir/configurations_connections.json)
@@ -74,7 +74,6 @@ function importProjectConfiguration() {
       '{
         apiVersion: "1.0",
         metadata: {
-          source: $source,
           project: $project,
           generatedOn: $generatedOn
         },
