@@ -97,7 +97,7 @@ function importProjectConfiguration() {
     response=$(curl --silent --show-error --fail \
       -u "${admin_user}:${admin_password}" \
       -H "Content-Type: application/json" \
-      -X POST \
+      -X PUT \
       --data-raw "$payload" \
       "$PROJECT_CONFIGURATION_IMPORT_URL"
     )
