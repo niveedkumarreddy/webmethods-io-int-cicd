@@ -84,7 +84,7 @@ steps:
   enabled: true
 - pwsh: |
      az extension add --name azure-devops
-     az devops configure --defaults organization=https://dev.azure.com/SrinivasanSabapathy/ project="webMethodsIO_Integration"
+     az devops configure --defaults organization=https://dev.azure.com/NiveedKumarReddyBollapally/ project="iPaas_Devops_MVP"
      $group_id = az pipelines variable-group create --name $(aliasName) --variables SAG_IS_CLOUD_REGISTER_URL=$(SAG_IS_CLOUD_REGISTER_URL) SAG_IS_EDGE_CLOUD_ALIAS=$(SAG_IS_EDGE_CLOUD_ALIAS)
      $group_id = $(az pipelines variable-group list -p $(System.TeamProject) --group-name $(aliasName) --query '[0].id' -o json)
      echo $group_id
