@@ -13,9 +13,9 @@
           - name: execute code review
             uses: fjogeleit/http-request-action@v1
             with:
-              url: 'https://dev.azure.com/NiveedKumarReddyBollapally/iPaas_Devops_MVP/_apis/build/builds?api-version=7.1-preview.7'
+              url: 'https://dev.azure.com/SrinivasanSabapathy/webMethodsIO_Integration/_apis/build/builds?api-version=7.1-preview.7'
               method: 'POST'
-              username: 'niveedkumarreddy.bollapally@ibm.com'
+              username: 'srinivasan.sabapathy@ibm.com'
               password: ${{ secrets.AZURE_DEVOPS_TOKEN }}
               customHeaders: '{"Content-Type": "application/json"}'
               data: '{"parameters": "{\"repoName\":\"${{ github.event.repository.name }}\",\"codeReviewBranch\":\"codeReview\"}","definition":{"id": 8}}'

@@ -29,7 +29,7 @@ resources:
   repositories:
   - repository: projectRepo
     type: github
-    endpoint: Github_devops_mvp
+    endpoint: github
     name: $(repoPath)
     ref: dev
 
