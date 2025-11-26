@@ -146,11 +146,17 @@ We will assume that the organization is following the below GIT Workflows.
 2. Extend testing framework
 3. Incorporate design for code review
 
-## Azure DevOps Pipeline Setup (summary)
+## Azure DevOps Pipeline Setup
 
-A complete, standalone setup guide with step‑by‑step instructions, variable group configuration, pipeline workflows, scripts overview, and troubleshooting is available in the repository. Use the guide to configure Azure Pipelines, variable groups, and secrets (Azure Key Vault or GitHub), and to learn how the provided scripts (`pipelines/scripts/`) are used by each YAML pipeline.
+A comprehensive setup guide with step-by-step instructions, variable group configuration, agent pool setup (Microsoft-hosted), pipeline workflows, scripts overview, and troubleshooting is available. Use the guide to configure Azure Pipelines, variable groups, secrets (Azure Key Vault or GitHub), and to understand how the provided scripts in `pipelines/scripts/` are used by each YAML pipeline.
 
-Link to full guide: [Azure DevOps Pipeline Setup Guide](./AZURE_DEVOPS_PIPELINE_SETUP.md)
+**📖 Full Guide:** [Azure DevOps Pipeline Setup Guide](./AZURE_DEVOPS_PIPELINE_SETUP.md)
+
+## End-to-End Setup Guide
+
+For a complete step-by-step walkthrough from scratch, including GitHub repository setup, Azure DevOps project creation, variable group configuration, secrets management, pipeline import, and your first pipeline run, refer to the comprehensive setup guide.
+
+**📖 Complete Setup:** [End-to-End Setup Guide](./SETUP_GUIDE.md)
 
 ## How to use/test
 1. Clone / Fork the automation repo
