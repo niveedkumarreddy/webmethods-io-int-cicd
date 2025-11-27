@@ -35,15 +35,15 @@ function deleteVaultVariable() {
   LOCAL_DEV_URL=$1
   admin_user=$2
   admin_password=$3
-  variable_name=$4
+  assetID=$4
 
-  if [ -z "$variable_name" ]; then
+  if [ -z "$assetID" ]; then
     echo "❌ Variable name not provided!"
     exit 1
   fi
 
-  VAULT_VARIABLES_DELETE_URL="${LOCAL_DEV_URL}/apis/v2/rest/configurations/variables/${variable_name}"
-  echod "Deleting variable: $variable_name"
+  VAULT_VARIABLES_DELETE_URL="${LOCAL_DEV_URL}/apis/v2/rest/configurations/variables/${assetID}"
+  echod "Deleting variable: $assetID"
   echod "API URL: $VAULT_VARIABLES_DELETE_URL"
 
   response=$(curl --silent --location --request DELETE "$VAULT_VARIABLES_DELETE_URL" \
@@ -54,9 +54,9 @@ function deleteVaultVariable() {
   status=$(echo "$response" | jq -r '.output.code // empty')
 
   if [ "$status" == "SUCCESS" ]; then
-    echo "✅ Vault Variable '$variable_name' deleted successfully."
+    echo "✅ Vault Variable '$assetID' deleted successfully."
   else
-    echo "❌ Failed to delete Vault Variable '$variable_name'"
+    echo "❌ Failed to delete Vault Variable '$assetID'"
     echo "Response: $response"
   fi
 }
@@ -67,18 +67,24 @@ function extractDeleteVaultVariables() {
   admin_user=$2
   admin_password=$3
   extract_keys_file=$4
+  assetID=$5
 
-  if [ ! -f "$extract_keys_file" ]; then
-    echo "❌ File not found: $extract_keys_file"
+  # If extract_keys_file is provided, read from file
+  if [ -n "$extract_keys_file" ] && [ -f "$extract_keys_file" ]; then
+    echo "📄 Reading variables from file: $extract_keys_file"
+    while IFS= read -r variable_name || [ -n "$variable_name" ]; do
+      # Skip empty lines or commented lines
+      if [[ -n "$variable_name" && ! "$variable_name" =~ ^# ]]; then
+        deleteVaultVariable "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$variable_name"
+      fi
+    done < "$extract_keys_file"
+  # Otherwise, check if assetID is provided and use it directly
+  elif [ -n "$assetID" ]; then
+    deleteVaultVariable "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$assetID"
+  else
+    echo "❌ Either extract_keys_file or assetID must be provided!"
     return 1
   fi
-
-  echo "📄 Reading variables from file: $extract_keys_file"
-  while IFS= read -r variable_name || [ -n "$variable_name" ]; do
-    # Skip empty lines or commented lines
-    if [[ -n "$variable_name" && ! "$variable_name" =~ ^# ]]; then
-      deleteVaultVariable "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$variable_name"
-    fi
-  done < "$extract_keys_file"
 }
 
+deleteVaultVariable "$@"

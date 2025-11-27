@@ -36,16 +36,16 @@ function deleteProjectParameter() {
   LOCAL_DEV_URL=$1
   admin_user=$2
   admin_password=$3
-  projectParameter=$4
+  assetID=$4
   repo_name=$5
 
-  if [ -z "$projectParameter" ]; then
+  if [ -z "$assetID" ]; then
     echo "❌ Project Parameter name not provided!"
     exit 1
   fi
 
-  PROJECT_PARAMETER_DELETE_URL="${LOCAL_DEV_URL}/apis/v1/rest/projects/${repo_name}/projectParameter/${projectParameter}"
-  echod "Deleting Project Parameter: $projectParameter"
+  PROJECT_PARAMETER_DELETE_URL="${LOCAL_DEV_URL}/apis/v1/rest/projects/${repo_name}/projectParameter/${assetID}"
+  echod "Deleting Project Parameter: $assetID"
   echod "API URL: $PROJECT_PARAMETER_DELETE_URL"
 
   response=$(curl --silent --location --request DELETE "$PROJECT_PARAMETER_DELETE_URL" \
@@ -70,17 +70,24 @@ function extractProjectParameters() {
   admin_password=$3
   project_param_file=$4
   repo_name=$5
+  assetID=$6
 
-  if [ ! -f "$project_param_file" ]; then
-    echo "❌ File not found: $project_param_file"
+  # If project_param_file is provided, read from file
+  if [ -n "$project_param_file" ] && [ -f "$project_param_file" ]; then
+    echo "📄 Reading Project Parameters from file: $project_param_file"
+    while IFS= read -r projectParameter || [ -n "$projectParameter" ]; do
+      # Skip empty lines or comments
+      if [[ -n "$projectParameter" && ! "$projectParameter" =~ ^# ]]; then
+        deleteProjectParameter "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$projectParameter" "$repo_name"
+      fi
+    done < "$project_param_file"
+  # Otherwise, check if assetID is provided and use it directly
+  elif [ -n "$assetID" ]; then
+    deleteProjectParameter "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$assetID" "$repo_name"
+  else
+    echo "❌ Either project_param_file or assetID must be provided!"
     return 1
   fi
-
-  echo "📄 Reading Project Parameters from file: $project_param_file"
-  while IFS= read -r projectParameter || [ -n "$projectParameter" ]; do
-    # Skip empty lines or comments
-    if [[ -n "$projectParameter" && ! "$projectParameter" =~ ^# ]]; then
-      deleteProjectParameter "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$projectParameter" "$repo_name"
-    fi
-  done < "$project_param_file"
 }
+
+deleteProjectParameter "$@"
