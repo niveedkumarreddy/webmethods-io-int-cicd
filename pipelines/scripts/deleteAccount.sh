@@ -36,7 +36,7 @@ function deleteAccount() {
   LOCAL_DEV_URL=$1
   admin_user=$2
   admin_password=$3
-  account_uid=$4
+  assetID=$4
   repo_name=$5
 
   if [ -z "$account_uid" ]; then
@@ -44,8 +44,8 @@ function deleteAccount() {
     exit 1
   fi
 
-  ACCOUNT_DELETE_URL="${LOCAL_DEV_URL}/apis/v1/rest/projects/${repo_name}/accounts/${account_uid}"
-  echod "Deleting Account: $account_uid"
+  ACCOUNT_DELETE_URL="${LOCAL_DEV_URL}/apis/v1/rest/projects/${repo_name}/accounts/${assetID}"
+  echod "Deleting Account: $assetID"
   echod "API URL: $ACCOUNT_DELETE_URL"
 
   response=$(curl --silent --location --request DELETE "$ACCOUNT_DELETE_URL" \
@@ -65,17 +65,24 @@ function extractaccount_uids() {
   admin_password=$3
   account_delete_file=$4
   repo_name=$5
+  assetID=$6
 
-  if [ ! -f "$account_delete_file" ]; then
-    echo "❌ File not found: $account_delete_file"
+  # If account_delete_file is provided, read from file
+  if [ -n "$account_delete_file" ] && [ -f "$account_delete_file" ]; then
+    echo "📄 Reading Account ID's from file: $account_delete_file"
+    while IFS= read -r account_uid || [ -n "$account_uid" ]; do
+      # Skip empty lines or comments
+      if [[ -n "$account_uid" && ! "$account_uid" =~ ^# ]]; then
+        deleteAccount "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$account_uid" "$repo_name"
+      fi
+    done < "$account_delete_file"
+  # Otherwise, check if assetID is provided and use it directly
+  elif [ -n "$assetID" ]; then
+    deleteAccount "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$assetID" "$repo_name"
+  else
+    echo "❌ Either account_delete_file or assetID must be provided!"
     return 1
   fi
-
-  echo "📄 Reading Account ID's from file: $account_delete_file"
-  while IFS= read -r account_uid || [ -n "$account_uid" ]; do
-    # Skip empty lines or comments
-    if [[ -n "$account_uid" && ! "$account_uid" =~ ^# ]]; then
-      deleteAccount "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$account_uid" "$repo_name"
-    fi
-  done < "$account_delete_file"
 }
+
+deleteAccount "$@"

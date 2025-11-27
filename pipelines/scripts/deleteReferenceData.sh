@@ -36,16 +36,16 @@ function deleteReferenceData() {
   LOCAL_DEV_URL=$1
   admin_user=$2
   admin_password=$3
-  referenceData=$4
+  assetID=$4
   repo_name=$5
 
-  if [ -z "$referenceData" ]; then
+  if [ -z "$assetID" ]; then
     echo "❌ Reference data name not provided!"
     exit 1
   fi
 
-  REFERENCEDATA_DELETE_URL="${LOCAL_DEV_URL}/apis/v1/rest/projects/${repo_name}/referencedata/${referenceData}"
-  echod "Deleting reference data: $referenceData"
+  REFERENCEDATA_DELETE_URL="${LOCAL_DEV_URL}/apis/v1/rest/projects/${repo_name}/referencedata/${assetID}"
+  echod "Deleting reference data: $assetID"
   echod "API URL: $REFERENCEDATA_DELETE_URL"
 
   response=$(curl --silent --location --request DELETE "$REFERENCEDATA_DELETE_URL" \
@@ -56,9 +56,9 @@ function deleteReferenceData() {
   status=$(echo "$response" | jq -r '.output.code // empty')
 
   if [ "$status" == "SUCCESS" ]; then
-    echo "✅ Reference Data '$referenceData' deleted successfully."
+    echo "✅ Reference Data '$assetID' deleted successfully."
   else
-    echo "❌ Failed to delete reference data '$referenceData'"
+    echo "❌ Failed to delete reference data '$assetID'"
     echo "Response: $response"
   fi
 }
@@ -70,17 +70,24 @@ function extractReferenceData() {
   admin_password=$3
   reference_data_file=$4
   repo_name=$5
+  assetID=$6
 
-  if [ ! -f "$reference_data_file" ]; then
-    echo "❌ File not found: $reference_data_file"
+  # If reference_data_file is provided, read from file
+  if [ -n "$reference_data_file" ] && [ -f "$reference_data_file" ]; then
+    echo "📄 Reading reference data names from file: $reference_data_file"
+    while IFS= read -r referenceData || [ -n "$referenceData" ]; do
+      # Skip empty lines or lines starting with #
+      if [[ -n "$referenceData" && ! "$referenceData" =~ ^# ]]; then
+        deleteReferenceData "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$referenceData" "$repo_name"
+      fi
+    done < "$reference_data_file"
+  # Otherwise, check if assetID is provided and use it directly
+  elif [ -n "$assetID" ]; then
+    deleteReferenceData "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$assetID" "$repo_name"
+  else
+    echo "❌ Either reference_data_file or assetID must be provided!"
     return 1
   fi
-
-  echo "📄 Reading reference data names from file: $reference_data_file"
-  while IFS= read -r referenceData || [ -n "$referenceData" ]; do
-    # Skip empty lines or lines starting with #
-    if [[ -n "$referenceData" && ! "$referenceData" =~ ^# ]]; then
-      deleteReferenceData "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$referenceData" "$repo_name"
-    fi
-  done < "$reference_data_file"
 }
+
+deleteReferenceData "$@"

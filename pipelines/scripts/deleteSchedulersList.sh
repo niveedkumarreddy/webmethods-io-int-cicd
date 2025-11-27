@@ -38,16 +38,16 @@ function deleteScheduler() {
   LOCAL_DEV_URL=$1
   admin_user=$2
   admin_password=$3
-  flowServiceName=$4
+  assetID=$4
   repo_name=$5
 
-  if [ -z "$flowServiceName" ]; then
+  if [ -z "$assetID" ]; then
     echo "❌ flowServiceName not provided!"
     exit 1
   fi
 
-  SCHEDULER_DELETE_URL="${LOCAL_DEV_URL}/apis/v1/rest/projects/${repo_name}/configurations/schedulers/${flowServiceName}"
-  echod "Deleting scheduler: $flowServiceName"
+  SCHEDULER_DELETE_URL="${LOCAL_DEV_URL}/apis/v1/rest/projects/${repo_name}/configurations/schedulers/${assetID}"
+  echod "Deleting scheduler: $assetID"
   echod "API URL: $SCHEDULER_DELETE_URL"
 
   response=$(curl --silent --location --request DELETE "$SCHEDULER_DELETE_URL" \
@@ -58,9 +58,9 @@ function deleteScheduler() {
   status=$(echo "$response" | jq -r '.output.code // empty')
 
   if [ "$status" == "SUCCESS" ]; then
-    echo "✅ Scheduler '$flowServiceName' deleted successfully."
+    echo "✅ Scheduler '$assetID' deleted successfully."
   else
-    echo "❌ Failed to delete scheduler '$flowServiceName'"
+    echo "❌ Failed to delete scheduler '$assetID'"
     echo "Response: $response"
   fi
 }
@@ -72,17 +72,24 @@ function extractDeleteSchedulers() {
   admin_password=$3
   scheduler_file=$4
   repo_name=$5
+  assetID=$6
 
-  if [ ! -f "$scheduler_file" ]; then
-    echo "❌ File not found: $scheduler_file"
+  # If scheduler_file is provided, read from file
+  if [ -n "$scheduler_file" ] && [ -f "$scheduler_file" ]; then
+    echo "📄 Reading scheduler names from file: $scheduler_file"
+    while IFS= read -r serviceName || [ -n "$serviceName" ]; do
+      # Skip empty lines or commented lines
+      if [[ -n "$serviceName" && ! "$serviceName" =~ ^# ]]; then
+        deleteScheduler "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$serviceName" "$repo_name"
+      fi
+    done < "$scheduler_file"
+  # Otherwise, check if assetID is provided and use it directly
+  elif [ -n "$assetID" ]; then
+    deleteScheduler "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$assetID" "$repo_name"
+  else
+    echo "❌ Either scheduler_file or assetID must be provided!"
     return 1
   fi
-
-  echo "📄 Reading scheduler names from file: $scheduler_file"
-  while IFS= read -r serviceName || [ -n "$serviceName" ]; do
-    # Skip empty lines or commented lines
-    if [[ -n "$serviceName" && ! "$serviceName" =~ ^# ]]; then
-      deleteScheduler "$LOCAL_DEV_URL" "$admin_user" "$admin_password" "$serviceName" "$repo_name"
-    fi
-  done < "$scheduler_file"
 }
+
+deleteScheduler "$@"
