@@ -104,7 +104,7 @@ Variable groups store credentials and configuration centrally.
 3. **Name**: `webMethodsIO_group`
 4. Add variables:
    - `admin_password` (Secret) — webMethods.io admin password for Play/Build environment
-   - `includeAllReferenceData` (String) — Value: `true`
+
 5. Click **Save**
 
 #### Variable Group 2: `github_group`
@@ -335,6 +335,9 @@ After the pipeline completes:
    - **synchProject**: `false` (to sync only specific assets)
    - **assetIDList**: Asset IDs to export (optional; leave empty to export all)
    - **assetTypeList**: Asset types (`workflow`, `flowservice`, etc.)
+   - **assetNameList**: Asset types (`SampleWorkFlow`, `SampleFlowservice`, etc.)
+   - **devUser**: Your webMethods.io username
+   - **includeAllReferenceData**: Add Reference Data
 4. Click **Run**
 
 The pipeline will:
@@ -365,6 +368,9 @@ Ensure you have a DEV environment in webMethods.io and `configs/env/dev.yml` is 
    - **synchProject**: `true` (to import entire project) or `false` (specific assets)
    - **assetIDList**: (if synchProject is false) Asset IDs to import
    - **assetTypeList**: (if synchProject is false) Asset types
+   - **assetNameList**: Asset types (`SampleWorkFlow`, `SampleFlowservice`, etc.)
+   - **devUser**: Your webMethods.io username
+   - **projectHasAPIs**: `true` (project conatins Rest or Soap API's) or `false`
 4. Click **Run**
 
 The pipeline will:
