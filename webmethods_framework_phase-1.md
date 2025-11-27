@@ -150,7 +150,6 @@ We will assume that the organization is following the below GIT Workflows.
 
 A comprehensive setup guide with step-by-step instructions, variable group configuration, agent pool setup (Microsoft-hosted), pipeline workflows, scripts overview, and troubleshooting is available. Use the guide to configure Azure Pipelines, variable groups, secrets (Azure Key Vault or GitHub), and to understand how the provided scripts in `pipelines/scripts/` are used by each YAML pipeline.
 
-**📖 Full Guide:** [Azure DevOps Pipeline Setup Guide](./AZURE_DEVOPS_PIPELINE_SETUP.md)
 
 ## End-to-End Setup Guide
 
