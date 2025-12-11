@@ -27,6 +27,85 @@ Before starting, ensure you have:
   - `curl` (HTTP client)
   - `perl` (URI encoding)
 
+
+## 📋 Supported Asset Types and APIs
+
+This framework provides comprehensive CI/CD capabilities for webMethods.io Integration projects through REST APIs. Below is a detailed breakdown of supported asset types, their operations, and API endpoints.
+
+### 🎯 Supported Asset Types
+
+| Asset Type | Export | Import | Delete | Description | API Endpoints |
+|------------|--------|--------|--------|-------------|---------------|
+| **`referenceData`** | ✅ Yes | ✅ Yes | ✅ Yes | Reference data configurations and lookup tables used across workflows and services | `GET/POST/PUT /apis/v1/rest/projects/{projectName}/referencedata/{rdName}` |
+| **`rest_api`** | ✅ Yes | ✅ Yes | ❌ No | REST API definitions, endpoints, and configurations | `POST /apis/v1/rest/projects/{projectName}/export`<br>`POST /apis/v1/rest/project-import` |
+| **`soap_api`** | ✅ Yes | ✅ Yes | ❌ No | SOAP API definitions, WSDL configurations, and service endpoints | `POST /apis/v1/rest/projects/{projectName}/export`<br>`POST /apis/v1/rest/project-import` |
+| **`project_parameter`** | ✅ Yes | ✅ Yes | ✅ Yes | Project-level parameters and configuration variables | `GET/POST/PUT /apis/v1/rest/projects/{projectName}/params/{parameterUID}` |
+| **`workflow`** | ✅ Yes | ✅ Yes | ✅ Yes | Workflow definitions, orchestrations, and business process flows | `POST /apis/v1/rest/projects/{projectName}/workflows/{assetID}/export`<br>`POST /apis/v1/rest/projects/{projectName}/workflow-import`<br>`DELETE /apis/v1/rest/projects/{projectName}/workflows/{assetID}` |
+| **`flowservice`** | ✅ Yes | ✅ Yes | ✅ Yes | Flow service definitions, integration logic, and service implementations | `POST /apis/v1/rest/projects/{projectName}/flows/{assetID}/export`<br>`POST /apis/v1/rest/projects/{projectName}/flow-import`<br>`DELETE /apis/v1/rest/projects/{projectName}/flows/{assetID}` |
+| **`dafservice`** | ✅ Yes | ✅ Yes | ❌ No | Data Analytics Framework (DAF) services for data processing and analytics | `POST /apis/v1/rest/projects/{projectName}/flows/{assetID}/export`<br>`POST /apis/v1/rest/projects/{projectName}/flow-import` |
+| **`Scheduler`** | ✅ Yes | ✅ Yes | ✅ Yes | Scheduler configurations, job definitions, and execution schedules | `GET/POST /apis/v1/rest/projects/{projectName}/configurations/schedulers/{serviceName}` |
+| **`project_configuration`** | ✅ Yes | ✅ Yes | ❌ No | Project-level configurations including packages, variables, connections, certificates, and schedules | `GET/PUT /apis/v2/rest/projects/{projectName}/configurations` |
+| **`project_variable`** | ✅ Yes | ✅ Yes | N/A | Project-specific variables and environment-specific settings | `GET/POST /apis/v2/rest/projects/{projectName}/configurations/variables?type=ProjectVariable` |
+| **`certificate`** | ✅ Yes | ✅ Yes | N/A | SSL/TLS certificates, partner certificates, keystores, and truststores | `GET/POST /apis/v1/rest/projects/{projectName}/configurations/certificates/{assetID}` |
+| **`account`** | ✅ Yes | ✅ Yes | N/A | Account configurations and authentication credentials | `GET /apis/v1/rest/projects/{projectName}/accounts` |
+| **`connection`** | ✅ Yes | ✅ Yes | N/A | Connection configurations, endpoints, and authentication details with secret masking | `GET/PUT /apis/v1/rest/projects/{projectName}/configurations/connections/{accountName}` |
+| **`vault_variables`** | ✅ Yes | ✅ Yes | N/A | Secure vault variables for sensitive data storage across environments | `GET /apis/v2/rest/configurations/variables/{key}` |
+
+### 🔌 Core API Endpoints by Category
+
+#### **Project Management APIs**
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/apis/v1/rest/projects` | POST | Create new project |
+| `/apis/v1/rest/projects/{projectName}` | GET | Get project details and metadata |
+| `/apis/v1/rest/projects/{projectName}/assets` | GET | List all assets in project |
+| `/apis/v1/rest/projects/{projectName}` | DELETE | Delete project |
+
+#### **Asset Export/Import APIs**
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/apis/v1/rest/projects/{projectName}/export` | POST | Export REST/SOAP APIs |
+| `/apis/v1/rest/project-import` | POST | Import REST/SOAP APIs |
+| `/apis/v1/rest/projects/{projectName}/workflow-import` | POST | Import workflows |
+| `/apis/v1/rest/projects/{projectName}/flow-import` | POST | Import flow services and DAF services |
+| `/apis/v1/rest/projects/{projectName}/workflows/{assetID}/export` | POST | Export specific workflow |
+| `/apis/v1/rest/projects/{projectName}/flows/{assetID}/export` | POST | Export specific flow service |
+
+#### **Configuration Management APIs**
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/apis/v1/rest/projects/{projectName}/configurations/connections` | GET | List all connections |
+| `/apis/v1/rest/projects/{projectName}/configurations/connections/{accountName}` | PUT/POST | Create or update connection |
+| `/apis/v1/rest/projects/{projectName}/configurations/schedulers` | GET/PUT | List or update schedulers |
+| `/apis/v1/rest/projects/{projectName}/configurations/schedulers/{serviceName}` | GET/POST | Get or create specific scheduler |
+| `/apis/v1/rest/projects/{projectName}/configurations/certificates` | GET/POST | List or create certificates |
+| `/apis/v2/rest/projects/{projectName}/configurations` | GET/PUT | Export or import project configurations |
+| `/apis/v2/rest/projects/{projectName}/configurations/variables` | GET/POST | List or create project variables |
+
+#### **Data Management APIs**
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/apis/v1/rest/projects/{projectName}/referencedata` | GET | List all reference data |
+| `/apis/v1/rest/projects/{projectName}/referencedata/{rdName}` | GET/POST/PUT | Get, create, or update reference data |
+| `/apis/v1/rest/projects/{projectName}/params` | GET/POST | List or create project parameters |
+| `/apis/v1/rest/projects/{projectName}/params/{parameterUID}` | GET/PUT | Get or update specific parameter |
+| `/apis/v2/rest/configurations/variables` | GET | List vault variables |
+| `/apis/v2/rest/configurations/variables/{key}` | GET | Get specific vault variable |
+
+### 🔐 Secret Management Features
+
+The framework includes advanced secret management capabilities:
+
+- **Secret Masking**: Automatically masks sensitive fields (`client_id`, `client_secret`, `access_token`, `refresh_token`) during export
+- **Secret Storage**: Stores masked secrets in Azure Key Vault or GitHub Secrets
+- **Secret Injection**: Automatically retrieves and injects secrets during import
+- **Environment-Specific Secrets**: Supports different secrets per environment (dev, qa, prod)
+
+### 📊 API Version Support
+
+- **v1 APIs**: Used for core asset management operations (export/import/delete)
+- **v2 APIs**: Used for advanced configuration management (project configurations, variables, vault variables)
+
 ---
 
 ## 🔧 Part 1: Prepare Your GitHub Repository
